@@ -1238,8 +1238,225 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
     </div>
   </div>
 </div>
-<div class="tab-content" id="binary-search"><!-- CONTENT: binary-search --></div>
-<div class="tab-content" id="sorting"><!-- CONTENT: sorting --></div>
+<div class="tab-content" id="binary-search">
+  <div class="algo-name">Binary Search</div>
+  <div class="algo-tagline">Halve the search space each iteration. O(log n). Works on sorted arrays — and on any monotonic decision function.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Find a target in a sorted array</li>
+    <li>Find leftmost/rightmost position of a value</li>
+    <li>Search in a rotated sorted array</li>
+    <li><strong>Binary search on the answer</strong>: "minimum X such that condition holds" — if you can write a boolean function that flips from false→true at some threshold, binary search on it</li>
+  </ul></div>
+
+  <h3>Diagram</h3>
+  <div class="diagram-box"><div class="ascii-diagram">arr = [ 1,  3,  5,  7,  9, 11, 13, 15 ]   target = 7
+idx =   0   1   2   3   4   5   6   7
+       lo=0              hi=7
+
+Step 1: mid = (0+7)//2 = 3  → arr[3]=7 == target ✓  return 3
+
+More steps if no match:
+  arr[mid] &lt; target → lo = mid + 1  (discard left half)
+  arr[mid] &gt; target → hi = mid - 1  (discard right half)
+  lo &gt; hi           → not found
+
+Binary search on answer example (Koko Eating Bananas):
+  "What is the minimum speed k such that all piles eaten in h hours?"
+  → lo=1, hi=max(piles), binary search on k, check feasibility</div></div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Set lo=0, hi=n-1.</strong></li>
+    <li>Compute <strong>mid = lo + Math.floor((hi - lo) / 2)</strong> (avoids integer overflow).</li>
+    <li>If arr[mid] === target → found.</li>
+    <li>If arr[mid] &lt; target → <strong>lo = mid + 1</strong> (target in right half).</li>
+    <li>If arr[mid] &gt; target → <strong>hi = mid - 1</strong> (target in left half).</li>
+    <li>If lo &gt; hi → not found.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Classic: find target in sorted array
+function binarySearch(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo &lt;= hi) {
+    const mid = lo + Math.floor((hi - lo) / 2); // avoids overflow
+    if (nums[mid] === target) return mid;
+    else if (nums[mid] &lt; target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+
+// Find leftmost position (lower bound)
+function lowerBound(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length;
+  while (lo &lt; hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    if (nums[mid] &lt; target) lo = mid + 1;
+    else hi = mid; // don't exclude mid — it could be the leftmost answer
+  }
+  return lo; // first index where nums[lo] &gt;= target
+}
+
+// Binary search on the answer
+// "Find minimum k such that feasible(k) is true"
+function minFeasible(lo: number, hi: number, feasible: (k: number) =&gt; boolean): number {
+  while (lo &lt; hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    if (feasible(mid)) hi = mid; // mid works, try smaller
+    else lo = mid + 1;           // mid doesn't work, need bigger
+  }
+  return lo;
+}
+
+// Search in rotated sorted array
+function searchRotated(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo &lt;= hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    if (nums[mid] === target) return mid;
+    if (nums[lo] &lt;= nums[mid]) { // left half is sorted
+      if (nums[lo] &lt;= target && target &lt; nums[mid]) hi = mid - 1;
+      else lo = mid + 1;
+    } else { // right half is sorted
+      if (nums[mid] &lt; target && target &lt;= nums[hi]) lo = mid + 1;
+      else hi = mid - 1;
+    }
+  }
+  return -1;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Binary Search</div>
+      <div class="problem-insight">Direct template — lo/hi/mid loop, return mid on match.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Search in Rotated Sorted Array</div>
+      <div class="problem-insight">Determine which half is sorted; check if target falls in that range.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Find Minimum in Rotated Sorted Array</div>
+      <div class="problem-insight">If nums[mid] &gt; nums[hi], minimum is in the right half; otherwise left half.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Koko Eating Bananas</div>
+      <div class="problem-insight">Binary search on answer (speed k). feasible(k) = can all piles be eaten in h hours at speed k?</div></div>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="sorting">
+  <div class="algo-name">Sorting</div>
+  <div class="algo-tagline">Know the built-in, understand merge sort's divide-and-conquer, and recognize when sorting unlocks a simpler solution.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Sort before applying two pointers or binary search</li>
+    <li>Merge intervals (sort by start time first)</li>
+    <li>Custom sort comparator (by frequency, by second element, etc.)</li>
+    <li>Sort Colors (Dutch National Flag — 3-way partition)</li>
+  </ul></div>
+
+  <h3>Diagram — Merge Sort divide &amp; conquer</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A["[5,3,8,1,4,2]"]:::root --> B["[5,3,8]"]:::left
+    A --> C["[1,4,2]"]:::right
+    B --> D["[5]"]:::base
+    B --> E["[3,8]"]:::left
+    C --> F["[1]"]:::base
+    C --> G["[4,2]"]:::right
+    E --> H["[3]"]:::base
+    E --> I["[8]"]:::base
+    G --> J["[4]"]:::base
+    G --> K["[2]"]:::base
+    H & I --> L["[3,8]"]:::merge
+    J & K --> M["[2,4]"]:::merge
+    D & L --> N["[3,5,8]"]:::merge
+    F & M --> O["[1,2,4]"]:::merge
+    N & O --> P["[1,2,3,4,5,8]"]:::result
+    classDef root fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef left fill:#a855f7,stroke:#9333ea,color:#fff
+    classDef right fill:#f97316,stroke:#ea580c,color:#000
+    classDef base fill:#475569,stroke:#64748b,color:#e2e8f0
+    classDef merge fill:#eab308,stroke:#ca8a04,color:#000
+    classDef result fill:#22c55e,stroke:#16a34a,color:#000
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">Merge Sort: O(n log n) time, O(n) space — stable
+Quick Sort: O(n log n) avg, O(n²) worst, O(log n) space — in-place
+Built-in JS/TS Array.sort(): TimSort (merge+insertion), O(n log n), stable</div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Built-in sort — always know your comparator
+const nums = [3, 1, 4, 1, 5];
+nums.sort((a, b) =&gt; a - b); // ascending
+nums.sort((a, b) =&gt; b - a); // descending
+
+// Sort objects by property
+const items = [{ name: 'b', freq: 3 }, { name: 'a', freq: 5 }];
+items.sort((a, b) =&gt; b.freq - a.freq); // by frequency descending
+
+// Merge Sort (for understanding — use built-in in interviews)
+function mergeSort(arr: number[]): number[] {
+  if (arr.length &lt;= 1) return arr;
+  const mid = Math.floor(arr.length / 2);
+  return merge(mergeSort(arr.slice(0, mid)), mergeSort(arr.slice(mid)));
+}
+
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0, j = 0;
+  while (i &lt; left.length && j &lt; right.length) {
+    if (left[i] &lt;= right[j]) result.push(left[i++]);
+    else result.push(right[j++]);
+  }
+  return result.concat(left.slice(i)).concat(right.slice(j));
+}
+
+// Sort Colors — Dutch National Flag (O(n), O(1) space)
+function sortColors(nums: number[]): void {
+  let lo = 0, mid = 0, hi = nums.length - 1;
+  while (mid &lt;= hi) {
+    if (nums[mid] === 0) {
+      [nums[lo], nums[mid]] = [nums[mid], nums[lo]];
+      lo++; mid++;
+    } else if (nums[mid] === 1) {
+      mid++;
+    } else {
+      [nums[mid], nums[hi]] = [nums[hi], nums[mid]];
+      hi--;
+    }
+  }
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Merge Intervals</div>
+      <div class="problem-insight">Sort by start time; merge overlapping intervals greedily.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Sort Colors</div>
+      <div class="problem-insight">Dutch National Flag: three pointers (lo, mid, hi) partition array into 0s, 1s, 2s in one pass.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Top K Frequent Elements</div>
+      <div class="problem-insight">Count frequencies with a map, then sort by frequency (or use a min-heap of size k).</div></div>
+    </div>
+  </div>
+</div>
 <div class="tab-content" id="mono-stack"><!-- CONTENT: mono-stack --></div>
 <div class="tab-content" id="dp-1d"><!-- CONTENT: dp-1d --></div>
 <div class="tab-content" id="dp-2d"><!-- CONTENT: dp-2d --></div>
