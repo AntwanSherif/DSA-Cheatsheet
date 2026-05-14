@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Cheatsheet</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #263248;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --orange: #f97316;
+    --purple: #a855f7;
+    --teal: #14b8a6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  /* Tab bar */
+  .tab-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 8px 12px 0;
+  }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--surface2); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Content area */
+  .tab-content { display: none; padding: 32px 40px; max-width: 960px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* Section headers */
+  .algo-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .algo-tagline {
+    color: var(--text-muted);
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  h3 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin: 28px 0 12px;
+  }
+
+  /* When to use box */
+  .when-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 14px 18px;
+  }
+  .when-box ul { padding-left: 18px; }
+  .when-box li { margin: 4px 0; color: var(--text); }
+  .when-box li::marker { color: var(--accent); }
+
+  /* Diagrams */
+  .diagram-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    overflow-x: auto;
+  }
+  .ascii-diagram {
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre;
+    color: var(--text);
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  /* Walkthrough steps */
+  .walkthrough ol { padding-left: 22px; }
+  .walkthrough li { margin: 6px 0; }
+  .walkthrough li strong { color: var(--yellow); }
+
+  /* Code blocks */
+  .code-block {
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  .code-block pre { margin: 0; }
+  .code-block code { font-family: 'Fira Code', 'Cascadia Code', monospace !important; }
+
+  /* Practice problems */
+  .problems { display: flex; flex-direction: column; gap: 10px; }
+  .problem {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .diff {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .diff-easy { background: #14532d; color: var(--green); }
+  .diff-medium { background: #78350f; color: var(--yellow); }
+  .problem-name { font-weight: 600; color: var(--text); }
+  .problem-insight { color: var(--text-muted); font-size: 13px; margin-top: 3px; }
+
+  /* DP table */
+  .dp-table { border-collapse: collapse; font-family: monospace; font-size: 13px; }
+  .dp-table td, .dp-table th {
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    text-align: center;
+    min-width: 40px;
+  }
+  .dp-table th { background: var(--surface2); color: var(--text-muted); }
+  .dp-base { background: #14532d; color: var(--green); font-weight: bold; }
+  .dp-computed { background: #1e3a5f; color: #93c5fd; }
+  .dp-answer { background: #4c1d95; color: #c4b5fd; font-weight: bold; }
+
+  /* Divider */
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+</style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="two-pointers">Two Pointers</button>
+  <button class="tab-btn" data-tab="sliding-window">Sliding Window</button>
+  <button class="tab-btn" data-tab="prefix-sums">Prefix Sums</button>
+  <button class="tab-btn" data-tab="hash-maps">Hash Maps &amp; Sets</button>
+  <button class="tab-btn" data-tab="fast-slow">Fast &amp; Slow Pointers</button>
+  <button class="tab-btn" data-tab="ll-reversal">Linked List Reversal</button>
+  <button class="tab-btn" data-tab="tree-dfs">Tree DFS</button>
+  <button class="tab-btn" data-tab="tree-bfs">Tree BFS</button>
+  <button class="tab-btn" data-tab="bst">BST</button>
+  <button class="tab-btn" data-tab="graph-bfs">Graph BFS</button>
+  <button class="tab-btn" data-tab="graph-dfs">Graph DFS</button>
+  <button class="tab-btn" data-tab="binary-search">Binary Search</button>
+  <button class="tab-btn" data-tab="sorting">Sorting</button>
+  <button class="tab-btn" data-tab="mono-stack">Monotonic Stack</button>
+  <button class="tab-btn" data-tab="dp-1d">1D DP</button>
+  <button class="tab-btn" data-tab="dp-2d">2D DP</button>
+  <button class="tab-btn" data-tab="backtracking">Backtracking</button>
+</div>
+
+<div class="tab-content active" id="two-pointers"><!-- CONTENT: two-pointers --></div>
+<div class="tab-content" id="sliding-window"><!-- CONTENT: sliding-window --></div>
+<div class="tab-content" id="prefix-sums"><!-- CONTENT: prefix-sums --></div>
+<div class="tab-content" id="hash-maps"><!-- CONTENT: hash-maps --></div>
+<div class="tab-content" id="fast-slow"><!-- CONTENT: fast-slow --></div>
+<div class="tab-content" id="ll-reversal"><!-- CONTENT: ll-reversal --></div>
+<div class="tab-content" id="tree-dfs"><!-- CONTENT: tree-dfs --></div>
+<div class="tab-content" id="tree-bfs"><!-- CONTENT: tree-bfs --></div>
+<div class="tab-content" id="bst"><!-- CONTENT: bst --></div>
+<div class="tab-content" id="graph-bfs"><!-- CONTENT: graph-bfs --></div>
+<div class="tab-content" id="graph-dfs"><!-- CONTENT: graph-dfs --></div>
+<div class="tab-content" id="binary-search"><!-- CONTENT: binary-search --></div>
+<div class="tab-content" id="sorting"><!-- CONTENT: sorting --></div>
+<div class="tab-content" id="mono-stack"><!-- CONTENT: mono-stack --></div>
+<div class="tab-content" id="dp-1d"><!-- CONTENT: dp-1d --></div>
+<div class="tab-content" id="dp-2d"><!-- CONTENT: dp-2d --></div>
+<div class="tab-content" id="backtracking"><!-- CONTENT: backtracking --></div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#3b82f6',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#475569',
+      lineColor: '#94a3b8',
+      secondaryColor: '#1e293b',
+      tertiaryColor: '#0f172a',
+      edgeLabelBackground: '#1e293b',
+    },
+    flowchart: { curve: 'basis' },
+  });
+
+  const renderedTabs = new Set();
+
+  function showTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+    const tab = document.getElementById(tabId);
+    tab.classList.add('active');
+    if (!renderedTabs.has(tabId)) {
+      renderedTabs.add(tabId);
+      const nodes = tab.querySelectorAll('.mermaid');
+      if (nodes.length) mermaid.run({ nodes });
+    }
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => showTab(btn.dataset.tab));
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    hljs.highlightAll();
+    showTab('two-pointers');
+  });
+</script>
+</body>
+</html>
