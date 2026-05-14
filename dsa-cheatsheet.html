@@ -1018,8 +1018,226 @@ function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNod
     </div>
   </div>
 </div>
-<div class="tab-content" id="graph-bfs"><!-- CONTENT: graph-bfs --></div>
-<div class="tab-content" id="graph-dfs"><!-- CONTENT: graph-dfs --></div>
+<div class="tab-content" id="graph-bfs">
+  <div class="algo-name">Graph BFS</div>
+  <div class="algo-tagline">Explore nodes layer by layer using a queue. Finds the shortest path in an unweighted graph.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Shortest path / minimum steps in an unweighted graph or grid</li>
+    <li>Level-by-level graph exploration</li>
+    <li>Rotting Oranges, 01-Matrix type problems</li>
+    <li>Word Ladder (transform one word to another)</li>
+  </ul></div>
+
+  <h3>Diagram — BFS frontier expansion</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A((A\nstart)):::start --> B((B\nlevel 1)):::l1
+    A --> C((C\nlevel 1)):::l1
+    B --> D((D\nlevel 2)):::l2
+    B --> E((E\nlevel 2)):::l2
+    C --> F((F\nlevel 2)):::l2
+    classDef start fill:#22c55e,stroke:#16a34a,color:#000
+    classDef l1 fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef l2 fill:#f97316,stroke:#ea580c,color:#000
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">Queue: [A]
+Dequeue A (dist=0) → enqueue neighbors B, C   visited={A}
+Dequeue B (dist=1) → enqueue D, E             visited={A,B}
+Dequeue C (dist=1) → enqueue F                visited={A,B,C}
+Dequeue D (dist=2) → no unvisited neighbors   ...
+First time we reach a target node = shortest path</div>
+  </div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Enqueue start node, mark visited.</strong></li>
+    <li>While queue is not empty: <strong>dequeue a node.</strong></li>
+    <li>For each unvisited neighbor: <strong>mark visited, enqueue, record distance.</strong></li>
+    <li>The first time you reach the target = shortest distance.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// BFS on adjacency list
+function bfs(graph: Map&lt;string, string[]&gt;, start: string): Map&lt;string, number&gt; {
+  const dist = new Map&lt;string, number&gt;([[start, 0]]);
+  const queue: string[] = [start];
+
+  while (queue.length) {
+    const node = queue.shift()!;
+    for (const neighbor of graph.get(node) ?? []) {
+      if (!dist.has(neighbor)) {
+        dist.set(neighbor, dist.get(node)! + 1);
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  return dist; // dist.get(target) = shortest path length
+}
+
+// BFS on a 2D grid (common for island/matrix problems)
+function bfsGrid(grid: number[][], startR: number, startC: number): number {
+  const rows = grid.length, cols = grid[0].length;
+  const visited = Array.from({ length: rows }, () =&gt; new Array(cols).fill(false));
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+  const queue: [number, number, number][] = [[startR, startC, 0]];
+  visited[startR][startC] = true;
+  let steps = 0;
+
+  while (queue.length) {
+    const [r, c, dist] = queue.shift()!;
+    steps = dist;
+    for (const [dr, dc] of dirs) {
+      const nr = r + dr, nc = c + dc;
+      if (nr &gt;= 0 && nr &lt; rows && nc &gt;= 0 && nc &lt; cols
+          && !visited[nr][nc] && grid[nr][nc] !== 0) {
+        visited[nr][nc] = true;
+        queue.push([nr, nc, dist + 1]);
+      }
+    }
+  }
+
+  return steps;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Rotting Oranges</div>
+      <div class="problem-insight">Multi-source BFS — enqueue all rotten oranges at step 0; spread outward each step.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Number of Islands</div>
+      <div class="problem-insight">BFS/DFS from each unvisited '1'; mark visited cells. Count how many times you start a traversal.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Word Ladder</div>
+      <div class="problem-insight">BFS where each node is a word; neighbors = words differing by 1 char. First time reaching target = min steps.</div></div>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="graph-dfs">
+  <div class="algo-name">Graph DFS</div>
+  <div class="algo-tagline">Explore as deep as possible down one path before backtracking. Use recursion or an explicit stack.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Count connected components</li>
+    <li>Detect cycles in a directed or undirected graph</li>
+    <li>Topological sort (course scheduling)</li>
+    <li>Find all paths from source to destination</li>
+    <li>Flood fill / island problems</li>
+  </ul></div>
+
+  <h3>Diagram — DFS traversal order</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A((A)):::current --> B((B)):::path
+    A --> C((C)):::unvisited
+    B --> D((D)):::path
+    B --> E((E)):::unvisited
+    D --> F((F)):::path
+    classDef current fill:#22c55e,stroke:#16a34a,color:#000
+    classDef path fill:#f97316,stroke:#ea580c,color:#000
+    classDef unvisited fill:#475569,stroke:#64748b,color:#e2e8f0
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">DFS order from A: A → B → D → F (backtrack) → (backtrack) → E (backtrack) → C
+visited set prevents revisiting nodes in cycles</div>
+  </div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Call DFS(node).</strong> Mark node visited.</li>
+    <li>For each unvisited neighbor: <strong>recurse DFS(neighbor).</strong></li>
+    <li>After all neighbors: <strong>backtrack</strong> (implicit in recursion).</li>
+    <li>Call DFS on each unvisited node in the graph to handle <strong>disconnected components.</strong></li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Count connected components
+function countComponents(n: number, edges: number[][]): number {
+  const adj = new Map&lt;number, number[]&gt;();
+  for (let i = 0; i &lt; n; i++) adj.set(i, []);
+  for (const [a, b] of edges) {
+    adj.get(a)!.push(b);
+    adj.get(b)!.push(a);
+  }
+
+  const visited = new Set&lt;number&gt;();
+  let components = 0;
+
+  function dfs(node: number): void {
+    visited.add(node);
+    for (const neighbor of adj.get(node) ?? []) {
+      if (!visited.has(neighbor)) dfs(neighbor);
+    }
+  }
+
+  for (let i = 0; i &lt; n; i++) {
+    if (!visited.has(i)) { dfs(i); components++; }
+  }
+
+  return components;
+}
+
+// DFS on 2D grid (flood fill / island sink)
+function dfsGrid(grid: string[][], r: number, c: number): void {
+  if (r &lt; 0 || r &gt;= grid.length || c &lt; 0 || c &gt;= grid[0].length) return;
+  if (grid[r][c] !== '1') return;
+  grid[r][c] = '0'; // mark visited by mutating
+  dfsGrid(grid, r+1, c); dfsGrid(grid, r-1, c);
+  dfsGrid(grid, r, c+1); dfsGrid(grid, r, c-1);
+}
+
+// Course schedule — cycle detection (0=unvisited, 1=visiting, 2=done)
+function canFinish(numCourses: number, prerequisites: number[][]): boolean {
+  const adj = Array.from({ length: numCourses }, () =&gt; [] as number[]);
+  for (const [a, b] of prerequisites) adj[b].push(a);
+  const state = new Array(numCourses).fill(0);
+
+  function dfs(node: number): boolean {
+    if (state[node] === 1) return false; // cycle!
+    if (state[node] === 2) return true;  // already processed
+    state[node] = 1;
+    for (const next of adj[node]) {
+      if (!dfs(next)) return false;
+    }
+    state[node] = 2;
+    return true;
+  }
+
+  for (let i = 0; i &lt; numCourses; i++) {
+    if (!dfs(i)) return false;
+  }
+  return true;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Number of Islands</div>
+      <div class="problem-insight">DFS from each '1'; sink visited land to '0'. Count traversal starts.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Course Schedule</div>
+      <div class="problem-insight">Cycle detection in directed graph: 3-color DFS (unvisited=0 / visiting=1 / done=2).</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Clone Graph</div>
+      <div class="problem-insight">DFS with a visited map (original node → cloned node) to handle cycles.</div></div>
+    </div>
+  </div>
+</div>
 <div class="tab-content" id="binary-search"><!-- CONTENT: binary-search --></div>
 <div class="tab-content" id="sorting"><!-- CONTENT: sorting --></div>
 <div class="tab-content" id="mono-stack"><!-- CONTENT: mono-stack --></div>
