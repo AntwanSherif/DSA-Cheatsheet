@@ -1807,7 +1807,137 @@ function minDistance(word1: string, word2: string): number {
     </div>
   </div>
 </div>
-<div class="tab-content" id="backtracking"><!-- CONTENT: backtracking --></div>
+<div class="tab-content" id="backtracking">
+  <div class="algo-name">Backtracking</div>
+  <div class="algo-tagline">Build a solution incrementally. At each step, try a choice; if it leads to a dead end, undo it (backtrack) and try the next choice.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Generate all subsets, permutations, or combinations</li>
+    <li>Constraint satisfaction (N-Queens, Sudoku)</li>
+    <li>Find all paths in a graph satisfying a condition</li>
+    <li>Word search on a grid</li>
+    <li>Key signal: "find all possible..." or "generate all..."</li>
+  </ul></div>
+
+  <h3>Diagram — Subsets of [1, 2, 3] decision tree</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    Root["[ ]"]:::root
+    Root -->|"add 1"| A["[1]"]:::branch
+    Root -->|"add 2"| B["[2]"]:::branch
+    Root -->|"add 3"| C["[3]"]:::branch
+    A -->|"add 2"| D["[1,2]"]:::branch2
+    A -->|"add 3"| E["[1,3]"]:::branch2
+    B -->|"add 3"| F["[2,3]"]:::branch2
+    D -->|"add 3"| G["[1,2,3]"]:::leaf
+    classDef root fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef branch fill:#f97316,stroke:#ea580c,color:#000
+    classDef branch2 fill:#a855f7,stroke:#9333ea,color:#fff
+    classDef leaf fill:#22c55e,stroke:#16a34a,color:#000
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">At each node: CHOOSE (add element) → RECURSE → UNCHOOSE (remove element)
+All 8 subsets: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]
+
+Pruning: skip invalid choices early to avoid dead branches.
+  Example (Combination Sum): if remaining &lt; 0, return immediately.</div>
+  </div>
+
+  <h3>How it works — The universal template</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Base case:</strong> When is the current path a valid complete solution? Add to results.</li>
+    <li><strong>Loop over choices:</strong> For each valid choice at the current step...</li>
+    <li><strong>Choose:</strong> Add the choice to the current path.</li>
+    <li><strong>Recurse:</strong> Call backtrack with updated state.</li>
+    <li><strong>Unchoose:</strong> Remove the choice (restore state for the next iteration).</li>
+    <li><strong>Prune early:</strong> Skip choices that cannot lead to a valid solution (e.g., sum &gt; target).</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Subsets — add path to results at every call
+function subsets(nums: number[]): number[][] {
+  const results: number[][] = [];
+
+  function bt(start: number, path: number[]): void {
+    results.push([...path]); // every prefix is a valid subset
+
+    for (let i = start; i &lt; nums.length; i++) {
+      path.push(nums[i]);          // CHOOSE
+      bt(i + 1, path);             // RECURSE (i+1 avoids reuse)
+      path.pop();                  // UNCHOOSE
+    }
+  }
+
+  bt(0, []);
+  return results;
+}
+
+// Permutations — use visited array instead of start index
+function permute(nums: number[]): number[][] {
+  const results: number[][] = [];
+  const used = new Array(nums.length).fill(false);
+
+  function bt(path: number[]): void {
+    if (path.length === nums.length) { results.push([...path]); return; }
+
+    for (let i = 0; i &lt; nums.length; i++) {
+      if (used[i]) continue;
+      used[i] = true;
+      path.push(nums[i]);   // CHOOSE
+      bt(path);              // RECURSE
+      path.pop();            // UNCHOOSE
+      used[i] = false;
+    }
+  }
+
+  bt([]);
+  return results;
+}
+
+// Combination Sum — elements can be reused; prune if remaining &lt; 0
+function combinationSum(candidates: number[], target: number): number[][] {
+  const results: number[][] = [];
+
+  function bt(start: number, path: number[], remaining: number): void {
+    if (remaining === 0) { results.push([...path]); return; }
+    if (remaining &lt; 0) return; // PRUNE
+
+    for (let i = start; i &lt; candidates.length; i++) {
+      path.push(candidates[i]);
+      bt(i, path, remaining - candidates[i]); // i (not i+1) allows reuse
+      path.pop();
+    }
+  }
+
+  bt(0, [], target);
+  return results;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Subsets</div>
+      <div class="problem-insight">Add path to results at every call (before looping). Use start index to avoid duplicates.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Permutations</div>
+      <div class="problem-insight">No start index — use a used[] boolean array so each element is picked once per path.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Combination Sum</div>
+      <div class="problem-insight">Same element can be reused — pass i (not i+1). Prune when remaining &lt; 0.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Word Search</div>
+      <div class="problem-insight">DFS/backtrack on grid — mark cell visited (e.g., replace with '#'), recurse 4 directions, restore on return.</div></div>
+    </div>
+  </div>
+</div>
 
 <script>
   mermaid.initialize({
