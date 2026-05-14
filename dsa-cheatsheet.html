@@ -193,9 +193,256 @@
   <button class="tab-btn" data-tab="backtracking">Backtracking</button>
 </div>
 
-<div class="tab-content active" id="two-pointers"><!-- CONTENT: two-pointers --></div>
-<div class="tab-content" id="sliding-window"><!-- CONTENT: sliding-window --></div>
-<div class="tab-content" id="prefix-sums"><!-- CONTENT: prefix-sums --></div>
+<div class="tab-content active" id="two-pointers">
+  <div class="algo-name">Two Pointers</div>
+  <div class="algo-tagline">Eliminate O(n²) nested loops by moving two indices through an array simultaneously.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Sorted array — find a pair that sums to a target</li>
+    <li>Check if a string is a palindrome</li>
+    <li>Merge two sorted arrays in-place</li>
+    <li>Remove duplicates / move zeroes in-place</li>
+    <li>Find container with most water</li>
+  </ul></div>
+
+  <h3>Diagram — Two Sum II</h3>
+  <div class="diagram-box"><div class="ascii-diagram">arr    =  [ 1,  3,  5,  7,  9, 11 ]   target = 10
+indices=    0   1   2   3   4   5
+
+Step 1:   [L=0]               [R=5]   sum = 1+11 = 12  > target → R--
+Step 2:   [L=0]           [R=4]       sum = 1+9  = 10  == target ✓ → return [0, 4]
+
+Rule: sum &lt; target → L++  (need a bigger number on the left)
+      sum &gt; target → R--  (need a smaller number on the right)
+      sum == target → found!</div></div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Place L at index 0, R at last index.</strong></li>
+    <li><strong>Compute sum</strong> = arr[L] + arr[R].</li>
+    <li>If sum === target → return [L, R].</li>
+    <li>If sum &lt; target → L++ (need larger value).</li>
+    <li>If sum &gt; target → R-- (need smaller value).</li>
+    <li>Repeat until L &ge; R.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">function twoSumSorted(nums: number[], target: number): number[] {
+  let left = 0, right = nums.length - 1;
+
+  while (left < right) {
+    const sum = nums[left] + nums[right];
+    if (sum === target) return [left, right];
+    else if (sum < target) left++;
+    else right--;
+  }
+
+  return []; // no pair found
+}
+
+// Same-direction variant: remove duplicates in-place
+function removeDuplicates(nums: number[]): number {
+  let slow = 0;
+  for (let fast = 1; fast < nums.length; fast++) {
+    if (nums[fast] !== nums[slow]) {
+      slow++;
+      nums[slow] = nums[fast];
+    }
+  }
+  return slow + 1;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Valid Palindrome</div>
+      <div class="problem-insight">L and R move inward comparing chars; skip non-alphanumeric.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Two Sum II – Input Array Is Sorted</div>
+      <div class="problem-insight">Classic two-pointer on sorted array — the template above verbatim.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Container With Most Water</div>
+      <div class="problem-insight">Move the pointer with the shorter height; max area = min(h[L],h[R]) × (R−L).</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">3Sum</div>
+      <div class="problem-insight">Fix one element with an outer loop; run two-pointer on the rest. Skip duplicates.</div></div>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="sliding-window">
+  <div class="algo-name">Sliding Window</div>
+  <div class="algo-tagline">Maintain a contiguous window; expand right, shrink left when a constraint is violated.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Longest/shortest subarray or substring satisfying a condition</li>
+    <li>Maximum sum of a fixed-size window</li>
+    <li>Minimum window containing all required characters</li>
+    <li>Substring without repeating characters</li>
+  </ul></div>
+
+  <h3>Diagram — Max sum window of size k=3</h3>
+  <div class="diagram-box"><div class="ascii-diagram">arr = [ 2,  1,  5,  1,  3,  2 ]   k = 3
+
+       [L=0  →  R=2]           window=[2,1,5]  sum=8
+            [L=1  →  R=3]      window=[1,5,1]  sum=7
+                 [L=2  →  R=4] window=[5,1,3]  sum=9  ← max ✓
+                      [L=3 → R=5] window=[1,3,2] sum=6
+
+Variable window (e.g. longest substring):
+→ expand R each step
+→ shrink L when constraint broken (duplicate found, sum too large, etc.)</div></div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Start with L=0, R=0.</strong> Expand R each iteration.</li>
+    <li><strong>Track state</strong> inside the window (sum, char counts, etc.).</li>
+    <li>If constraint is <strong>violated</strong> → shrink by advancing L until valid again.</li>
+    <li>At each step, <strong>update the answer</strong> (max/min window size, etc.).</li>
+    <li>Fixed window: slide L and R together, keeping window size = k.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Variable window — longest substring without repeating characters
+function lengthOfLongestSubstring(s: string): number {
+  const lastSeen = new Map&lt;string, number&gt;(); // char → last index seen
+  let left = 0, maxLen = 0;
+
+  for (let right = 0; right &lt; s.length; right++) {
+    const ch = s[right];
+    // If char was seen inside current window, shrink from left
+    if (lastSeen.has(ch) && lastSeen.get(ch)! &gt;= left) {
+      left = lastSeen.get(ch)! + 1;
+    }
+    lastSeen.set(ch, right);
+    maxLen = Math.max(maxLen, right - left + 1);
+  }
+
+  return maxLen;
+}
+
+// Fixed window — max sum subarray of size k
+function maxSumFixed(nums: number[], k: number): number {
+  let windowSum = nums.slice(0, k).reduce((a, b) =&gt; a + b, 0);
+  let max = windowSum;
+
+  for (let i = k; i &lt; nums.length; i++) {
+    windowSum += nums[i] - nums[i - k]; // slide: add new, remove old
+    max = Math.max(max, windowSum);
+  }
+
+  return max;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Maximum Average Subarray I</div>
+      <div class="problem-insight">Fixed window of size k — use the fixed-window template above.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Longest Substring Without Repeating Characters</div>
+      <div class="problem-insight">Variable window — shrink when duplicate enters; track last-seen index per char.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Minimum Window Substring</div>
+      <div class="problem-insight">Expand until all required chars covered; shrink to minimize; track counts with a map.</div></div>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="prefix-sums">
+  <div class="algo-name">Prefix Sums</div>
+  <div class="algo-tagline">Precompute cumulative sums so any range sum query is answered in O(1).</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Range sum queries on a static array</li>
+    <li>Count subarrays whose sum equals k</li>
+    <li>Find if a subarray with a given property exists</li>
+    <li>2D matrix region sum queries</li>
+  </ul></div>
+
+  <h3>Diagram</h3>
+  <div class="diagram-box"><div class="ascii-diagram">arr    =  [  1,   2,   3,   4,   5  ]
+index  =     0    1    2    3    4
+
+prefix =  [  0,   1,   3,   6,  10,  15 ]
+index  =     0    1    2    3    4    5
+
+Query: sum(i=1, j=3) = prefix[j+1] - prefix[i]
+                     = prefix[4]   - prefix[1]
+                     = 10 - 1 = 9  ✓  (2+3+4 = 9)
+
+Key insight: prefix[i] = sum of all elements before index i
+             rangeSum(i,j) = prefix[j+1] - prefix[i]</div></div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Build prefix array</strong> of size n+1. prefix[0] = 0.</li>
+    <li>prefix[i+1] = prefix[i] + arr[i] for each i.</li>
+    <li><strong>Range query</strong>: sum(i, j) = prefix[j+1] - prefix[i]. O(1).</li>
+    <li>For <em>subarray sum = k</em>: use a hashmap of prefix sums seen so far. At each index, check if (currentSum − k) was seen before.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Build prefix sum array
+function buildPrefix(nums: number[]): number[] {
+  const prefix = [0];
+  for (const n of nums) {
+    prefix.push(prefix[prefix.length - 1] + n);
+  }
+  return prefix;
+}
+
+function rangeSum(prefix: number[], i: number, j: number): number {
+  return prefix[j + 1] - prefix[i];
+}
+
+// Count subarrays with sum === k  (Medium pattern)
+function subarraySum(nums: number[], k: number): number {
+  const prefixCounts = new Map([[0, 1]]); // prefixSum → frequency
+  let currentSum = 0, result = 0;
+
+  for (const n of nums) {
+    currentSum += n;
+    // How many previous prefixes, when subtracted, give sum = k?
+    result += prefixCounts.get(currentSum - k) ?? 0;
+    prefixCounts.set(currentSum, (prefixCounts.get(currentSum) ?? 0) + 1);
+  }
+
+  return result;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Range Sum Query – Immutable</div>
+      <div class="problem-insight">Direct application — build prefix once, answer queries in O(1).</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Subarray Sum Equals K</div>
+      <div class="problem-insight">prefix + hashmap pattern: count how many times (currentSum − k) appeared before.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Product of Array Except Self</div>
+      <div class="problem-insight">Build prefix product left-to-right, then suffix product right-to-left; multiply at each index.</div></div>
+    </div>
+  </div>
+</div>
 <div class="tab-content" id="hash-maps"><!-- CONTENT: hash-maps --></div>
 <div class="tab-content" id="fast-slow"><!-- CONTENT: fast-slow --></div>
 <div class="tab-content" id="ll-reversal"><!-- CONTENT: ll-reversal --></div>
