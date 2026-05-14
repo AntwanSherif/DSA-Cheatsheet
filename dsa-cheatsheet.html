@@ -231,10 +231,10 @@ Rule: sum &lt; target → L++  (need a bigger number on the left)
   <div class="code-block"><pre><code class="language-typescript">function twoSumSorted(nums: number[], target: number): number[] {
   let left = 0, right = nums.length - 1;
 
-  while (left < right) {
+  while (left &lt; right) {
     const sum = nums[left] + nums[right];
     if (sum === target) return [left, right];
-    else if (sum < target) left++;
+    else if (sum &lt; target) left++;
     else right--;
   }
 
@@ -244,7 +244,7 @@ Rule: sum &lt; target → L++  (need a bigger number on the left)
 // Same-direction variant: remove duplicates in-place
 function removeDuplicates(nums: number[]): number {
   let slow = 0;
-  for (let fast = 1; fast < nums.length; fast++) {
+  for (let fast = 1; fast &lt; nums.length; fast++) {
     if (nums[fast] !== nums[slow]) {
       slow++;
       nums[slow] = nums[fast];
