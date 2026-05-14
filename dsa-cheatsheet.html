@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <style>
   :root {
     --bg: #0f172a;
@@ -150,6 +150,7 @@
   }
   .diff-easy { background: #14532d; color: var(--green); }
   .diff-medium { background: #78350f; color: var(--yellow); }
+  .diff-hard { background: #450a0a; color: var(--red); }
   .problem-name { font-weight: 600; color: var(--text); }
   .problem-insight { color: var(--text-muted); font-size: 13px; margin-top: 3px; }
 
@@ -229,10 +230,12 @@
   const renderedTabs = new Set();
 
   function showTab(tabId) {
+    const btn = document.querySelector(`[data-tab="${tabId}"]`);
+    const tab = document.getElementById(tabId);
+    if (!btn || !tab) return;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-    const tab = document.getElementById(tabId);
+    btn.classList.add('active');
     tab.classList.add('active');
     if (!renderedTabs.has(tabId)) {
       renderedTabs.add(tabId);
@@ -245,10 +248,8 @@
     btn.addEventListener('click', () => showTab(btn.dataset.tab));
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    hljs.highlightAll();
-    showTab('two-pointers');
-  });
+  hljs.highlightAll();
+  showTab('two-pointers');
 </script>
 </body>
 </html>
