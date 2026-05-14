@@ -709,9 +709,315 @@ function reverseBetween(head: ListNode | null, left: number, right: number): Lis
     </div>
   </div>
 </div>
-<div class="tab-content" id="tree-dfs"><!-- CONTENT: tree-dfs --></div>
-<div class="tab-content" id="tree-bfs"><!-- CONTENT: tree-bfs --></div>
-<div class="tab-content" id="bst"><!-- CONTENT: bst --></div>
+<div class="tab-content" id="tree-dfs">
+  <div class="algo-name">Tree DFS</div>
+  <div class="algo-tagline">Explore as deep as possible before backtracking. Use recursion (call stack) or an explicit stack.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Compute height / depth of a tree</li>
+    <li>Path sum problems (root-to-leaf)</li>
+    <li>Inorder traversal (gives sorted output for BST)</li>
+    <li>Validate BST, invert binary tree, serialize tree</li>
+    <li>Any problem asking about subtree properties</li>
+  </ul></div>
+
+  <h3>Diagram — Traversal orders on the same tree</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A((4)):::root --> B((2)):::left
+    A --> C((6)):::right
+    B --> D((1)):::leaf
+    B --> E((3)):::leaf
+    C --> F((5)):::leaf
+    C --> G((7)):::leaf
+    classDef root fill:#eab308,stroke:#ca8a04,color:#000
+    classDef left fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef right fill:#a855f7,stroke:#9333ea,color:#fff
+    classDef leaf fill:#475569,stroke:#64748b,color:#e2e8f0
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">Inorder   (L → Root → R): 1, 2, 3, 4, 5, 6, 7  ← sorted for BST
+Preorder  (Root → L → R): 4, 2, 1, 3, 6, 5, 7  ← good for tree copy/serialize
+Postorder (L → R → Root): 1, 3, 2, 5, 7, 6, 4  ← good for deletion, height</div>
+  </div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Base case:</strong> if node is null, return (or return 0, false, [], etc.)</li>
+    <li><strong>Recurse left</strong> subtree.</li>
+    <li><strong>Process node</strong> (preorder: before recursion; postorder: after; inorder: between).</li>
+    <li><strong>Recurse right</strong> subtree.</li>
+    <li>Return combined result up the call stack.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">class TreeNode {
+  val: number;
+  left: TreeNode | null = null;
+  right: TreeNode | null = null;
+  constructor(val: number) { this.val = val; }
+}
+
+// Inorder (left → node → right)
+function inorder(root: TreeNode | null): number[] {
+  if (!root) return [];
+  return [...inorder(root.left), root.val, ...inorder(root.right)];
+}
+
+// Max depth (postorder — compute children first)
+function maxDepth(root: TreeNode | null): number {
+  if (!root) return 0;
+  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+}
+
+// Path sum — does any root-to-leaf path sum to target?
+function hasPathSum(root: TreeNode | null, target: number): boolean {
+  if (!root) return false;
+  if (!root.left && !root.right) return root.val === target; // leaf
+  return hasPathSum(root.left, target - root.val) ||
+         hasPathSum(root.right, target - root.val);
+}
+
+// Iterative DFS with explicit stack (preorder)
+function dfsIterative(root: TreeNode | null): number[] {
+  const result: number[] = [], stack: TreeNode[] = [];
+  if (root) stack.push(root);
+  while (stack.length) {
+    const node = stack.pop()!;
+    result.push(node.val);
+    if (node.right) stack.push(node.right); // push right first → left pops first
+    if (node.left) stack.push(node.left);
+  }
+  return result;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Maximum Depth of Binary Tree</div>
+      <div class="problem-insight">1 + max(depth(left), depth(right)) — classic DFS recursion.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Invert Binary Tree</div>
+      <div class="problem-insight">Swap left and right children at every node recursively.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Path Sum</div>
+      <div class="problem-insight">Subtract node value as you recurse; return true at a leaf when remainder = 0.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Binary Tree Right Side View</div>
+      <div class="problem-insight">DFS tracking depth; the last node visited at each depth is visible from the right.</div></div>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="tree-bfs">
+  <div class="algo-name">Tree BFS</div>
+  <div class="algo-tagline">Visit nodes level by level using a queue. Guarantees shortest path in unweighted trees.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Level-order traversal (process nodes level by level)</li>
+    <li>Minimum depth of a binary tree</li>
+    <li>Connect nodes at the same level</li>
+    <li>Zigzag level order traversal</li>
+    <li>Any "closest" or "nearest" question on a tree</li>
+  </ul></div>
+
+  <h3>Diagram — Level-by-level traversal</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A((1)):::l0 --> B((2)):::l1
+    A --> C((3)):::l1
+    B --> D((4)):::l2
+    B --> E((5)):::l2
+    C --> F((6)):::l2
+    C --> G((7)):::l2
+    classDef l0 fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef l1 fill:#22c55e,stroke:#16a34a,color:#000
+    classDef l2 fill:#f97316,stroke:#ea580c,color:#000
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">Queue evolution:
+Start:     [1]
+Process 1: enqueue children → [2, 3]
+Process 2: enqueue children → [3, 4, 5]
+Process 3: enqueue children → [4, 5, 6, 7]
+...
+
+Result by level: [[1], [2,3], [4,5,6,7]]</div>
+  </div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Enqueue root.</strong></li>
+    <li>While queue is not empty: <strong>snapshot queue length</strong> — that's the current level size.</li>
+    <li>Dequeue exactly that many nodes, process each, <strong>enqueue their children.</strong></li>
+    <li>After processing all nodes at this level, move to the next.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Level-order traversal — returns array of levels
+function levelOrder(root: TreeNode | null): number[][] {
+  if (!root) return [];
+  const result: number[][] = [];
+  const queue: TreeNode[] = [root];
+
+  while (queue.length) {
+    const levelSize = queue.length; // snapshot: all nodes on this level
+    const level: number[] = [];
+
+    for (let i = 0; i &lt; levelSize; i++) {
+      const node = queue.shift()!;
+      level.push(node.val);
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+
+    result.push(level);
+  }
+
+  return result;
+}
+
+// Minimum depth (first leaf encountered is at minimum depth)
+function minDepth(root: TreeNode | null): number {
+  if (!root) return 0;
+  const queue: [TreeNode, number][] = [[root, 1]];
+
+  while (queue.length) {
+    const [node, depth] = queue.shift()!;
+    if (!node.left && !node.right) return depth; // first leaf = min depth
+    if (node.left) queue.push([node.left, depth + 1]);
+    if (node.right) queue.push([node.right, depth + 1]);
+  }
+
+  return 0;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Binary Tree Level Order Traversal</div>
+      <div class="problem-insight">Direct template application — snapshot queue length per level.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Minimum Depth of Binary Tree</div>
+      <div class="problem-insight">BFS ensures the first leaf you hit is the shallowest one.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Binary Tree Zigzag Level Order Traversal</div>
+      <div class="problem-insight">Same BFS; alternate push direction (left-to-right vs right-to-left) per level using a flag.</div></div>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="bst">
+  <div class="algo-name">BST (Binary Search Tree)</div>
+  <div class="algo-tagline">Left subtree &lt; node &lt; right subtree. Inorder traversal yields a sorted sequence.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Validate that a binary tree is a valid BST</li>
+    <li>Find kth smallest/largest element</li>
+    <li>Search, insert, or delete in O(log n) average</li>
+    <li>Find lowest common ancestor of two BST nodes</li>
+    <li>Convert sorted array → BST or BST → sorted array</li>
+  </ul></div>
+
+  <h3>Diagram — BST search path</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A((8)):::visited --> B((3)):::visited
+    A --> C((10)):::unvisited
+    B --> D((1)):::unvisited
+    B --> E((6)):::target
+    E --> F((4)):::unvisited
+    E --> G((7)):::unvisited
+    classDef visited fill:#eab308,stroke:#ca8a04,color:#000
+    classDef target fill:#22c55e,stroke:#16a34a,color:#000
+    classDef unvisited fill:#475569,stroke:#64748b,color:#e2e8f0
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">Searching for 6:
+  root=8: 6 &lt; 8  → go left
+  node=3: 6 &gt; 3  → go right
+  node=6: 6 == 6 → found ✓
+
+BST Invariant: for every node N,
+  ALL nodes in left subtree  &lt; N.val
+  ALL nodes in right subtree &gt; N.val</div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Search
+function searchBST(root: TreeNode | null, val: number): TreeNode | null {
+  if (!root || root.val === val) return root;
+  return val &lt; root.val
+    ? searchBST(root.left, val)
+    : searchBST(root.right, val);
+}
+
+// Validate BST — pass min/max bounds down the tree
+function isValidBST(
+  root: TreeNode | null,
+  min = -Infinity,
+  max = Infinity
+): boolean {
+  if (!root) return true;
+  if (root.val &lt;= min || root.val &gt;= max) return false;
+  return isValidBST(root.left, min, root.val) &amp;&amp;
+         isValidBST(root.right, root.val, max);
+}
+
+// Kth smallest — inorder gives sorted order
+function kthSmallest(root: TreeNode, k: number): number {
+  const stack: TreeNode[] = [];
+  let curr: TreeNode | null = root;
+
+  while (curr || stack.length) {
+    while (curr) { stack.push(curr); curr = curr.left; }
+    curr = stack.pop()!;
+    if (--k === 0) return curr.val;
+    curr = curr.right;
+  }
+
+  return -1;
+}
+
+// Lowest Common Ancestor
+function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNode {
+  if (p.val &lt; root.val &amp;&amp; q.val &lt; root.val) return lowestCommonAncestor(root.left!, p, q);
+  if (p.val &gt; root.val &amp;&amp; q.val &gt; root.val) return lowestCommonAncestor(root.right!, p, q);
+  return root; // they diverge here — root is LCA
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Validate Binary Search Tree</div>
+      <div class="problem-insight">Pass min/max bounds down; a node is invalid if it falls outside its permitted range.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Kth Smallest Element in a BST</div>
+      <div class="problem-insight">Iterative inorder (use a stack); the kth node popped is the answer.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Lowest Common Ancestor of a BST</div>
+      <div class="problem-insight">If both nodes are on same side, recurse that way. Otherwise current node is LCA.</div></div>
+    </div>
+  </div>
+</div>
 <div class="tab-content" id="graph-bfs"><!-- CONTENT: graph-bfs --></div>
 <div class="tab-content" id="graph-dfs"><!-- CONTENT: graph-dfs --></div>
 <div class="tab-content" id="binary-search"><!-- CONTENT: binary-search --></div>
