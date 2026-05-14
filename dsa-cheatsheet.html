@@ -443,9 +443,272 @@ function subarraySum(nums: number[], k: number): number {
     </div>
   </div>
 </div>
-<div class="tab-content" id="hash-maps"><!-- CONTENT: hash-maps --></div>
-<div class="tab-content" id="fast-slow"><!-- CONTENT: fast-slow --></div>
-<div class="tab-content" id="ll-reversal"><!-- CONTENT: ll-reversal --></div>
+<div class="tab-content" id="hash-maps">
+  <div class="algo-name">Hash Maps &amp; Sets</div>
+  <div class="algo-tagline">O(1) average insert/lookup. The single most-used tool to eliminate nested loops.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Count element frequencies</li>
+    <li>"Have I seen this before?" — existence check in O(1)</li>
+    <li>Find complement: target − current (Two Sum)</li>
+    <li>Group elements by a computed key (anagrams)</li>
+    <li>Deduplicate or track unique elements</li>
+  </ul></div>
+
+  <h3>Diagram — Three core patterns</h3>
+  <div class="diagram-box"><div class="ascii-diagram">PATTERN 1: Frequency count
+  "aabbc" → { a:2, b:2, c:1 }
+  Use: anagram check, character counting
+
+PATTERN 2: Complement lookup  (Two Sum)
+  nums=[2,7,11,15], target=9
+  i=0: need 9-2=7, not in map → store {2:0}
+  i=1: need 9-7=2, found at map[2]=0 → return [0,1] ✓
+
+PATTERN 3: Grouping by key
+  ["eat","tea","tan","ate","nat","bat"]
+  sort each word → key:
+  "aet"→[eat,tea,ate], "ant"→[tan,nat], "abt"→[bat]</div></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Pattern 1: Frequency count
+const freq = new Map&lt;string, number&gt;();
+for (const ch of s) {
+  freq.set(ch, (freq.get(ch) ?? 0) + 1);
+}
+
+// Pattern 2: Complement lookup (Two Sum)
+function twoSum(nums: number[], target: number): number[] {
+  const seen = new Map&lt;number, number&gt;(); // value → index
+  for (let i = 0; i &lt; nums.length; i++) {
+    const complement = target - nums[i];
+    if (seen.has(complement)) return [seen.get(complement)!, i];
+    seen.set(nums[i], i);
+  }
+  return [];
+}
+
+// Pattern 3: Group by computed key
+function groupAnagrams(strs: string[]): string[][] {
+  const groups = new Map&lt;string, string[]&gt;();
+  for (const word of strs) {
+    const key = [...word].sort().join('');
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(word);
+  }
+  return [...groups.values()];
+}
+
+// Set: deduplicate / existence check
+const seen = new Set&lt;number&gt;();
+for (const n of nums) {
+  if (seen.has(n)) return true; // duplicate found
+  seen.add(n);
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Two Sum</div>
+      <div class="problem-insight">Complement lookup — store value→index in map as you iterate.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Contains Duplicate</div>
+      <div class="problem-insight">Add to Set; return true the moment you try to add a value already present.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Group Anagrams</div>
+      <div class="problem-insight">Sort each word to get a canonical key; group by key using a Map.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Longest Consecutive Sequence</div>
+      <div class="problem-insight">Put all nums in a Set; for each num that is a sequence start (num−1 not in set), walk forward counting.</div></div>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="fast-slow">
+  <div class="algo-name">Fast &amp; Slow Pointers</div>
+  <div class="algo-tagline">Two pointers at different speeds: slow moves 1 step, fast moves 2. They meet inside a cycle.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Detect a cycle in a linked list</li>
+    <li>Find the middle of a linked list</li>
+    <li>Find the start of a cycle</li>
+    <li>Happy number (abstract "next" function creates an implicit list)</li>
+  </ul></div>
+
+  <h3>Diagram — Cycle detection</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph LR
+    n1((1)):::visited --> n2((2)):::visited --> n3((3)):::slow --> n4((4)):::visited --> n5((5)):::fast --> n6((6)):::visited --> n3
+    classDef visited fill:#475569,stroke:#64748b,color:#e2e8f0
+    classDef slow fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef fast fill:#f97316,stroke:#ea580c,color:#000
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">After several steps, slow (blue) and fast (orange) meet inside the cycle.
+No cycle → fast reaches null first.
+
+Find middle: when fast reaches end, slow is at the middle.
+  List: 1→2→3→4→5
+  Steps: slow=1,fast=1 → slow=2,fast=3 → slow=3,fast=5(end)
+  slow=3 is the middle ✓</div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">class ListNode {
+  val: number;
+  next: ListNode | null = null;
+  constructor(val: number) { this.val = val; }
+}
+
+// Detect cycle
+function hasCycle(head: ListNode | null): boolean {
+  let slow = head, fast = head;
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next;
+    fast = fast.next.next;
+    if (slow === fast) return true;
+  }
+  return false;
+}
+
+// Find middle node (slow is at middle when fast exhausts list)
+function middleNode(head: ListNode): ListNode {
+  let slow: ListNode = head, fast: ListNode = head;
+  while (fast.next !== null && fast.next.next !== null) {
+    slow = slow.next!;
+    fast = fast.next.next;
+  }
+  return slow;
+}
+
+// Happy number (treat digit-sum as a "next" pointer)
+function isHappy(n: number): boolean {
+  const digitSquareSum = (x: number) =&gt;
+    String(x).split('').reduce((s, d) =&gt; s + Number(d) ** 2, 0);
+  let slow = n, fast = n;
+  do {
+    slow = digitSquareSum(slow);
+    fast = digitSquareSum(digitSquareSum(fast));
+  } while (slow !== fast);
+  return slow === 1;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Linked List Cycle</div>
+      <div class="problem-insight">Return true if slow === fast at any point; false if fast hits null.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Middle of the Linked List</div>
+      <div class="problem-insight">Return slow when fast.next or fast.next.next is null.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Happy Number</div>
+      <div class="problem-insight">Cycle in digit-square-sum sequence → not happy. Slow/fast on the abstract "next" function.</div></div>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="ll-reversal">
+  <div class="algo-name">Linked List Reversal</div>
+  <div class="algo-tagline">Reverse a linked list by re-pointing <code>next</code> pointers one node at a time with three variables: prev, curr, next.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Reverse an entire linked list</li>
+    <li>Reverse a sublist (positions m to n)</li>
+    <li>Check if a linked list is a palindrome (reverse second half)</li>
+    <li>Reorder list (interleave first and reversed second half)</li>
+  </ul></div>
+
+  <h3>Diagram — Step-by-step pointer changes</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+sequenceDiagram
+    participant P as prev (blue)
+    participant C as curr (green)
+    participant N as next (orange)
+    Note over P,N: Initial: null ← | 1→2→3→null
+    Note over C: curr = 1
+    C->>N: next = curr.next (save 2)
+    C->>P: curr.next = prev (point 1 → null)
+    P->>P: prev = curr (prev moves to 1)
+    N->>C: curr = next (curr moves to 2)
+    Note over P,N: null ← 1 | curr=2→3→null
+    C->>N: next = curr.next (save 3)
+    C->>P: curr.next = prev (point 2 → 1)
+    P->>P: prev = curr (prev moves to 2)
+    N->>C: curr = next (curr moves to 3)
+    Note over P,N: null ← 1 ← 2 | curr=3→null
+    Note over P,N: One more step → null ← 1 ← 2 ← 3, prev=3 (new head)
+  </div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Reverse entire list — returns new head
+function reverseList(head: ListNode | null): ListNode | null {
+  let prev: ListNode | null = null;
+  let curr = head;
+
+  while (curr !== null) {
+    const next = curr.next; // save next before overwriting
+    curr.next = prev;       // reverse the pointer
+    prev = curr;            // advance prev
+    curr = next;            // advance curr
+  }
+
+  return prev; // prev is now the new head
+}
+
+// Reverse sublist from position left to right (1-indexed)
+function reverseBetween(head: ListNode | null, left: number, right: number): ListNode | null {
+  const dummy = new ListNode(0);
+  dummy.next = head;
+  let pre: ListNode = dummy;
+
+  for (let i = 0; i &lt; left - 1; i++) pre = pre.next!;
+
+  let curr = pre.next!;
+  for (let i = 0; i &lt; right - left; i++) {
+    const next = curr.next!;
+    curr.next = next.next;
+    next.next = pre.next;
+    pre.next = next;
+  }
+
+  return dummy.next;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Reverse Linked List</div>
+      <div class="problem-insight">Direct application of the iterative template — prev/curr/next loop.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Reverse Linked List II</div>
+      <div class="problem-insight">Walk to the sublist start, then reverse only that portion using the in-place technique.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Palindrome Linked List</div>
+      <div class="problem-insight">Find middle (fast/slow), reverse second half, compare both halves.</div></div>
+    </div>
+  </div>
+</div>
 <div class="tab-content" id="tree-dfs"><!-- CONTENT: tree-dfs --></div>
 <div class="tab-content" id="tree-bfs"><!-- CONTENT: tree-bfs --></div>
 <div class="tab-content" id="bst"><!-- CONTENT: bst --></div>
