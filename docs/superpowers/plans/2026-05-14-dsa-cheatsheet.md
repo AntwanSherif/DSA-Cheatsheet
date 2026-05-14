@@ -1,0 +1,2205 @@
+# DSA Interview Cheatsheet Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Build a single self-contained `dsa-cheatsheet.html` covering 17 algorithm patterns with diagrams, TypeScript code templates, and LeetCode practice problems.
+
+**Architecture:** Single HTML file — inline CSS (dark theme), inline JS (tab switching), Mermaid.js via CDN for diagrams, highlight.js via CDN for syntax highlighting. Tab bar across the top; one content div per algorithm shown/hidden via JS. Mermaid renders lazily on first tab visit.
+
+**Tech Stack:** HTML5, CSS3, Vanilla JS, Mermaid.js (CDN), highlight.js (CDN)
+
+---
+
+### Task 1: HTML Scaffold + Tab System
+
+**Files:**
+- Create: `dsa-cheatsheet.html`
+
+- [ ] **Step 1: Write the base HTML file**
+
+Create `dsa-cheatsheet.html` with the following content. This includes the full CSS, tab JS logic, Mermaid + highlight.js setup, and empty content divs for all 17 tabs. Content will be filled in subsequent tasks.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Cheatsheet</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #263248;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --orange: #f97316;
+    --purple: #a855f7;
+    --teal: #14b8a6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  /* Tab bar */
+  .tab-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 8px 12px 0;
+  }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--surface2); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Content area */
+  .tab-content { display: none; padding: 32px 40px; max-width: 960px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* Section headers */
+  .algo-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .algo-tagline {
+    color: var(--text-muted);
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  h3 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin: 28px 0 12px;
+  }
+
+  /* When to use box */
+  .when-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 14px 18px;
+  }
+  .when-box ul { padding-left: 18px; }
+  .when-box li { margin: 4px 0; color: var(--text); }
+  .when-box li::marker { color: var(--accent); }
+
+  /* Diagrams */
+  .diagram-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    overflow-x: auto;
+  }
+  .ascii-diagram {
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre;
+    color: var(--text);
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  /* Walkthrough steps */
+  .walkthrough ol { padding-left: 22px; }
+  .walkthrough li { margin: 6px 0; }
+  .walkthrough li strong { color: var(--yellow); }
+
+  /* Code blocks */
+  .code-block {
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  .code-block pre { margin: 0; }
+  .code-block code { font-family: 'Fira Code', 'Cascadia Code', monospace !important; }
+
+  /* Practice problems */
+  .problems { display: flex; flex-direction: column; gap: 10px; }
+  .problem {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .diff {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .diff-easy { background: #14532d; color: var(--green); }
+  .diff-medium { background: #78350f; color: var(--yellow); }
+  .problem-name { font-weight: 600; color: var(--text); }
+  .problem-insight { color: var(--text-muted); font-size: 13px; margin-top: 3px; }
+
+  /* DP table */
+  .dp-table { border-collapse: collapse; font-family: monospace; font-size: 13px; }
+  .dp-table td, .dp-table th {
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    text-align: center;
+    min-width: 40px;
+  }
+  .dp-table th { background: var(--surface2); color: var(--text-muted); }
+  .dp-base { background: #14532d; color: var(--green); font-weight: bold; }
+  .dp-computed { background: #1e3a5f; color: #93c5fd; }
+  .dp-answer { background: #4c1d95; color: #c4b5fd; font-weight: bold; }
+
+  /* Divider */
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+</style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="two-pointers">Two Pointers</button>
+  <button class="tab-btn" data-tab="sliding-window">Sliding Window</button>
+  <button class="tab-btn" data-tab="prefix-sums">Prefix Sums</button>
+  <button class="tab-btn" data-tab="hash-maps">Hash Maps &amp; Sets</button>
+  <button class="tab-btn" data-tab="fast-slow">Fast &amp; Slow Pointers</button>
+  <button class="tab-btn" data-tab="ll-reversal">Linked List Reversal</button>
+  <button class="tab-btn" data-tab="tree-dfs">Tree DFS</button>
+  <button class="tab-btn" data-tab="tree-bfs">Tree BFS</button>
+  <button class="tab-btn" data-tab="bst">BST</button>
+  <button class="tab-btn" data-tab="graph-bfs">Graph BFS</button>
+  <button class="tab-btn" data-tab="graph-dfs">Graph DFS</button>
+  <button class="tab-btn" data-tab="binary-search">Binary Search</button>
+  <button class="tab-btn" data-tab="sorting">Sorting</button>
+  <button class="tab-btn" data-tab="mono-stack">Monotonic Stack</button>
+  <button class="tab-btn" data-tab="dp-1d">1D DP</button>
+  <button class="tab-btn" data-tab="dp-2d">2D DP</button>
+  <button class="tab-btn" data-tab="backtracking">Backtracking</button>
+</div>
+
+<div class="tab-content active" id="two-pointers"><!-- CONTENT: two-pointers --></div>
+<div class="tab-content" id="sliding-window"><!-- CONTENT: sliding-window --></div>
+<div class="tab-content" id="prefix-sums"><!-- CONTENT: prefix-sums --></div>
+<div class="tab-content" id="hash-maps"><!-- CONTENT: hash-maps --></div>
+<div class="tab-content" id="fast-slow"><!-- CONTENT: fast-slow --></div>
+<div class="tab-content" id="ll-reversal"><!-- CONTENT: ll-reversal --></div>
+<div class="tab-content" id="tree-dfs"><!-- CONTENT: tree-dfs --></div>
+<div class="tab-content" id="tree-bfs"><!-- CONTENT: tree-bfs --></div>
+<div class="tab-content" id="bst"><!-- CONTENT: bst --></div>
+<div class="tab-content" id="graph-bfs"><!-- CONTENT: graph-bfs --></div>
+<div class="tab-content" id="graph-dfs"><!-- CONTENT: graph-dfs --></div>
+<div class="tab-content" id="binary-search"><!-- CONTENT: binary-search --></div>
+<div class="tab-content" id="sorting"><!-- CONTENT: sorting --></div>
+<div class="tab-content" id="mono-stack"><!-- CONTENT: mono-stack --></div>
+<div class="tab-content" id="dp-1d"><!-- CONTENT: dp-1d --></div>
+<div class="tab-content" id="dp-2d"><!-- CONTENT: dp-2d --></div>
+<div class="tab-content" id="backtracking"><!-- CONTENT: backtracking --></div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#3b82f6',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#475569',
+      lineColor: '#94a3b8',
+      secondaryColor: '#1e293b',
+      tertiaryColor: '#0f172a',
+      edgeLabelBackground: '#1e293b',
+    },
+    flowchart: { curve: 'basis' },
+  });
+
+  const renderedTabs = new Set();
+
+  function showTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+    const tab = document.getElementById(tabId);
+    tab.classList.add('active');
+    if (!renderedTabs.has(tabId)) {
+      renderedTabs.add(tabId);
+      const nodes = tab.querySelectorAll('.mermaid');
+      if (nodes.length) mermaid.run({ nodes });
+    }
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => showTab(btn.dataset.tab));
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    hljs.highlightAll();
+    showTab('two-pointers');
+  });
+</script>
+</body>
+</html>
+```
+
+- [ ] **Step 2: Open in browser to verify tab switching works**
+
+Open `dsa-cheatsheet.html` in a browser. Click several tabs — each should show/hide correctly. Console should show no errors.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git init && git add dsa-cheatsheet.html && git commit -m "feat: add HTML scaffold with tab system and styling"
+```
+
+---
+
+### Task 2: Arrays Group (Two Pointers, Sliding Window, Prefix Sums)
+
+**Files:**
+- Modify: `dsa-cheatsheet.html` — replace 3 empty content divs
+
+- [ ] **Step 1: Replace Two Pointers content div**
+
+Find `<!-- CONTENT: two-pointers -->` and replace the entire `<div class="tab-content active" id="two-pointers">` element's inner HTML with:
+
+```html
+  <div class="algo-name">Two Pointers</div>
+  <div class="algo-tagline">Eliminate O(n²) nested loops by moving two indices through an array simultaneously.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Sorted array — find a pair that sums to a target</li>
+    <li>Check if a string is a palindrome</li>
+    <li>Merge two sorted arrays in-place</li>
+    <li>Remove duplicates / move zeroes in-place</li>
+    <li>Find container with most water</li>
+  </ul></div>
+
+  <h3>Diagram — Two Sum II</h3>
+  <div class="diagram-box"><div class="ascii-diagram">arr    =  [ 1,  3,  5,  7,  9, 11 ]   target = 10
+indices=    0   1   2   3   4   5
+
+Step 1:   [L=0]               [R=5]   sum = 1+11 = 12  > target → R--
+Step 2:   [L=0]           [R=4]       sum = 1+9  = 10  == target ✓ → return [0, 4]
+
+Rule: sum &lt; target → L++  (need a bigger number on the left)
+      sum &gt; target → R--  (need a smaller number on the right)
+      sum == target → found!</div></div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Place L at index 0, R at last index.</strong></li>
+    <li><strong>Compute sum</strong> = arr[L] + arr[R].</li>
+    <li>If sum === target → return [L, R].</li>
+    <li>If sum &lt; target → L++ (need larger value).</li>
+    <li>If sum &gt; target → R-- (need smaller value).</li>
+    <li>Repeat until L &ge; R.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">function twoSumSorted(nums: number[], target: number): number[] {
+  let left = 0, right = nums.length - 1;
+
+  while (left < right) {
+    const sum = nums[left] + nums[right];
+    if (sum === target) return [left, right];
+    else if (sum < target) left++;
+    else right--;
+  }
+
+  return []; // no pair found
+}
+
+// Same-direction variant: remove duplicates in-place
+function removeDuplicates(nums: number[]): number {
+  let slow = 0;
+  for (let fast = 1; fast < nums.length; fast++) {
+    if (nums[fast] !== nums[slow]) {
+      slow++;
+      nums[slow] = nums[fast];
+    }
+  }
+  return slow + 1;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Valid Palindrome</div>
+      <div class="problem-insight">L and R move inward comparing chars; skip non-alphanumeric.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Two Sum II – Input Array Is Sorted</div>
+      <div class="problem-insight">Classic two-pointer on sorted array — the template above verbatim.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Container With Most Water</div>
+      <div class="problem-insight">Move the pointer with the shorter height; max area = min(h[L],h[R]) × (R−L).</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">3Sum</div>
+      <div class="problem-insight">Fix one element with an outer loop; run two-pointer on the rest. Skip duplicates.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 2: Replace Sliding Window content div**
+
+Find `<!-- CONTENT: sliding-window -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Sliding Window</div>
+  <div class="algo-tagline">Maintain a contiguous window; expand right, shrink left when a constraint is violated.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Longest/shortest subarray or substring satisfying a condition</li>
+    <li>Maximum sum of a fixed-size window</li>
+    <li>Minimum window containing all required characters</li>
+    <li>Substring without repeating characters</li>
+  </ul></div>
+
+  <h3>Diagram — Max sum window of size k=3</h3>
+  <div class="diagram-box"><div class="ascii-diagram">arr = [ 2,  1,  5,  1,  3,  2 ]   k = 3
+
+       [L=0  →  R=2]           window=[2,1,5]  sum=8
+            [L=1  →  R=3]      window=[1,5,1]  sum=7
+                 [L=2  →  R=4] window=[5,1,3]  sum=9  ← max ✓
+                      [L=3 → R=5] window=[1,3,2] sum=6
+
+Variable window (e.g. longest substring):
+→ expand R each step
+→ shrink L when constraint broken (duplicate found, sum too large, etc.)</div></div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Start with L=0, R=0.</strong> Expand R each iteration.</li>
+    <li><strong>Track state</strong> inside the window (sum, char counts, etc.).</li>
+    <li>If constraint is <strong>violated</strong> → shrink by advancing L until valid again.</li>
+    <li>At each step, <strong>update the answer</strong> (max/min window size, etc.).</li>
+    <li>Fixed window: slide L and R together, keeping window size = k.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Variable window — longest substring without repeating characters
+function lengthOfLongestSubstring(s: string): number {
+  const lastSeen = new Map<string, number>(); // char → last index seen
+  let left = 0, maxLen = 0;
+
+  for (let right = 0; right < s.length; right++) {
+    const ch = s[right];
+    // If char was seen inside current window, shrink from left
+    if (lastSeen.has(ch) && lastSeen.get(ch)! >= left) {
+      left = lastSeen.get(ch)! + 1;
+    }
+    lastSeen.set(ch, right);
+    maxLen = Math.max(maxLen, right - left + 1);
+  }
+
+  return maxLen;
+}
+
+// Fixed window — max sum subarray of size k
+function maxSumFixed(nums: number[], k: number): number {
+  let windowSum = nums.slice(0, k).reduce((a, b) => a + b, 0);
+  let max = windowSum;
+
+  for (let i = k; i < nums.length; i++) {
+    windowSum += nums[i] - nums[i - k]; // slide: add new, remove old
+    max = Math.max(max, windowSum);
+  }
+
+  return max;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Maximum Average Subarray I</div>
+      <div class="problem-insight">Fixed window of size k — use the fixed-window template above.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Longest Substring Without Repeating Characters</div>
+      <div class="problem-insight">Variable window — shrink when duplicate enters; track last-seen index per char.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Minimum Window Substring</div>
+      <div class="problem-insight">Expand until all required chars covered; shrink to minimize; track counts with a map.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 3: Replace Prefix Sums content div**
+
+Find `<!-- CONTENT: prefix-sums -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Prefix Sums</div>
+  <div class="algo-tagline">Precompute cumulative sums so any range sum query is answered in O(1).</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Range sum queries on a static array</li>
+    <li>Count subarrays whose sum equals k</li>
+    <li>Find if a subarray with a given property exists</li>
+    <li>2D matrix region sum queries</li>
+  </ul></div>
+
+  <h3>Diagram</h3>
+  <div class="diagram-box"><div class="ascii-diagram">arr    =  [  1,   2,   3,   4,   5  ]
+index  =     0    1    2    3    4
+
+prefix =  [  0,   1,   3,   6,  10,  15 ]
+index  =     0    1    2    3    4    5
+
+Query: sum(i=1, j=3) = prefix[j+1] - prefix[i]
+                     = prefix[4]   - prefix[1]
+                     = 10 - 1 = 9  ✓  (2+3+4 = 9)
+
+Key insight: prefix[i] = sum of all elements before index i
+             rangeSum(i,j) = prefix[j+1] - prefix[i]</div></div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Build prefix array</strong> of size n+1. prefix[0] = 0.</li>
+    <li>prefix[i+1] = prefix[i] + arr[i] for each i.</li>
+    <li><strong>Range query</strong>: sum(i, j) = prefix[j+1] - prefix[i]. O(1).</li>
+    <li>For <em>subarray sum = k</em>: use a hashmap of prefix sums seen so far. At each index, check if (currentSum − k) was seen before.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Build prefix sum array
+function buildPrefix(nums: number[]): number[] {
+  const prefix = [0];
+  for (const n of nums) {
+    prefix.push(prefix[prefix.length - 1] + n);
+  }
+  return prefix;
+}
+
+function rangeSum(prefix: number[], i: number, j: number): number {
+  return prefix[j + 1] - prefix[i];
+}
+
+// Count subarrays with sum === k  (Medium pattern)
+function subarraySum(nums: number[], k: number): number {
+  const prefixCounts = new Map([[0, 1]]); // prefixSum → frequency
+  let currentSum = 0, result = 0;
+
+  for (const n of nums) {
+    currentSum += n;
+    // How many previous prefixes, when subtracted, give sum = k?
+    result += prefixCounts.get(currentSum - k) ?? 0;
+    prefixCounts.set(currentSum, (prefixCounts.get(currentSum) ?? 0) + 1);
+  }
+
+  return result;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Range Sum Query – Immutable</div>
+      <div class="problem-insight">Direct application — build prefix once, answer queries in O(1).</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Subarray Sum Equals K</div>
+      <div class="problem-insight">prefix + hashmap pattern: count how many times (currentSum − k) appeared before.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Product of Array Except Self</div>
+      <div class="problem-insight">Build prefix product left-to-right, then suffix product right-to-left; multiply at each index.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 4: Verify in browser — open file, check all three tabs render correctly**
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add dsa-cheatsheet.html && git commit -m "feat: add Two Pointers, Sliding Window, Prefix Sums tabs"
+```
+
+---
+
+### Task 3: Hashing + Linked Lists
+
+**Files:**
+- Modify: `dsa-cheatsheet.html`
+
+- [ ] **Step 1: Replace Hash Maps & Sets content div**
+
+Find `<!-- CONTENT: hash-maps -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Hash Maps &amp; Sets</div>
+  <div class="algo-tagline">O(1) average insert/lookup. The single most-used tool to eliminate nested loops.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Count element frequencies</li>
+    <li>"Have I seen this before?" — existence check in O(1)</li>
+    <li>Find complement: target − current (Two Sum)</li>
+    <li>Group elements by a computed key (anagrams)</li>
+    <li>Deduplicate or track unique elements</li>
+  </ul></div>
+
+  <h3>Diagram — Three core patterns</h3>
+  <div class="diagram-box"><div class="ascii-diagram">PATTERN 1: Frequency count
+  "aabbc" → { a:2, b:2, c:1 }
+  Use: anagram check, character counting
+
+PATTERN 2: Complement lookup  (Two Sum)
+  nums=[2,7,11,15], target=9
+  i=0: need 9-2=7, not in map → store {2:0}
+  i=1: need 9-7=2, found at map[2]=0 → return [0,1] ✓
+
+PATTERN 3: Grouping by key
+  ["eat","tea","tan","ate","nat","bat"]
+  sort each word → key:
+  "aet"→[eat,tea,ate], "ant"→[tan,nat], "abt"→[bat]</div></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Pattern 1: Frequency count
+const freq = new Map<string, number>();
+for (const ch of s) {
+  freq.set(ch, (freq.get(ch) ?? 0) + 1);
+}
+
+// Pattern 2: Complement lookup (Two Sum)
+function twoSum(nums: number[], target: number): number[] {
+  const seen = new Map<number, number>(); // value → index
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+    if (seen.has(complement)) return [seen.get(complement)!, i];
+    seen.set(nums[i], i);
+  }
+  return [];
+}
+
+// Pattern 3: Group by computed key
+function groupAnagrams(strs: string[]): string[][] {
+  const groups = new Map<string, string[]>();
+  for (const word of strs) {
+    const key = [...word].sort().join('');
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(word);
+  }
+  return [...groups.values()];
+}
+
+// Set: deduplicate / existence check
+const seen = new Set<number>();
+for (const n of nums) {
+  if (seen.has(n)) return true; // duplicate found
+  seen.add(n);
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Two Sum</div>
+      <div class="problem-insight">Complement lookup — store value→index in map as you iterate.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Contains Duplicate</div>
+      <div class="problem-insight">Add to Set; return true the moment you try to add a value already present.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Group Anagrams</div>
+      <div class="problem-insight">Sort each word to get a canonical key; group by key using a Map.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Longest Consecutive Sequence</div>
+      <div class="problem-insight">Put all nums in a Set; for each num that is a sequence start (num−1 not in set), walk forward counting.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 2: Replace Fast & Slow Pointers content div**
+
+Find `<!-- CONTENT: fast-slow -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Fast &amp; Slow Pointers</div>
+  <div class="algo-tagline">Two pointers at different speeds: slow moves 1 step, fast moves 2. They meet inside a cycle.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Detect a cycle in a linked list</li>
+    <li>Find the middle of a linked list</li>
+    <li>Find the start of a cycle</li>
+    <li>Happy number (abstract "next" function creates an implicit list)</li>
+  </ul></div>
+
+  <h3>Diagram — Cycle detection</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph LR
+    n1((1)):::visited --> n2((2)):::visited --> n3((3)):::slow --> n4((4)):::visited --> n5((5)):::fast --> n6((6)):::visited --> n3
+    classDef visited fill:#475569,stroke:#64748b,color:#e2e8f0
+    classDef slow fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef fast fill:#f97316,stroke:#ea580c,color:#000
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">After several steps, slow (blue) and fast (orange) meet inside the cycle.
+No cycle → fast reaches null first.
+
+Find middle: when fast reaches end, slow is at the middle.
+  List: 1→2→3→4→5
+  Steps: slow=1,fast=1 → slow=2,fast=3 → slow=3,fast=5(end)
+  slow=3 is the middle ✓</div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">class ListNode {
+  val: number;
+  next: ListNode | null = null;
+  constructor(val: number) { this.val = val; }
+}
+
+// Detect cycle
+function hasCycle(head: ListNode | null): boolean {
+  let slow = head, fast = head;
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next;
+    fast = fast.next.next;
+    if (slow === fast) return true;
+  }
+  return false;
+}
+
+// Find middle node (slow is at middle when fast exhausts list)
+function middleNode(head: ListNode): ListNode {
+  let slow: ListNode = head, fast: ListNode = head;
+  while (fast.next !== null && fast.next.next !== null) {
+    slow = slow.next!;
+    fast = fast.next.next;
+  }
+  return slow;
+}
+
+// Happy number (treat digit-sum as a "next" pointer)
+function isHappy(n: number): boolean {
+  const digitSquareSum = (x: number) =>
+    String(x).split('').reduce((s, d) => s + Number(d) ** 2, 0);
+  let slow = n, fast = n;
+  do {
+    slow = digitSquareSum(slow);
+    fast = digitSquareSum(digitSquareSum(fast));
+  } while (slow !== fast);
+  return slow === 1;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Linked List Cycle</div>
+      <div class="problem-insight">Return true if slow === fast at any point; false if fast hits null.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Middle of the Linked List</div>
+      <div class="problem-insight">Return slow when fast.next or fast.next.next is null.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Happy Number</div>
+      <div class="problem-insight">Cycle in digit-square-sum sequence → not happy. Slow/fast on the abstract "next" function.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 3: Replace Linked List Reversal content div**
+
+Find `<!-- CONTENT: ll-reversal -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Linked List Reversal</div>
+  <div class="algo-tagline">Reverse a linked list by re-pointing <code>next</code> pointers one node at a time with three variables: prev, curr, next.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Reverse an entire linked list</li>
+    <li>Reverse a sublist (positions m to n)</li>
+    <li>Check if a linked list is a palindrome (reverse second half)</li>
+    <li>Reorder list (interleave first and reversed second half)</li>
+  </ul></div>
+
+  <h3>Diagram — Step-by-step pointer changes</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+sequenceDiagram
+    participant P as prev (blue)
+    participant C as curr (green)
+    participant N as next (orange)
+    Note over P,N: Initial: null ← | 1→2→3→null
+    Note over C: curr = 1
+    C->>N: next = curr.next (save 2)
+    C->>P: curr.next = prev (point 1 → null)
+    P->>P: prev = curr (prev moves to 1)
+    N->>C: curr = next (curr moves to 2)
+    Note over P,N: null ← 1 | curr=2→3→null
+    C->>N: next = curr.next (save 3)
+    C->>P: curr.next = prev (point 2 → 1)
+    P->>P: prev = curr (prev moves to 2)
+    N->>C: curr = next (curr moves to 3)
+    Note over P,N: null ← 1 ← 2 | curr=3→null
+    Note over P,N: One more step → null ← 1 ← 2 ← 3, prev=3 (new head)
+  </div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Reverse entire list — returns new head
+function reverseList(head: ListNode | null): ListNode | null {
+  let prev: ListNode | null = null;
+  let curr = head;
+
+  while (curr !== null) {
+    const next = curr.next; // save next before overwriting
+    curr.next = prev;       // reverse the pointer
+    prev = curr;            // advance prev
+    curr = next;            // advance curr
+  }
+
+  return prev; // prev is now the new head
+}
+
+// Reverse sublist from position left to right (1-indexed)
+function reverseBetween(head: ListNode | null, left: number, right: number): ListNode | null {
+  const dummy = new ListNode(0);
+  dummy.next = head;
+  let pre: ListNode = dummy;
+
+  for (let i = 0; i < left - 1; i++) pre = pre.next!;
+
+  let curr = pre.next!;
+  for (let i = 0; i < right - left; i++) {
+    const next = curr.next!;
+    curr.next = next.next;
+    next.next = pre.next;
+    pre.next = next;
+  }
+
+  return dummy.next;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Reverse Linked List</div>
+      <div class="problem-insight">Direct application of the iterative template — prev/curr/next loop.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Reverse Linked List II</div>
+      <div class="problem-insight">Walk to the sublist start, then reverse only that portion using the in-place technique.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Palindrome Linked List</div>
+      <div class="problem-insight">Find middle (fast/slow), reverse second half, compare both halves.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 4: Verify in browser — check Hash Maps, Fast & Slow (Mermaid renders), Linked List Reversal (sequence diagram renders)**
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add dsa-cheatsheet.html && git commit -m "feat: add Hash Maps, Fast & Slow Pointers, Linked List Reversal tabs"
+```
+
+---
+
+### Task 4: Trees (DFS, BFS, BST)
+
+**Files:**
+- Modify: `dsa-cheatsheet.html`
+
+- [ ] **Step 1: Replace Tree DFS content div**
+
+Find `<!-- CONTENT: tree-dfs -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Tree DFS</div>
+  <div class="algo-tagline">Explore as deep as possible before backtracking. Use recursion (call stack) or an explicit stack.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Compute height / depth of a tree</li>
+    <li>Path sum problems (root-to-leaf)</li>
+    <li>Inorder traversal (gives sorted output for BST)</li>
+    <li>Validate BST, invert binary tree, serialize tree</li>
+    <li>Any problem asking about subtree properties</li>
+  </ul></div>
+
+  <h3>Diagram — Traversal orders on the same tree</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A((4)):::root --> B((2)):::left
+    A --> C((6)):::right
+    B --> D((1)):::leaf
+    B --> E((3)):::leaf
+    C --> F((5)):::leaf
+    C --> G((7)):::leaf
+    classDef root fill:#eab308,stroke:#ca8a04,color:#000
+    classDef left fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef right fill:#a855f7,stroke:#9333ea,color:#fff
+    classDef leaf fill:#475569,stroke:#64748b,color:#e2e8f0
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">Inorder   (L → Root → R): 1, 2, 3, 4, 5, 6, 7  ← sorted for BST
+Preorder  (Root → L → R): 4, 2, 1, 3, 6, 5, 7  ← good for tree copy/serialize
+Postorder (L → R → Root): 1, 3, 2, 5, 7, 6, 4  ← good for deletion, height</div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">class TreeNode {
+  val: number;
+  left: TreeNode | null = null;
+  right: TreeNode | null = null;
+  constructor(val: number) { this.val = val; }
+}
+
+// Inorder (left → node → right)
+function inorder(root: TreeNode | null): number[] {
+  if (!root) return [];
+  return [...inorder(root.left), root.val, ...inorder(root.right)];
+}
+
+// Max depth (postorder — compute children first)
+function maxDepth(root: TreeNode | null): number {
+  if (!root) return 0;
+  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+}
+
+// Path sum — does any root-to-leaf path sum to target?
+function hasPathSum(root: TreeNode | null, target: number): boolean {
+  if (!root) return false;
+  if (!root.left && !root.right) return root.val === target; // leaf
+  return hasPathSum(root.left, target - root.val) ||
+         hasPathSum(root.right, target - root.val);
+}
+
+// Iterative DFS with explicit stack (preorder)
+function dfsIterative(root: TreeNode | null): number[] {
+  const result: number[] = [], stack: TreeNode[] = [];
+  if (root) stack.push(root);
+  while (stack.length) {
+    const node = stack.pop()!;
+    result.push(node.val);
+    if (node.right) stack.push(node.right); // push right first → left pops first
+    if (node.left) stack.push(node.left);
+  }
+  return result;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Maximum Depth of Binary Tree</div>
+      <div class="problem-insight">1 + max(depth(left), depth(right)) — classic DFS recursion.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Invert Binary Tree</div>
+      <div class="problem-insight">Swap left and right children at every node recursively.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Path Sum</div>
+      <div class="problem-insight">Subtract node value as you recurse; return true at a leaf when remainder = 0.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Binary Tree Right Side View</div>
+      <div class="problem-insight">DFS tracking depth; the last node visited at each depth is visible from the right.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 2: Replace Tree BFS content div**
+
+Find `<!-- CONTENT: tree-bfs -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Tree BFS</div>
+  <div class="algo-tagline">Visit nodes level by level using a queue. Guarantees shortest path in unweighted trees.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Level-order traversal (process nodes level by level)</li>
+    <li>Minimum depth of a binary tree</li>
+    <li>Connect nodes at the same level</li>
+    <li>Zigzag level order traversal</li>
+    <li>Any "closest" or "nearest" question on a tree</li>
+  </ul></div>
+
+  <h3>Diagram — Level-by-level traversal</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A((1)):::l0 --> B((2)):::l1
+    A --> C((3)):::l1
+    B --> D((4)):::l2
+    B --> E((5)):::l2
+    C --> F((6)):::l2
+    C --> G((7)):::l2
+    classDef l0 fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef l1 fill:#22c55e,stroke:#16a34a,color:#000
+    classDef l2 fill:#f97316,stroke:#ea580c,color:#000
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">Queue evolution:
+Start:     [1]
+Process 1: enqueue children → [2, 3]
+Process 2: enqueue children → [3, 4, 5]
+Process 3: enqueue children → [4, 5, 6, 7]
+...
+
+Result by level: [[1], [2,3], [4,5,6,7]]</div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Level-order traversal — returns array of levels
+function levelOrder(root: TreeNode | null): number[][] {
+  if (!root) return [];
+  const result: number[][] = [];
+  const queue: TreeNode[] = [root];
+
+  while (queue.length) {
+    const levelSize = queue.length; // snapshot: all nodes on this level
+    const level: number[] = [];
+
+    for (let i = 0; i < levelSize; i++) {
+      const node = queue.shift()!;
+      level.push(node.val);
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+
+    result.push(level);
+  }
+
+  return result;
+}
+
+// Minimum depth (first leaf encountered is at minimum depth)
+function minDepth(root: TreeNode | null): number {
+  if (!root) return 0;
+  const queue: [TreeNode, number][] = [[root, 1]];
+
+  while (queue.length) {
+    const [node, depth] = queue.shift()!;
+    if (!node.left && !node.right) return depth; // first leaf = min depth
+    if (node.left) queue.push([node.left, depth + 1]);
+    if (node.right) queue.push([node.right, depth + 1]);
+  }
+
+  return 0;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Binary Tree Level Order Traversal</div>
+      <div class="problem-insight">Direct template application — snapshot queue length per level.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Minimum Depth of Binary Tree</div>
+      <div class="problem-insight">BFS ensures the first leaf you hit is the shallowest one.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Binary Tree Zigzag Level Order Traversal</div>
+      <div class="problem-insight">Same BFS; alternate push direction (left-to-right vs right-to-left) per level using a flag.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 3: Replace BST content div**
+
+Find `<!-- CONTENT: bst -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">BST (Binary Search Tree)</div>
+  <div class="algo-tagline">Left subtree &lt; node &lt; right subtree. Inorder traversal yields a sorted sequence.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Validate that a binary tree is a valid BST</li>
+    <li>Find kth smallest/largest element</li>
+    <li>Search, insert, or delete in O(log n) average</li>
+    <li>Find lowest common ancestor of two BST nodes</li>
+    <li>Convert sorted array → BST or BST → sorted array</li>
+  </ul></div>
+
+  <h3>Diagram — BST search path</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A((8)):::visited --> B((3)):::visited
+    A --> C((10)):::unvisited
+    B --> D((1)):::unvisited
+    B --> E((6)):::target
+    E --> F((4)):::unvisited
+    E --> G((7)):::unvisited
+    classDef visited fill:#eab308,stroke:#ca8a04,color:#000
+    classDef target fill:#22c55e,stroke:#16a34a,color:#000
+    classDef unvisited fill:#475569,stroke:#64748b,color:#e2e8f0
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">Searching for 6:
+  root=8: 6 &lt; 8  → go left
+  node=3: 6 &gt; 3  → go right
+  node=6: 6 == 6 → found ✓
+
+BST Invariant: for every node N,
+  ALL nodes in left subtree  &lt; N.val
+  ALL nodes in right subtree &gt; N.val</div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Search
+function searchBST(root: TreeNode | null, val: number): TreeNode | null {
+  if (!root || root.val === val) return root;
+  return val < root.val
+    ? searchBST(root.left, val)
+    : searchBST(root.right, val);
+}
+
+// Validate BST — pass min/max bounds down the tree
+function isValidBST(
+  root: TreeNode | null,
+  min = -Infinity,
+  max = Infinity
+): boolean {
+  if (!root) return true;
+  if (root.val <= min || root.val >= max) return false;
+  return isValidBST(root.left, min, root.val) &&
+         isValidBST(root.right, root.val, max);
+}
+
+// Kth smallest — inorder gives sorted order
+function kthSmallest(root: TreeNode, k: number): number {
+  const stack: TreeNode[] = [];
+  let curr: TreeNode | null = root;
+
+  while (curr || stack.length) {
+    while (curr) { stack.push(curr); curr = curr.left; }
+    curr = stack.pop()!;
+    if (--k === 0) return curr.val;
+    curr = curr.right;
+  }
+
+  return -1;
+}
+
+// Lowest Common Ancestor
+function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNode {
+  if (p.val < root.val && q.val < root.val) return lowestCommonAncestor(root.left!, p, q);
+  if (p.val > root.val && q.val > root.val) return lowestCommonAncestor(root.right!, p, q);
+  return root; // they diverge here — root is LCA
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Validate Binary Search Tree</div>
+      <div class="problem-insight">Pass min/max bounds down; a node is invalid if it falls outside its permitted range.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Kth Smallest Element in a BST</div>
+      <div class="problem-insight">Iterative inorder (use a stack); the kth node popped is the answer.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Lowest Common Ancestor of a BST</div>
+      <div class="problem-insight">If both nodes are on same side, recurse that way. Otherwise current node is LCA.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 4: Verify all three tree tabs in browser — confirm Mermaid diagrams render**
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add dsa-cheatsheet.html && git commit -m "feat: add Tree DFS, Tree BFS, BST tabs"
+```
+
+---
+
+### Task 5: Graphs (BFS, DFS)
+
+**Files:**
+- Modify: `dsa-cheatsheet.html`
+
+- [ ] **Step 1: Replace Graph BFS content div**
+
+Find `<!-- CONTENT: graph-bfs -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Graph BFS</div>
+  <div class="algo-tagline">Explore nodes layer by layer using a queue. Finds the shortest path in an unweighted graph.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Shortest path / minimum steps in an unweighted graph or grid</li>
+    <li>Level-by-level graph exploration</li>
+    <li>Rotting Oranges, 01-Matrix type problems</li>
+    <li>Word Ladder (transform one word to another)</li>
+  </ul></div>
+
+  <h3>Diagram — BFS frontier expansion</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A((A\nstart)):::start --> B((B\nlevel 1)):::l1
+    A --> C((C\nlevel 1)):::l1
+    B --> D((D\nlevel 2)):::l2
+    B --> E((E\nlevel 2)):::l2
+    C --> F((F\nlevel 2)):::l2
+    classDef start fill:#22c55e,stroke:#16a34a,color:#000
+    classDef l1 fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef l2 fill:#f97316,stroke:#ea580c,color:#000
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">Queue: [A]
+Dequeue A (dist=0) → enqueue neighbors B, C   visited={A}
+Dequeue B (dist=1) → enqueue D, E             visited={A,B}
+Dequeue C (dist=1) → enqueue F                visited={A,B,C}
+Dequeue D (dist=2) → no unvisited neighbors   ...
+First time we reach a target node = shortest path</div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// BFS on adjacency list
+function bfs(graph: Map<string, string[]>, start: string): Map<string, number> {
+  const dist = new Map<string, number>([[start, 0]]);
+  const queue: string[] = [start];
+
+  while (queue.length) {
+    const node = queue.shift()!;
+    for (const neighbor of graph.get(node) ?? []) {
+      if (!dist.has(neighbor)) {
+        dist.set(neighbor, dist.get(node)! + 1);
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  return dist; // dist.get(target) = shortest path length
+}
+
+// BFS on a 2D grid (common for island/matrix problems)
+function bfsGrid(grid: number[][], startR: number, startC: number): number {
+  const rows = grid.length, cols = grid[0].length;
+  const visited = Array.from({ length: rows }, () => new Array(cols).fill(false));
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+  const queue: [number, number, number][] = [[startR, startC, 0]]; // [row, col, dist]
+  visited[startR][startC] = true;
+  let steps = 0;
+
+  while (queue.length) {
+    const [r, c, dist] = queue.shift()!;
+    steps = dist;
+    for (const [dr, dc] of dirs) {
+      const nr = r + dr, nc = c + dc;
+      if (nr >= 0 && nr < rows && nc >= 0 && nc < cols
+          && !visited[nr][nc] && grid[nr][nc] !== 0) {
+        visited[nr][nc] = true;
+        queue.push([nr, nc, dist + 1]);
+      }
+    }
+  }
+
+  return steps;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Rotting Oranges</div>
+      <div class="problem-insight">Multi-source BFS — enqueue all rotten oranges at step 0; spread outward each step.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Number of Islands</div>
+      <div class="problem-insight">BFS/DFS from each unvisited '1'; mark visited cells. Count how many times you start a traversal.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Word Ladder</div>
+      <div class="problem-insight">BFS where each node is a word; neighbors = words differing by 1 char. First time reaching target = min steps.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 2: Replace Graph DFS content div**
+
+Find `<!-- CONTENT: graph-dfs -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Graph DFS</div>
+  <div class="algo-tagline">Explore as deep as possible down one path before backtracking. Use recursion or an explicit stack.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Count connected components</li>
+    <li>Detect cycles in a directed or undirected graph</li>
+    <li>Topological sort (course scheduling)</li>
+    <li>Find all paths from source to destination</li>
+    <li>Flood fill / island problems</li>
+  </ul></div>
+
+  <h3>Diagram — DFS traversal order</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A((A)):::current --> B((B)):::path
+    A --> C((C)):::unvisited
+    B --> D((D)):::path
+    B --> E((E)):::unvisited
+    D --> F((F)):::path
+    classDef current fill:#22c55e,stroke:#16a34a,color:#000
+    classDef path fill:#f97316,stroke:#ea580c,color:#000
+    classDef unvisited fill:#475569,stroke:#64748b,color:#e2e8f0
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">DFS order from A: A → B → D → F (backtrack) → (backtrack) → E (backtrack) → C
+Stack (iterative):  push A → pop A, push C,B → pop B, push E,D → pop D, push F ...
+visited set prevents revisiting nodes in cycles</div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Recursive DFS — count connected components
+function countComponents(n: number, edges: number[][]): number {
+  const adj = new Map<number, number[]>();
+  for (let i = 0; i < n; i++) adj.set(i, []);
+  for (const [a, b] of edges) {
+    adj.get(a)!.push(b);
+    adj.get(b)!.push(a);
+  }
+
+  const visited = new Set<number>();
+  let components = 0;
+
+  function dfs(node: number): void {
+    visited.add(node);
+    for (const neighbor of adj.get(node) ?? []) {
+      if (!visited.has(neighbor)) dfs(neighbor);
+    }
+  }
+
+  for (let i = 0; i < n; i++) {
+    if (!visited.has(i)) {
+      dfs(i);
+      components++;
+    }
+  }
+
+  return components;
+}
+
+// DFS on 2D grid (flood fill / island sink)
+function dfsGrid(grid: string[][], r: number, c: number): void {
+  if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length) return;
+  if (grid[r][c] !== '1') return;
+  grid[r][c] = '0'; // mark visited by mutating
+  dfsGrid(grid, r+1, c); dfsGrid(grid, r-1, c);
+  dfsGrid(grid, r, c+1); dfsGrid(grid, r, c-1);
+}
+
+// Course schedule — cycle detection with DFS (0=unvisited,1=visiting,2=done)
+function canFinish(numCourses: number, prerequisites: number[][]): boolean {
+  const adj = Array.from({ length: numCourses }, () => [] as number[]);
+  for (const [a, b] of prerequisites) adj[b].push(a);
+  const state = new Array(numCourses).fill(0);
+
+  function dfs(node: number): boolean {
+    if (state[node] === 1) return false; // cycle!
+    if (state[node] === 2) return true;
+    state[node] = 1; // currently visiting
+    for (const next of adj[node]) {
+      if (!dfs(next)) return false;
+    }
+    state[node] = 2; // done
+    return true;
+  }
+
+  for (let i = 0; i < numCourses; i++) {
+    if (!dfs(i)) return false;
+  }
+  return true;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Number of Islands</div>
+      <div class="problem-insight">DFS from each '1'; sink visited land to '0'. Count traversal starts.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Course Schedule</div>
+      <div class="problem-insight">Cycle detection in directed graph: 3-color DFS (unvisited / visiting / done).</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Clone Graph</div>
+      <div class="problem-insight">DFS with a visited map (original node → cloned node) to handle cycles.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 3: Verify both graph tabs render Mermaid diagrams correctly**
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add dsa-cheatsheet.html && git commit -m "feat: add Graph BFS and Graph DFS tabs"
+```
+
+---
+
+### Task 6: Binary Search + Sorting
+
+**Files:**
+- Modify: `dsa-cheatsheet.html`
+
+- [ ] **Step 1: Replace Binary Search content div**
+
+Find `<!-- CONTENT: binary-search -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Binary Search</div>
+  <div class="algo-tagline">Halve the search space each iteration. O(log n). Works on sorted arrays — and on any monotonic decision function.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Find a target in a sorted array</li>
+    <li>Find leftmost/rightmost position of a value</li>
+    <li>Search in a rotated sorted array</li>
+    <li><strong>Binary search on the answer</strong>: "minimum X such that condition holds" — if you can write a boolean function that flips from false→true at some threshold, binary search on it</li>
+  </ul></div>
+
+  <h3>Diagram</h3>
+  <div class="diagram-box"><div class="ascii-diagram">arr = [ 1,  3,  5,  7,  9, 11, 13, 15 ]   target = 7
+idx =   0   1   2   3   4   5   6   7
+       lo=0              hi=7
+
+Step 1: mid = (0+7)//2 = 3  → arr[3]=7 == target ✓  return 3
+
+More steps if no match:
+  arr[mid] &lt; target → lo = mid + 1  (discard left half)
+  arr[mid] &gt; target → hi = mid - 1  (discard right half)
+  lo &gt; hi           → not found
+
+Binary search on answer example (Koko Eating Bananas):
+  "What is the minimum speed k such that all piles eaten in h hours?"
+  → lo=1, hi=max(piles), binary search on k, check feasibility</div></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Classic: find target in sorted array
+function binarySearch(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    const mid = lo + Math.floor((hi - lo) / 2); // avoids overflow
+    if (nums[mid] === target) return mid;
+    else if (nums[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+
+// Find leftmost position (first occurrence)
+function lowerBound(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length;
+  while (lo < hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    if (nums[mid] < target) lo = mid + 1;
+    else hi = mid; // don't exclude mid — it could be the answer
+  }
+  return lo; // first index where nums[lo] >= target
+}
+
+// Binary search on the answer
+// "Find minimum k such that feasible(k) is true"
+function minKFeasible(lo: number, hi: number, feasible: (k: number) => boolean): number {
+  while (lo < hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    if (feasible(mid)) hi = mid; // mid works, try smaller
+    else lo = mid + 1;           // mid doesn't work, need bigger
+  }
+  return lo;
+}
+
+// Search in rotated sorted array
+function searchRotated(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    if (nums[mid] === target) return mid;
+    if (nums[lo] <= nums[mid]) { // left half is sorted
+      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
+      else lo = mid + 1;
+    } else { // right half is sorted
+      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
+      else hi = mid - 1;
+    }
+  }
+  return -1;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Binary Search</div>
+      <div class="problem-insight">Direct template — lo/hi/mid loop.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Search in Rotated Sorted Array</div>
+      <div class="problem-insight">Determine which half is sorted; check if target falls in that range.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Find Minimum in Rotated Sorted Array</div>
+      <div class="problem-insight">If nums[mid] &gt; nums[hi], minimum is in the right half; otherwise left half.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Koko Eating Bananas</div>
+      <div class="problem-insight">Binary search on answer (speed k). feasible(k) = can all piles be eaten in h hours at speed k?</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 2: Replace Sorting content div**
+
+Find `<!-- CONTENT: sorting -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Sorting</div>
+  <div class="algo-tagline">Know the built-in, understand merge sort's divide-and-conquer, and recognize when sorting unlocks a simpler solution.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Sort before applying two pointers or binary search</li>
+    <li>Merge intervals (sort by start time first)</li>
+    <li>Custom sort comparator (sort by frequency, by second element, etc.)</li>
+    <li>Sort Colors (Dutch National Flag — 3-way partition)</li>
+  </ul></div>
+
+  <h3>Diagram — Merge Sort divide &amp; conquer</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    A["[5,3,8,1,4,2]"]:::root --> B["[5,3,8]"]:::left
+    A --> C["[1,4,2]"]:::right
+    B --> D["[5]"]:::base
+    B --> E["[3,8]"]:::left
+    C --> F["[1]"]:::base
+    C --> G["[4,2]"]:::right
+    E --> H["[3]"]:::base
+    E --> I["[8]"]:::base
+    G --> J["[4]"]:::base
+    G --> K["[2]"]:::base
+    H & I --> L["[3,8]"]:::merge
+    J & K --> M["[2,4]"]:::merge
+    D & L --> N["[3,5,8]"]:::merge
+    F & M --> O["[1,2,4]"]:::merge
+    N & O --> P["[1,2,3,4,5,8]"]:::result
+    classDef root fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef left fill:#a855f7,stroke:#9333ea,color:#fff
+    classDef right fill:#f97316,stroke:#ea580c,color:#000
+    classDef base fill:#475569,stroke:#64748b,color:#e2e8f0
+    classDef merge fill:#eab308,stroke:#ca8a04,color:#000
+    classDef result fill:#22c55e,stroke:#16a34a,color:#000
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">Merge Sort: O(n log n) time, O(n) space — stable
+Quick Sort: O(n log n) avg, O(n²) worst, O(log n) space — in-place
+Built-in JS/TS Array.sort(): TimSort (merge+insertion), O(n log n), stable</div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Built-in sort — always know your comparator
+const nums = [3, 1, 4, 1, 5];
+nums.sort((a, b) => a - b); // ascending
+nums.sort((a, b) => b - a); // descending
+
+// Sort objects by property
+const items = [{ name: 'b', freq: 3 }, { name: 'a', freq: 5 }];
+items.sort((a, b) => b.freq - a.freq); // by frequency descending
+
+// Merge Sort (for understanding — use built-in in interviews)
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) return arr;
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+  return merge(left, right);
+}
+
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0, j = 0;
+  while (i < left.length && j < right.length) {
+    if (left[i] <= right[j]) result.push(left[i++]);
+    else result.push(right[j++]);
+  }
+  return result.concat(left.slice(i)).concat(right.slice(j));
+}
+
+// Sort Colors — Dutch National Flag (O(n), O(1) space)
+function sortColors(nums: number[]): void {
+  let lo = 0, mid = 0, hi = nums.length - 1;
+  while (mid <= hi) {
+    if (nums[mid] === 0) { [nums[lo], nums[mid]] = [nums[mid], nums[lo]]; lo++; mid++; }
+    else if (nums[mid] === 1) { mid++; }
+    else { [nums[mid], nums[hi]] = [nums[hi], nums[mid]]; hi--; }
+  }
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Merge Intervals</div>
+      <div class="problem-insight">Sort by start time; merge overlapping intervals greedily.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Sort Colors</div>
+      <div class="problem-insight">Dutch National Flag: three pointers (lo, mid, hi) partition array into 0s, 1s, 2s in one pass.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Top K Frequent Elements</div>
+      <div class="problem-insight">Count frequencies with a map, then sort by frequency (or use a min-heap of size k).</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 3: Verify both tabs in browser**
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add dsa-cheatsheet.html && git commit -m "feat: add Binary Search and Sorting tabs"
+```
+
+---
+
+### Task 7: Monotonic Stack
+
+**Files:**
+- Modify: `dsa-cheatsheet.html`
+
+- [ ] **Step 1: Replace Monotonic Stack content div**
+
+Find `<!-- CONTENT: mono-stack -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Monotonic Stack</div>
+  <div class="algo-tagline">A stack that maintains elements in monotonically increasing or decreasing order. Pop when the invariant would be violated.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Next Greater Element (first larger value to the right)</li>
+    <li>Previous Smaller Element</li>
+    <li>Daily Temperatures (days until warmer)</li>
+    <li>Largest Rectangle in Histogram</li>
+    <li>Any "nearest larger/smaller" pattern</li>
+  </ul></div>
+
+  <h3>Diagram — Next Greater Element for [2, 1, 5, 3, 6]</h3>
+  <div class="diagram-box"><div class="ascii-diagram">Walk left-to-right. Stack holds INDICES of elements waiting for their next greater.
+Pop when current element > stack top (stack top found its answer).
+
+arr   =  [ 2,  1,  5,  3,  6 ]
+result=  [-1, -1, -1, -1, -1 ]   (initialize: no answer yet)
+
+i=0: stack=[]        → push 0           stack=[0]        (waiting: 2)
+i=1: arr[1]=1 ≤ arr[0]=2 → push 1      stack=[0,1]      (waiting: 2,1)
+i=2: arr[2]=5 > arr[1]=1 → pop 1, result[1]=5            stack=[0]
+     arr[2]=5 > arr[0]=2 → pop 0, result[0]=5            stack=[]
+     → push 2                           stack=[2]        (waiting: 5)
+i=3: arr[3]=3 ≤ arr[2]=5 → push 3      stack=[2,3]      (waiting: 5,3)
+i=4: arr[4]=6 > arr[3]=3 → pop 3, result[3]=6            stack=[2]
+     arr[4]=6 > arr[2]=5 → pop 2, result[2]=6            stack=[]
+     → push 4                           stack=[4]
+
+End: remaining stack indices → result stays -1
+result = [5, 5, 6, 6, -1]  ✓</div></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Next Greater Element
+function nextGreaterElement(nums: number[]): number[] {
+  const result = new Array(nums.length).fill(-1);
+  const stack: number[] = []; // indices of elements awaiting answer
+
+  for (let i = 0; i < nums.length; i++) {
+    // Pop elements that found their next greater
+    while (stack.length && nums[i] > nums[stack[stack.length - 1]]) {
+      const idx = stack.pop()!;
+      result[idx] = nums[i];
+    }
+    stack.push(i);
+  }
+
+  return result; // remaining in stack have no next greater → -1
+}
+
+// Daily Temperatures — days until warmer
+function dailyTemperatures(temps: number[]): number[] {
+  const result = new Array(temps.length).fill(0);
+  const stack: number[] = []; // indices
+
+  for (let i = 0; i < temps.length; i++) {
+    while (stack.length && temps[i] > temps[stack[stack.length - 1]]) {
+      const idx = stack.pop()!;
+      result[idx] = i - idx; // days waited
+    }
+    stack.push(i);
+  }
+
+  return result;
+}
+
+// Monotonic INCREASING stack (for "previous smaller" or histogram problems)
+// Keep stack in increasing order; pop when current <= top
+function largestRectangleInHistogram(heights: number[]): number {
+  const stack: number[] = [];
+  let maxArea = 0;
+  const h = [...heights, 0]; // sentinel to flush stack at end
+
+  for (let i = 0; i < h.length; i++) {
+    while (stack.length && h[i] < h[stack[stack.length - 1]]) {
+      const height = h[stack.pop()!];
+      const width = stack.length === 0 ? i : i - stack[stack.length - 1] - 1;
+      maxArea = Math.max(maxArea, height * width);
+    }
+    stack.push(i);
+  }
+
+  return maxArea;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Daily Temperatures</div>
+      <div class="problem-insight">Monotonic decreasing stack of indices; when warmer day found, pop and record difference.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Next Greater Element I</div>
+      <div class="problem-insight">Build next-greater map for nums2 using the stack; then look up each element of nums1.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Largest Rectangle in Histogram</div>
+      <div class="problem-insight">Monotonic increasing stack; pop when a shorter bar is found to compute max rectangle bounded by popped bar.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 2: Verify in browser**
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add dsa-cheatsheet.html && git commit -m "feat: add Monotonic Stack tab"
+```
+
+---
+
+### Task 8: Dynamic Programming — 1D and 2D
+
+**Files:**
+- Modify: `dsa-cheatsheet.html`
+
+- [ ] **Step 1: Replace 1D DP content div**
+
+Find `<!-- CONTENT: dp-1d -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">1D Dynamic Programming</div>
+  <div class="algo-tagline">Break the problem into overlapping subproblems. Store results to avoid recomputation. Build bottom-up from base cases.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>"How many ways to reach X?"</li>
+    <li>"Maximum/minimum value you can achieve"</li>
+    <li>"Can you reach the end / make the target?"</li>
+    <li>Decisions at each step affect future options (overlapping subproblems)</li>
+    <li>Key signal: brute-force recursion has repeated subproblems</li>
+  </ul></div>
+
+  <h3>Diagram — House Robber recurrence + dp table</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    R["rob(nums):\nmax money without adjacent"]:::root
+    R --> F["Recurrence:\ndp[i] = max(dp[i-1], dp[i-2] + nums[i])"]:::formula
+    F --> B1["dp[i-1]: skip house i\n(best without house i)"]:::choice1
+    F --> B2["dp[i-2] + nums[i]: rob house i\n(must skip i-1)"]:::choice2
+    classDef root fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef formula fill:#a855f7,stroke:#9333ea,color:#fff
+    classDef choice1 fill:#475569,stroke:#64748b,color:#e2e8f0
+    classDef choice2 fill:#22c55e,stroke:#16a34a,color:#000
+  </div>
+  <div style="margin-top:16px;overflow-x:auto">
+  <table class="dp-table">
+    <tr><th>index i</th><th>nums[i]</th><th>dp[i]</th><th>decision</th></tr>
+    <tr><td class="dp-base">0</td><td class="dp-base">2</td><td class="dp-base">2</td><td>base case</td></tr>
+    <tr><td class="dp-base">1</td><td class="dp-base">7</td><td class="dp-base">7</td><td>max(2, 7) = 7</td></tr>
+    <tr><td class="dp-computed">2</td><td class="dp-computed">9</td><td class="dp-computed">11</td><td>max(7, 2+9) = 11</td></tr>
+    <tr><td class="dp-computed">3</td><td class="dp-computed">3</td><td class="dp-computed">11</td><td>max(11, 7+3) = 11</td></tr>
+    <tr><td class="dp-answer">4</td><td class="dp-answer">1</td><td class="dp-answer">12</td><td>max(11, 11+1) = 12 ✓</td></tr>
+  </table>
+  </div>
+  </div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Define the subproblem:</strong> What does dp[i] mean? (e.g., "max money robbing houses 0..i")</li>
+    <li><strong>Write the recurrence:</strong> How does dp[i] depend on previous values?</li>
+    <li><strong>Identify base cases:</strong> dp[0], dp[1], etc.</li>
+    <li><strong>Build bottom-up:</strong> Fill dp array from index 0 upward.</li>
+    <li><strong>Space optimization:</strong> If dp[i] only needs dp[i-1] and dp[i-2], use two variables instead of an array.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// House Robber — dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+function rob(nums: number[]): number {
+  if (nums.length === 1) return nums[0];
+  let prev2 = nums[0];
+  let prev1 = Math.max(nums[0], nums[1]);
+
+  for (let i = 2; i < nums.length; i++) {
+    const curr = Math.max(prev1, prev2 + nums[i]);
+    prev2 = prev1;
+    prev1 = curr;
+  }
+
+  return prev1;
+}
+
+// Climbing Stairs — dp[i] = dp[i-1] + dp[i-2]  (Fibonacci variant)
+function climbStairs(n: number): number {
+  if (n <= 2) return n;
+  let a = 1, b = 2;
+  for (let i = 3; i <= n; i++) {
+    [a, b] = [b, a + b];
+  }
+  return b;
+}
+
+// Coin Change — dp[i] = min coins to make amount i
+function coinChange(coins: number[], amount: number): number {
+  const dp = new Array(amount + 1).fill(Infinity);
+  dp[0] = 0;
+
+  for (let i = 1; i <= amount; i++) {
+    for (const coin of coins) {
+      if (coin <= i) {
+        dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+      }
+    }
+  }
+
+  return dp[amount] === Infinity ? -1 : dp[amount];
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Climbing Stairs</div>
+      <div class="problem-insight">dp[i] = dp[i-1] + dp[i-2]. Fibonacci. Base: dp[1]=1, dp[2]=2.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">House Robber</div>
+      <div class="problem-insight">At each house: rob (skip previous) vs skip (keep previous best). Space-optimize to two variables.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Coin Change</div>
+      <div class="problem-insight">dp[amount] = min coins. Inner loop over all coins; dp[i] = min(dp[i], dp[i-coin]+1).</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Word Break</div>
+      <div class="problem-insight">dp[i] = true if s[0..i] can be segmented. For each i, try all words ending at i.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 2: Replace 2D DP content div**
+
+Find `<!-- CONTENT: dp-2d -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">2D Dynamic Programming</div>
+  <div class="algo-tagline">State depends on two variables. Build a 2D table, fill it systematically, read the answer from a corner or specific cell.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Grid path counting / min-cost path (Unique Paths, Min Path Sum)</li>
+    <li>Two-sequence problems (Longest Common Subsequence, Edit Distance)</li>
+    <li>String matching with flexibility (wildcards, typos)</li>
+    <li>Knapsack-style problems</li>
+  </ul></div>
+
+  <h3>Diagram — Unique Paths (3×4 grid)</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph LR
+    R["Recurrence:\ndp[i][j] = dp[i-1][j] + dp[i][j-1]\n(paths from above + paths from left)"]:::formula
+    B["Base cases:\ndp[0][j] = 1 (top row)\ndp[i][0] = 1 (left column)"]:::base
+    classDef formula fill:#a855f7,stroke:#9333ea,color:#fff
+    classDef base fill:#22c55e,stroke:#16a34a,color:#000
+  </div>
+  <div style="margin-top:16px;overflow-x:auto">
+  <table class="dp-table">
+    <tr><th></th><th>j=0</th><th>j=1</th><th>j=2</th><th>j=3</th></tr>
+    <tr><th>i=0</th><td class="dp-base">1</td><td class="dp-base">1</td><td class="dp-base">1</td><td class="dp-base">1</td></tr>
+    <tr><th>i=1</th><td class="dp-base">1</td><td class="dp-computed">2</td><td class="dp-computed">3</td><td class="dp-computed">4</td></tr>
+    <tr><th>i=2</th><td class="dp-base">1</td><td class="dp-computed">3</td><td class="dp-computed">6</td><td class="dp-answer">10</td></tr>
+  </table>
+  <div class="ascii-diagram" style="margin-top:10px">Answer: dp[2][3] = 10 unique paths ✓</div>
+  </div>
+
+  <h3>LCS Diagram (s1="ABCB", s2="BCAB")</h3>
+  <div style="margin-top:12px;overflow-x:auto">
+  <table class="dp-table">
+    <tr><th></th><th>""</th><th>B</th><th>C</th><th>A</th><th>B</th></tr>
+    <tr><th>""</th><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td></tr>
+    <tr><th>A</th><td class="dp-base">0</td><td class="dp-computed">0</td><td class="dp-computed">0</td><td class="dp-computed">1</td><td class="dp-computed">1</td></tr>
+    <tr><th>B</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">1</td><td class="dp-computed">1</td><td class="dp-computed">2</td></tr>
+    <tr><th>C</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">2</td><td class="dp-computed">2</td><td class="dp-computed">2</td></tr>
+    <tr><th>B</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">2</td><td class="dp-computed">2</td><td class="dp-answer">3</td></tr>
+  </table>
+  <div class="ascii-diagram" style="margin-top:8px">LCS = 3 ("BCB") ✓
+Rule: if s1[i]==s2[j] → dp[i][j] = dp[i-1][j-1] + 1
+      else            → dp[i][j] = max(dp[i-1][j], dp[i][j-1])</div>
+  </div>
+  </div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Unique Paths
+function uniquePaths(m: number, n: number): number {
+  const dp = Array.from({ length: m }, () => new Array(n).fill(1));
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      dp[i][j] = dp[i-1][j] + dp[i][j-1];
+    }
+  }
+  return dp[m-1][n-1];
+}
+
+// Longest Common Subsequence
+function lcs(text1: string, text2: string): number {
+  const m = text1.length, n = text2.length;
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (text1[i-1] === text2[j-1]) {
+        dp[i][j] = dp[i-1][j-1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+      }
+    }
+  }
+
+  return dp[m][n];
+}
+
+// Edit Distance (Levenshtein)
+function minDistance(word1: string, word2: string): number {
+  const m = word1.length, n = word2.length;
+  const dp = Array.from({ length: m + 1 }, (_, i) =>
+    Array.from({ length: n + 1 }, (_, j) => i === 0 ? j : j === 0 ? i : 0)
+  );
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (word1[i-1] === word2[j-1]) {
+        dp[i][j] = dp[i-1][j-1]; // no operation needed
+      } else {
+        dp[i][j] = 1 + Math.min(
+          dp[i-1][j],   // delete from word1
+          dp[i][j-1],   // insert into word1
+          dp[i-1][j-1]  // replace
+        );
+      }
+    }
+  }
+
+  return dp[m][n];
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Unique Paths</div>
+      <div class="problem-insight">dp[i][j] = paths from above + paths from left. Base: entire top row and left column = 1.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Longest Common Subsequence</div>
+      <div class="problem-insight">If chars match: dp[i][j]=dp[i-1][j-1]+1. Else: max of skipping either char.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Edit Distance</div>
+      <div class="problem-insight">3 operations (insert/delete/replace) map to 3 neighboring cells in the DP table.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 3: Verify DP tabs in browser — confirm tables have correct colored cells, Mermaid renders**
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add dsa-cheatsheet.html && git commit -m "feat: add 1D DP and 2D DP tabs with tables and diagrams"
+```
+
+---
+
+### Task 9: Backtracking
+
+**Files:**
+- Modify: `dsa-cheatsheet.html`
+
+- [ ] **Step 1: Replace Backtracking content div**
+
+Find `<!-- CONTENT: backtracking -->` and replace inner HTML with:
+
+```html
+  <div class="algo-name">Backtracking</div>
+  <div class="algo-tagline">Build a solution incrementally. At each step, try a choice; if it leads to a dead end, undo it (backtrack) and try the next choice.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Generate all subsets, permutations, or combinations</li>
+    <li>Constraint satisfaction (N-Queens, Sudoku)</li>
+    <li>Find all paths in a graph satisfying a condition</li>
+    <li>Word search on a grid</li>
+    <li>Key signal: "find all possible..." or "generate all..."</li>
+  </ul></div>
+
+  <h3>Diagram — Subsets of [1, 2, 3]</h3>
+  <div class="diagram-box">
+  <div class="mermaid">
+graph TD
+    Root["[ ]"]:::root
+    Root -->|"add 1"| A["[1]"]:::branch
+    Root -->|"add 2"| B["[2]"]:::branch
+    Root -->|"add 3"| C["[3]"]:::branch
+    A -->|"add 2"| D["[1,2]"]:::branch2
+    A -->|"add 3"| E["[1,3]"]:::branch2
+    B -->|"add 3"| F["[2,3]"]:::branch2
+    D -->|"add 3"| G["[1,2,3]"]:::leaf
+    classDef root fill:#3b82f6,stroke:#2563eb,color:#fff
+    classDef branch fill:#f97316,stroke:#ea580c,color:#000
+    classDef branch2 fill:#a855f7,stroke:#9333ea,color:#fff
+    classDef leaf fill:#22c55e,stroke:#16a34a,color:#000
+  </div>
+  <div class="ascii-diagram" style="margin-top:12px">At each node: CHOOSE (add element) → RECURSE → UNCHOOSE (remove element)
+Result (all subsets): [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]
+
+Pruning: skip invalid choices early to avoid exploring dead branches.
+Example (Combination Sum): if remaining < 0, stop recursing immediately.</div>
+  </div>
+
+  <h3>How it works — The universal template</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Base case:</strong> When is the current path a valid complete solution? Add it to results.</li>
+    <li><strong>Loop over choices:</strong> For each valid choice at the current step...</li>
+    <li><strong>Choose:</strong> Add the choice to the current path.</li>
+    <li><strong>Recurse:</strong> Call backtrack with updated state.</li>
+    <li><strong>Unchoose:</strong> Remove the choice (restore state for next iteration).</li>
+    <li><strong>Prune early:</strong> Skip choices that can't lead to a valid solution.</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Universal backtracking template
+function backtrack(
+  path: number[],
+  start: number,
+  choices: number[],
+  results: number[][]
+): void {
+  results.push([...path]); // record current subset (or check base case first)
+
+  for (let i = start; i < choices.length; i++) {
+    path.push(choices[i]);              // CHOOSE
+    backtrack(path, i + 1, choices, results); // RECURSE (i+1 avoids reuse)
+    path.pop();                         // UNCHOOSE
+  }
+}
+
+// Subsets
+function subsets(nums: number[]): number[][] {
+  const results: number[][] = [];
+  backtrack([], 0, nums, results);
+  return results;
+}
+
+// Permutations — use a visited set instead of start index
+function permutations(nums: number[]): number[][] {
+  const results: number[][] = [];
+  const used = new Array(nums.length).fill(false);
+
+  function bt(path: number[]): void {
+    if (path.length === nums.length) { results.push([...path]); return; }
+    for (let i = 0; i < nums.length; i++) {
+      if (used[i]) continue;
+      used[i] = true;
+      path.push(nums[i]);
+      bt(path);
+      path.pop();
+      used[i] = false;
+    }
+  }
+
+  bt([]);
+  return results;
+}
+
+// Combination Sum — elements can be reused; prune if sum exceeds target
+function combinationSum(candidates: number[], target: number): number[][] {
+  const results: number[][] = [];
+
+  function bt(path: number[], start: number, remaining: number): void {
+    if (remaining === 0) { results.push([...path]); return; }
+    if (remaining < 0) return; // PRUNE
+
+    for (let i = start; i < candidates.length; i++) {
+      path.push(candidates[i]);
+      bt(path, i, remaining - candidates[i]); // i (not i+1) allows reuse
+      path.pop();
+    }
+  }
+
+  bt([], 0, target);
+  return results;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Subsets</div>
+      <div class="problem-insight">Add path to results at every call (before looping). Use start index to avoid duplicates.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Permutations</div>
+      <div class="problem-insight">No start index needed — use a used[] boolean array so each element is picked once per path.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Combination Sum</div>
+      <div class="problem-insight">Same element can be reused — pass i (not i+1). Prune when remaining &lt; 0.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Word Search</div>
+      <div class="problem-insight">DFS/backtrack on grid — mark cell visited, recurse in 4 directions, unmark on return.</div></div>
+    </div>
+  </div>
+```
+
+- [ ] **Step 2: Verify Backtracking tab in browser — confirm decision tree Mermaid diagram renders with colors**
+
+- [ ] **Step 3: Final check — click through all 17 tabs, confirm all render without errors**
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add dsa-cheatsheet.html && git commit -m "feat: add Backtracking tab — cheatsheet complete"
+```
+
+---
+
+## Self-Review
+
+**Spec coverage check:**
+- ✅ 17 tabs (Two Pointers, Sliding Window, Prefix Sums, Hash Maps & Sets, Fast & Slow, Linked List Reversal, Tree DFS, Tree BFS, BST, Graph BFS, Graph DFS, Binary Search, Sorting, Monotonic Stack, 1D DP, 2D DP, Backtracking)
+- ✅ Per-tab structure: header + tagline, when to use, diagram, walkthrough, TypeScript code template, practice problems
+- ✅ Mermaid diagrams with colored nodes for: Fast & Slow (linked list), Linked List Reversal (sequence), Tree DFS (traversal colors), Tree BFS (level colors), BST (search path), Graph BFS/DFS (frontier/path colors), Sorting (merge sort), 1D DP (recurrence), Backtracking (decision tree)
+- ✅ HTML tables with colored cells for: 1D DP (House Robber), 2D DP (Unique Paths, LCS)
+- ✅ ASCII diagrams for: Two Pointers, Sliding Window, Prefix Sums, Hash Maps, Monotonic Stack, Binary Search
+- ✅ TypeScript code templates throughout
+- ✅ 2-4 practice problems per tab with difficulty labels and key insights
+- ✅ Extra diagram detail for complex topics (DP, Backtracking)
+- ✅ Sorting marked as lower-priority but fully covered
+- ✅ Single HTML file, Mermaid via CDN, highlight.js for syntax highlighting
+- ✅ Tab switching with lazy Mermaid rendering per tab
