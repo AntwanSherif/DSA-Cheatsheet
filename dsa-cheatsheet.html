@@ -1457,7 +1457,118 @@ function sortColors(nums: number[]): void {
     </div>
   </div>
 </div>
-<div class="tab-content" id="mono-stack"><!-- CONTENT: mono-stack --></div>
+<div class="tab-content" id="mono-stack">
+  <div class="algo-name">Monotonic Stack</div>
+  <div class="algo-tagline">A stack that maintains elements in monotonically increasing or decreasing order. Pop when the invariant would be violated.</div>
+
+  <h3>When to use</h3>
+  <div class="when-box"><ul>
+    <li>Next Greater Element (first larger value to the right)</li>
+    <li>Previous Smaller Element</li>
+    <li>Daily Temperatures (days until warmer)</li>
+    <li>Largest Rectangle in Histogram</li>
+    <li>Any "nearest larger/smaller" pattern</li>
+  </ul></div>
+
+  <h3>Diagram — Next Greater Element for [2, 1, 5, 3, 6]</h3>
+  <div class="diagram-box"><div class="ascii-diagram">Walk left-to-right. Stack holds INDICES of elements waiting for their "next greater".
+Pop when current element &gt; stack top (that element found its answer).
+
+arr   =  [ 2,  1,  5,  3,  6 ]
+result=  [-1, -1, -1, -1, -1 ]   (initialize: no answer yet)
+
+i=0: stack=[]        → push 0           stack=[0]        (waiting: arr[0]=2)
+i=1: arr[1]=1 ≤ arr[0]=2 → push 1      stack=[0,1]      (waiting: 2,1)
+i=2: arr[2]=5 &gt; arr[1]=1 → pop 1, result[1]=5            stack=[0]
+     arr[2]=5 &gt; arr[0]=2 → pop 0, result[0]=5            stack=[]
+     → push 2                           stack=[2]        (waiting: arr[2]=5)
+i=3: arr[3]=3 ≤ arr[2]=5 → push 3      stack=[2,3]      (waiting: 5,3)
+i=4: arr[4]=6 &gt; arr[3]=3 → pop 3, result[3]=6            stack=[2]
+     arr[4]=6 &gt; arr[2]=5 → pop 2, result[2]=6            stack=[]
+     → push 4                           stack=[4]
+
+End: remaining stack indices stay -1
+result = [5, 5, 6, 6, -1]  ✓</div></div>
+
+  <h3>How it works</h3>
+  <div class="walkthrough"><ol>
+    <li><strong>Iterate through array.</strong> For each element at index i:</li>
+    <li>While stack is not empty AND <strong>current element &gt; arr[stack.top()]</strong>: pop and <strong>record answer</strong> for popped index.</li>
+    <li><strong>Push current index</strong> onto the stack.</li>
+    <li>After loop: any index still in stack has <strong>no next greater element</strong> (answer = -1).</li>
+    <li>Flip condition for monotonically increasing stack (previous smaller, histogram problems).</li>
+  </ol></div>
+
+  <h3>Code Template (TypeScript)</h3>
+  <div class="code-block"><pre><code class="language-typescript">// Next Greater Element
+function nextGreaterElement(nums: number[]): number[] {
+  const result = new Array(nums.length).fill(-1);
+  const stack: number[] = []; // indices of elements awaiting their answer
+
+  for (let i = 0; i &lt; nums.length; i++) {
+    while (stack.length && nums[i] &gt; nums[stack[stack.length - 1]]) {
+      const idx = stack.pop()!;
+      result[idx] = nums[i]; // nums[i] is the next greater for idx
+    }
+    stack.push(i);
+  }
+
+  return result; // remaining in stack → no next greater → stays -1
+}
+
+// Daily Temperatures — days until warmer
+function dailyTemperatures(temps: number[]): number[] {
+  const result = new Array(temps.length).fill(0);
+  const stack: number[] = []; // indices
+
+  for (let i = 0; i &lt; temps.length; i++) {
+    while (stack.length && temps[i] &gt; temps[stack[stack.length - 1]]) {
+      const idx = stack.pop()!;
+      result[idx] = i - idx; // number of days waited
+    }
+    stack.push(i);
+  }
+
+  return result;
+}
+
+// Largest Rectangle in Histogram (monotonic INCREASING stack)
+function largestRectangle(heights: number[]): number {
+  const stack: number[] = [];
+  let maxArea = 0;
+  const h = [...heights, 0]; // sentinel 0 flushes remaining stack at end
+
+  for (let i = 0; i &lt; h.length; i++) {
+    while (stack.length && h[i] &lt; h[stack[stack.length - 1]]) {
+      const height = h[stack.pop()!];
+      const width = stack.length === 0 ? i : i - stack[stack.length - 1] - 1;
+      maxArea = Math.max(maxArea, height * width);
+    }
+    stack.push(i);
+  }
+
+  return maxArea;
+}</code></pre></div>
+
+  <h3>Practice Problems</h3>
+  <div class="problems">
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Daily Temperatures</div>
+      <div class="problem-insight">Monotonic decreasing stack of indices; when warmer day found, pop and record difference.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-easy">Easy</span>
+      <div><div class="problem-name">Next Greater Element I</div>
+      <div class="problem-insight">Build next-greater map for nums2 using the monotonic stack; then look up each element of nums1.</div></div>
+    </div>
+    <div class="problem">
+      <span class="diff diff-medium">Medium</span>
+      <div><div class="problem-name">Largest Rectangle in Histogram</div>
+      <div class="problem-insight">Monotonic increasing stack; pop when a shorter bar found — popped bar's height × computed width = candidate area.</div></div>
+    </div>
+  </div>
+</div>
 <div class="tab-content" id="dp-1d"><!-- CONTENT: dp-1d --></div>
 <div class="tab-content" id="dp-2d"><!-- CONTENT: dp-2d --></div>
 <div class="tab-content" id="backtracking"><!-- CONTENT: backtracking --></div>
