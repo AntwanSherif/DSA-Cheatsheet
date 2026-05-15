@@ -2042,37 +2042,69 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Find a target in a sorted array</li>
-    <li>Find leftmost/rightmost position of a value</li>
-    <li>Search in a rotated sorted array</li>
-    <li><strong>Binary search on the answer</strong>: "minimum X such that condition holds" — if you can write a boolean function that flips from false→true at some threshold, binary search on it</li>
+    <li><strong>Find a target in a sorted array</strong>
+      <div class="w-desc">Given a sorted array and a value, return the index where that value lives, or report it is absent.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "sorted array" + "find the index of / return position of / search for a target value"</div>
+      <div class="w-ex">e.g. Binary Search</div>
+    </li>
+    <li><strong>Find leftmost or rightmost occurrence of a value</strong>
+      <div class="w-desc">Locate the first or last index where a value appears, or where a sorted transition (false → true) happens.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "first occurrence", "insert position", "lower bound", "leftmost index where condition holds"</div>
+      <div class="w-ex">e.g. Search Insert Position</div>
+    </li>
+    <li><strong>Search in a rotated sorted array</strong>
+      <div class="w-desc">The array was once sorted but then cyclically shifted; one of the two halves around mid is always fully sorted, which lets you decide which half to keep.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "rotated sorted array", "unknown pivot", "search in O(log n)"</div>
+      <div class="w-ex">e.g. Search in Rotated Sorted Array</div>
+    </li>
+    <li><strong>Binary search on the answer</strong>
+      <div class="w-desc">When a problem asks for the minimum value satisfying some condition, and you can write a feasibility check that flips false → true monotonically, binary search over the answer space directly.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum speed / capacity / days such that …", "find the smallest X where condition holds"</div>
+      <div class="w-ex">e.g. Koko Eating Bananas</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram</h3>
-  <div class="diagram-box"><div class="ascii-diagram">arr = [ 1,  3,  5,  7,  9, 11, 13, 15 ]   target = 7
-idx =   0   1   2   3   4   5   6   7
-       lo=0              hi=7
+  <h3>How it works — Binary search</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">arr    = [  1,  3,  5,  7,  9, 11, 13, 15 ]   target = 9
+indices =   0   1   2   3   4   5   6   7
 
-Step 1: mid = (0+7)//2 = 3  → arr[3]=7 == target ✓  return 3
+Loop runs while lo &le; hi.
+mid = lo + Math.floor((hi - lo) / 2)   (avoids integer overflow)
 
-More steps if no match:
-  arr[mid] &lt; target → lo = mid + 1  (discard left half)
-  arr[mid] &gt; target → hi = mid - 1  (discard right half)
-  lo &gt; hi           → not found
+Rules:
+  arr[mid] &lt; target  →  lo = mid + 1   (target must be in the right half)
+  arr[mid] &gt; target  →  hi = mid - 1   (target must be in the left half)
+  arr[mid] == target →  return mid      (found)
+  lo &gt; hi            →  return -1       (not found — loop exits)</div>
 
-Binary search on answer example (Koko Eating Bananas):
-  "What is the minimum speed k such that all piles eaten in h hours?"
-  → lo=1, hi=max(piles), binary search on k, check feasibility</div></div>
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   lo=0, hi=7
+   mid = 0 + floor((7-0)/2) = 3
+   arr[3] = 7   &lt; 9   →  lo = mid + 1 = 4</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Initial state: lo=0, hi=7.
+    mid = 3. arr[3] = 7 which is less than the target 9, so the target must lie
+    in the right half. We discard indices 0–3 by setting lo = 4. The loop
+    condition lo &le; hi (4 &le; 7) is still true, so we iterate.</div>
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Set lo=0, hi=n-1.</strong></li>
-    <li>Compute <strong>mid = lo + Math.floor((hi - lo) / 2)</strong> (avoids integer overflow).</li>
-    <li>If arr[mid] === target → found.</li>
-    <li>If arr[mid] &lt; target → <strong>lo = mid + 1</strong> (target in right half).</li>
-    <li>If arr[mid] &gt; target → <strong>hi = mid - 1</strong> (target in left half).</li>
-    <li>If lo &gt; hi → not found.</li>
-  </ol></div>
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   lo=4, hi=7
+   mid = 4 + floor((7-4)/2) = 5
+   arr[5] = 11  &gt; 9   →  hi = mid - 1 = 4</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> lo=4, hi=7. mid = 5. arr[5] = 11
+    which is greater than the target 9, so the target must lie in the left half.
+    We discard indices 5–7 by setting hi = 4. The loop condition lo &le; hi
+    (4 &le; 4) is still true, so we iterate.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   lo=4, hi=4
+   mid = 4 + floor((4-4)/2) = 4
+   arr[4] = 9  == 9   →  return 4  ✓</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> lo=4, hi=4. mid = 4. arr[4] = 9
+    equals the target. Return index 4. If instead the target were absent (e.g.,
+    target = 10), the next iteration would have lo &gt; hi and the loop would exit,
+    returning -1.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
