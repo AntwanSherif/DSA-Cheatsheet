@@ -907,7 +907,7 @@ Rule: if fast or fast.next reaches null → no cycle → return false.
    start:  slow=1, fast=1
    step 1: slow=2, fast=3
    step 2: slow=3, fast=5
-   step 3: slow=4, fast=null  ← fast.next is null → exit loop</div></div>
+   step 3 check: fast.next is null → while-condition fails → exit (slow stays put, no advance)</div></div>
   <div class="wm-note"><span class="wm-num">①</span> When there is no cycle fast eventually reaches the end of the list. After step 2 fast is at node 5; fast.next is null, so the while-condition <code>fast !== null &amp;&amp; fast.next !== null</code> fails and the loop exits. We return false — no meeting point was ever found.</div>
 
   <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
@@ -917,7 +917,7 @@ Rule: if fast or fast.next reaches null → no cycle → return false.
    step 2: slow=3, fast=5
    step 3: slow=4, fast=3  (fast wrapped: 5→6→3)
    step 4: slow=5, fast=5  ← slow === fast → cycle!</div></div>
-  <div class="wm-note"><span class="wm-num">②</span> Inside a cycle fast "laps" slow: fast moves two nodes per step while slow moves one, so fast gains one node on slow each iteration. They must eventually land on the same node. Here they meet at node 5 after step 4. The moment slow === fast we return true. The meeting point is somewhere inside the cycle — not necessarily the cycle entrance.</div>
+  <div class="wm-note"><span class="wm-num">②</span> Inside a cycle fast "laps" slow: fast moves two nodes per step while slow moves one, so within the cycle, fast closes the gap on slow by one node per iteration (fast moves 2, slow moves 1), so they are guaranteed to meet. They must eventually land on the same node. Here they meet at node 5 after step 4. The moment slow === fast we return true. The meeting point is somewhere inside the cycle — not necessarily the cycle entrance.</div>
 
   <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
    FIND-MIDDLE BONUS  (List A: 1→2→3→4→5)
@@ -1219,7 +1219,15 @@ relative to the left and right recursive calls.</div>
        visit(3)
    visit(4)
    recurse right of 4
-     visit(5)  visit(6)  visit(7)  (same pattern)
+     recurse left of 6
+       recurse left of 5 → null → return
+       visit(5)
+       recurse right of 5 → null → return
+     visit(6)
+     recurse right of 6
+       recurse left of 7 → null → return
+       visit(7)
+       recurse right of 7 → null → return
    Result: 1, 2, 3, 4, 5, 6, 7</div></div>
   <div class="wm-note"><span class="wm-num">②</span> In inorder the current node is recorded BETWEEN the two recursive calls: recurse left → visit node → recurse right. For any valid BST this ordering always produces the values in ascending sorted order (1,2,3,4,5,6,7 here). Use inorder to find the kth smallest element, validate a BST, or extract a sorted sequence without sorting.</div>
 
