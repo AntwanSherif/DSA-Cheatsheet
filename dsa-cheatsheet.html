@@ -1318,14 +1318,19 @@ First time we reach a target node = shortest path</div>
   </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">// BFS on adjacency list
-function bfs(graph: Map&lt;string, string[]&gt;, start: string): Map&lt;string, number&gt; {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Pattern — BFS on Adjacency List</span>
+    </div>
+    <div class="code-problem">Use when you need the shortest distances from a source node in an unweighted graph. Returns a map of node → minimum distance.</div>
+    <pre><code class="language-typescript">function bfs(graph: Map&lt;string, string[]&gt;, start: string): Map&lt;string, number&gt; {
   const dist = new Map&lt;string, number&gt;([[start, 0]]);
   const queue: string[] = [start];
 
   while (queue.length) {
     const node = queue.shift()!;
     for (const neighbor of graph.get(node) ?? []) {
+      // Mark visited at ENQUEUE time (not dequeue) to prevent adding duplicates to the queue.
       if (!dist.has(neighbor)) {
         dist.set(neighbor, dist.get(node)! + 1);
         queue.push(neighbor);
@@ -1334,13 +1339,21 @@ function bfs(graph: Map&lt;string, string[]&gt;, start: string): Map&lt;string, 
   }
 
   return dist; // dist.get(target) = shortest path length
-}
+}</code></pre>
+  </div>
 
-// BFS on a 2D grid (common for island/matrix problems)
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Rotting Oranges</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">A grid has fresh oranges (1), rotten oranges (2), and empty cells (0). Every minute, rotten oranges infect adjacent fresh ones. Return the minimum minutes to rot all fresh oranges, or -1 if impossible.</div>
+    <pre><code class="language-typescript">// Multi-source BFS: enqueue ALL initially rotten oranges at minute 0.
+// This ensures rotten oranges spread simultaneously from all sources (not sequentially).
 function bfsGrid(grid: number[][], startR: number, startC: number): number {
   const rows = grid.length, cols = grid[0].length;
   const visited = Array.from({ length: rows }, () =&gt; new Array(cols).fill(false));
-  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]]; // up, down, left, right — 4-directional spread
   const queue: [number, number, number][] = [[startR, startC, 0]];
   visited[startR][startC] = true;
   let steps = 0;
@@ -1350,8 +1363,8 @@ function bfsGrid(grid: number[][], startR: number, startC: number): number {
     steps = dist;
     for (const [dr, dc] of dirs) {
       const nr = r + dr, nc = c + dc;
-      if (nr &gt;= 0 && nr &lt; rows && nc &gt;= 0 && nc &lt; cols
-          && !visited[nr][nc] && grid[nr][nc] !== 0) {
+      if (nr &gt;= 0 &amp;&amp; nr &lt; rows &amp;&amp; nc &gt;= 0 &amp;&amp; nc &lt; cols
+          &amp;&amp; !visited[nr][nc] &amp;&amp; grid[nr][nc] !== 0) {
         visited[nr][nc] = true;
         queue.push([nr, nc, dist + 1]);
       }
@@ -1359,7 +1372,9 @@ function bfsGrid(grid: number[][], startR: number, startC: number): number {
   }
 
   return steps;
-}</code></pre></div>
+  // After BFS: check if any fresh orange (grid[r][c] === 1) remains → return -1
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
@@ -1419,8 +1434,33 @@ visited set prevents revisiting nodes in cycles</div>
   </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">// Count connected components
-function countComponents(n: number, edges: number[][]): number {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Number of Islands</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given an <code>m × n</code> grid of '1's (land) and '0's (water), return the number of islands. An island is formed by connecting adjacent land cells horizontally or vertically.</div>
+    <pre><code class="language-typescript">// Mutation trick: sink '1' → '0' to mark a cell visited without a separate visited set.
+// 4-directional recursion visits all connected land cells in one call.
+function dfsGrid(grid: string[][], r: number, c: number): void {
+  if (r &lt; 0 || r &gt;= grid.length || c &lt; 0 || c &gt;= grid[0].length) return;
+  if (grid[r][c] !== '1') return;
+  grid[r][c] = '0'; // sink: mark visited
+  dfsGrid(grid, r+1, c); dfsGrid(grid, r-1, c);
+  dfsGrid(grid, r, c+1); dfsGrid(grid, r, c-1);
+}
+
+// Call dfsGrid for every unvisited '1'; count starts = number of islands.</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Number of Connected Components in Undirected Graph</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given <code>n</code> nodes (0 to n-1) and a list of undirected edges, return the number of connected components in the graph.</div>
+    <pre><code class="language-typescript">function countComponents(n: number, edges: number[][]): number {
+  // Build adjacency list first (undirected: add both directions).
   const adj = new Map&lt;number, number[]&gt;();
   for (let i = 0; i &lt; n; i++) adj.set(i, []);
   for (const [a, b] of edges) {
@@ -1438,36 +1478,36 @@ function countComponents(n: number, edges: number[][]): number {
     }
   }
 
+  // Iterate ALL nodes — graph may be disconnected, so not all nodes are reachable from node 0.
   for (let i = 0; i &lt; n; i++) {
     if (!visited.has(i)) { dfs(i); components++; }
   }
 
   return components;
-}
+}</code></pre>
+  </div>
 
-// DFS on 2D grid (flood fill / island sink)
-function dfsGrid(grid: string[][], r: number, c: number): void {
-  if (r &lt; 0 || r &gt;= grid.length || c &lt; 0 || c &gt;= grid[0].length) return;
-  if (grid[r][c] !== '1') return;
-  grid[r][c] = '0'; // mark visited by mutating
-  dfsGrid(grid, r+1, c); dfsGrid(grid, r-1, c);
-  dfsGrid(grid, r, c+1); dfsGrid(grid, r, c-1);
-}
-
-// Course schedule — cycle detection (0=unvisited, 1=visiting, 2=done)
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Course Schedule</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given <code>numCourses</code> courses and prerequisites <code>[a, b]</code> (must take b before a), determine if you can finish all courses — i.e., the directed graph has no cycle.</div>
+    <pre><code class="language-typescript">// 3-color DFS: 0 = unvisited, 1 = in current DFS path (cycle risk), 2 = fully processed (safe).
+// State 1 on re-entry means we found a back edge → cycle exists.
 function canFinish(numCourses: number, prerequisites: number[][]): boolean {
   const adj = Array.from({ length: numCourses }, () =&gt; [] as number[]);
-  for (const [a, b] of prerequisites) adj[b].push(a);
+  for (const [a, b] of prerequisites) adj[b].push(a); // b → a (take b before a)
   const state = new Array(numCourses).fill(0);
 
   function dfs(node: number): boolean {
-    if (state[node] === 1) return false; // cycle!
-    if (state[node] === 2) return true;  // already processed
-    state[node] = 1;
+    if (state[node] === 1) return false; // back edge: found a cycle
+    if (state[node] === 2) return true;  // already fully processed: safe
+    state[node] = 1; // mark: currently being explored
     for (const next of adj[node]) {
       if (!dfs(next)) return false;
     }
-    state[node] = 2;
+    state[node] = 2; // mark: done
     return true;
   }
 
@@ -1475,7 +1515,8 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
     if (!dfs(i)) return false;
   }
   return true;
-}</code></pre></div>
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
