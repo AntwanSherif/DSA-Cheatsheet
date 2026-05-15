@@ -1649,40 +1649,91 @@ function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNod
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Shortest path / minimum steps in an unweighted graph or grid</li>
-    <li>Level-by-level graph exploration</li>
-    <li>Rotting Oranges, 01-Matrix type problems</li>
-    <li>Word Ladder (transform one word to another)</li>
+    <li><strong>Shortest path / minimum steps in an unweighted graph or grid</strong>
+      <div class="w-desc">BFS explores nodes in order of increasing distance from the source, so the first time it reaches any node that distance is guaranteed minimal.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum steps", "shortest path", "fewest moves", unweighted edges (or uniform cost)</div>
+      <div class="w-ex">e.g. Word Ladder</div>
+    </li>
+    <li><strong>Level-by-level graph exploration</strong>
+      <div class="w-desc">Process all nodes at distance d before any node at distance d+1; useful when you need to track which "generation" or "wave" a node belongs to.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "group by distance from source", "all nodes reachable in k steps", "frontier expansion"</div>
+      <div class="w-ex">e.g. Pattern — BFS on Adjacency List</div>
+    </li>
+    <li><strong>Multi-source simultaneous spread</strong>
+      <div class="w-desc">Seed the queue with all source nodes at step 0; BFS naturally propagates outward from every source in parallel, so each cell is reached at its true minimum distance to any source.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "multiple starting points spread simultaneously", "time to infect / rot all cells", "01-Matrix distance to nearest 0"</div>
+      <div class="w-ex">e.g. Rotting Oranges</div>
+    </li>
+    <li><strong>Word transformation / state-space search</strong>
+      <div class="w-desc">Model each state as a node and each valid one-step transformation as an edge; BFS finds the minimum number of transformations to reach the goal state.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "transform X to Y one step at a time", "minimum operations to reach state", "shortest sequence of moves"</div>
+      <div class="w-ex">e.g. Word Ladder</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — BFS frontier expansion</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A((A\nstart)):::start --> B((B\nlevel 1)):::l1
-    A --> C((C\nlevel 1)):::l1
-    B --> D((D\nlevel 2)):::l2
-    B --> E((E\nlevel 2)):::l2
-    C --> F((F\nlevel 2)):::l2
-    classDef start fill:#22c55e,stroke:#16a34a,color:#000
-    classDef l1 fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef l2 fill:#f97316,stroke:#ea580c,color:#000
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">Queue: [A]
-Dequeue A (dist=0) → enqueue neighbors B, C   visited={A}
-Dequeue B (dist=1) → enqueue D, E             visited={A,B}
-Dequeue C (dist=1) → enqueue F                visited={A,B,C}
-Dequeue D (dist=2) → no unvisited neighbors   ...
-First time we reach a target node = shortest path</div>
-  </div>
+  <h3>How it works — Graph BFS (shortest unweighted path)</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Graph (undirected, unweighted):
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Enqueue start node, mark visited.</strong></li>
-    <li>While queue is not empty: <strong>dequeue a node.</strong></li>
-    <li>For each unvisited neighbor: <strong>mark visited, enqueue, record distance.</strong></li>
-    <li>The first time you reach the target = shortest distance.</li>
-  </ol></div>
+  A ── B ── D
+  |    \── E
+  +── C ── F   ← target
+
+Adjacency: A:[B,C]  B:[A,D,E]  C:[A,F]  D:[B]  E:[B]  F:[C]
+Goal: shortest path distance from A to F.
+Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   Seed: mark A visited, enqueue A
+   queue = [A]   visited = {A}   dist = {A:0}</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Before the while-loop, mark the start
+    node A as visited and push it with distance 0. Marking at enqueue time
+    (not dequeue time) prevents the same node from being added to the queue
+    more than once.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   Dequeue A (dist=0)
+   Neighbors of A: B (unvisited) → mark, enqueue dist=1
+                   C (unvisited) → mark, enqueue dist=1
+   queue = [B, C]   visited = {A, B, C}   dist = {A:0, B:1, C:1}</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Dequeue A. Iterate over A's neighbors:
+    B is not yet visited — mark it, set dist[B]=1, enqueue. C is not yet
+    visited — mark it, set dist[C]=1, enqueue. Both level-1 nodes are now in
+    the queue.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   Dequeue B (dist=1)
+   Neighbors of B: A (visited, skip)
+                   D (unvisited) → mark, enqueue dist=2
+                   E (unvisited) → mark, enqueue dist=2
+   queue = [C, D, E]   visited = {A, B, C, D, E}</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Dequeue B. Neighbor A is already
+    visited — skip it to avoid revisiting. Neighbors D and E are unvisited —
+    mark each, record dist=2, and enqueue. This is the neighbor-skipping
+    mechanism that keeps BFS O(V + E).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   Dequeue C (dist=1)
+   Neighbors of C: A (visited, skip)
+                   F (unvisited) → mark, enqueue dist=2
+   queue = [D, E, F]   visited = {A, B, C, D, E, F}</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> Dequeue C. Neighbor A is visited —
+    skip. Neighbor F is unvisited — mark it, set dist[F]=2, enqueue. F is
+    the target node; because we enqueue at the moment of discovery, dist[F]=2
+    is already the shortest path.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+   Dequeue D (dist=2): neighbors = [B] all visited, skip
+   Dequeue E (dist=2): neighbors = [B] all visited, skip
+   Dequeue F (dist=2): F == target → return dist[F] = 2  ✓
+   queue = []</div></div>
+  <div class="wm-note"><span class="wm-num">⑤</span> Dequeue D: its only neighbor B is
+    visited — nothing enqueued. Dequeue E: its only neighbor B is visited —
+    nothing enqueued. Dequeue F: F is the target — return dist[F] = 2, the
+    shortest path length. The queue is now empty; if no target had been found
+    the while-loop would exit here and we would return -1 (or infinity) to
+    signal unreachable.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
