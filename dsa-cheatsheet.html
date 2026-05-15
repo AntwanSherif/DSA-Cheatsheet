@@ -723,27 +723,68 @@ function rangeSum(prefix: number[], i: number, j: number): number {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Count element frequencies</li>
-    <li>"Have I seen this before?" — existence check in O(1)</li>
-    <li>Find complement: target − current (Two Sum)</li>
-    <li>Group elements by a computed key (anagrams)</li>
-    <li>Deduplicate or track unique elements</li>
+    <li><strong>Count element frequencies</strong>
+      <div class="w-desc">Iterate once, incrementing each element's count in a map; then query the map for majority elements, anagram comparisons, or character distributions.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "frequency", "count occurrences", "most common", "anagram", "character count"</div>
+      <div class="w-ex">e.g. Valid Anagram</div>
+    </li>
+    <li><strong>"Have I seen this before?" — existence check in O(1)</strong>
+      <div class="w-desc">Add elements to a Set as you go; a hit on <code>has()</code> means the element appeared earlier, turning an O(n²) scan into a single pass.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "contains duplicate", "already visited", "seen before", "detect duplicate"</div>
+      <div class="w-ex">e.g. Contains Duplicate</div>
+    </li>
+    <li><strong>Find complement: target − current (Two Sum)</strong>
+      <div class="w-desc">Store each value with its index as you iterate; before inserting, look up whether the complement (target − current) already exists in the map.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "two numbers that add up to", "find indices such that", "complement", "pair summing to target"</div>
+      <div class="w-ex">e.g. Two Sum</div>
+    </li>
+    <li><strong>Group elements by a computed key (anagrams)</strong>
+      <div class="w-desc">Derive a canonical key for each element (e.g. sort its characters) and accumulate into a map of key → list; elements that share a key are in the same group.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "group anagrams", "group by", "cluster", "canonical form", "sort characters"</div>
+      <div class="w-ex">e.g. Group Anagrams</div>
+    </li>
+    <li><strong>Deduplicate or track unique elements</strong>
+      <div class="w-desc">Load all elements into a Set; membership checks then run in O(1), enabling algorithms like finding the start of a consecutive sequence without repeated inner loops.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "unique", "deduplicate", "no repeats", "longest consecutive sequence"</div>
+      <div class="w-ex">e.g. Longest Consecutive Sequence</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Three core patterns</h3>
-  <div class="diagram-box"><div class="ascii-diagram">PATTERN 1: Frequency count
-  "aabbc" → { a:2, b:2, c:1 }
-  Use: anagram check, character counting
+  <h3>How it works — Three core hash-map patterns</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Three independent patterns; each is a self-contained trace.
 
-PATTERN 2: Complement lookup  (Two Sum)
-  nums=[2,7,11,15], target=9
-  i=0: need 9-2=7, not in map → store {2:0}
-  i=1: need 9-7=2, found at map[2]=0 → return [0,1] ✓
+PATTERN 1 — Frequency count:  s = "aabbc"
+PATTERN 2 — Complement lookup (Two Sum):  nums=[2,7,11,15]  target=9
+PATTERN 3 — Grouping by key (Group Anagrams):  words=["eat","tea","tan","ate","nat","bat"]</div>
 
-PATTERN 3: Grouping by key
-  ["eat","tea","tan","ate","nat","bat"]
-  sort each word → key:
-  "aet"→[eat,tea,ate], "ant"→[tan,nat], "abt"→[bat]</div></div>
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   PATTERN 1 — Frequency count
+   ch='a': freq={a:1}
+   ch='a': freq={a:2}
+   ch='b': freq={a:2,b:1}
+   ch='b': freq={a:2,b:2}
+   ch='c': freq={a:2,b:2,c:1}</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Scan the string once. For each character, increment its count in the map (default 0 if unseen: <code>freq.get(ch) ?? 0</code>). After the loop the map holds every character's frequency. Use this to check anagrams (compare two frequency maps), find the majority element, or compare character distributions — all in O(n) time and O(k) space where k is the alphabet size.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   PATTERN 2 — Complement lookup
+   seen = {}
+   i=0: nums[0]=2  need=9-2=7   not in seen → seen={2:0}
+   i=1: nums[1]=7  need=9-7=2   found seen[2]=0 → return [0,1] ✓</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Check the complement BEFORE inserting the current value. If we inserted first we could accidentally match an element with itself. At i=1, need = 9-7 = 2 was stored at index 0, so return [0, 1]. If no pair exists the loop finishes without a match. This pattern generalises to any "find two things that satisfy a relationship" problem.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   PATTERN 3 — Grouping by key
+   "eat" → sort → "aet" : groups={"aet":["eat"]}
+   "tea" → sort → "aet" : groups={"aet":["eat","tea"]}
+   "tan" → sort → "ant" : groups={"aet":[...],"ant":["tan"]}
+   "ate" → sort → "aet" : groups={"aet":["eat","tea","ate"],...}
+   "nat" → sort → "ant" : groups={...,"ant":["tan","nat"]}
+   "bat" → sort → "abt" : groups={...,"abt":["bat"]}
+   result → [["eat","tea","ate"],["tan","nat"],["bat"]]</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Derive a canonical key that is identical for all equivalent elements — here, sorting a word's characters. Use the key to look up (or create) the group list in the map, then append the original word. Any element-to-key mapping works: character-frequency tuples, mod values, sorted digits, etc. Return all map values at the end. If the input array is empty the map stays empty and an empty list is returned.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
