@@ -161,7 +161,7 @@
   .wm-setup {
     font-family: 'Fira Code', 'Cascadia Code', monospace;
     font-size: 13px;
-    line-height: 1.7;
+    line-height: 1.8;
     white-space: pre;
     color: var(--text-muted);
     border-bottom: 1px solid var(--border);
@@ -169,8 +169,7 @@
     margin-bottom: 14px;
   }
   .wm-block { margin-top: 14px; }
-  .wm-block:first-of-type { margin-top: 0; }
-  .wm-block .ascii-diagram { margin: 0; }
+  .wm-setup + .wm-block { margin-top: 0; }
   .wm-note {
     margin: 8px 0 4px 14px;
     color: var(--text);
@@ -182,9 +181,9 @@
   .when-box li { margin: 12px 0; }
   .when-box li strong { color: var(--yellow); }
   .w-desc { color: var(--text); margin: 2px 0; }
-  .w-sig { color: var(--text-muted); margin: 2px 0; font-size: 13px; }
+  .w-sig, .w-ex { color: var(--text-muted); margin: 2px 0; font-size: 13px; }
   .w-sig-label { color: var(--accent); font-weight: 600; }
-  .w-ex { color: var(--text-muted); font-style: italic; margin: 2px 0; font-size: 13px; }
+  .w-ex { font-style: italic; }
 
   /* Code blocks */
   .code-block {
