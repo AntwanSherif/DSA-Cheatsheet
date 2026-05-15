@@ -150,6 +150,42 @@
   .walkthrough li { margin: 6px 0; }
   .walkthrough li strong { color: var(--yellow); }
 
+  /* Merged walkthrough (diagram block + its explanation) */
+  .walkthrough-merged {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+  }
+  .wm-setup {
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+  .wm-block { margin-top: 14px; }
+  .wm-block:first-of-type { margin-top: 0; }
+  .wm-block .ascii-diagram { margin: 0; }
+  .wm-note {
+    margin: 8px 0 4px 14px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .wm-num { color: var(--yellow); font-weight: 700; margin-right: 4px; }
+
+  /* Enriched "when to use" entries */
+  .when-box li { margin: 12px 0; }
+  .when-box li strong { color: var(--yellow); }
+  .w-desc { color: var(--text); margin: 2px 0; }
+  .w-sig { color: var(--text-muted); margin: 2px 0; font-size: 13px; }
+  .w-sig-label { color: var(--accent); font-weight: 600; }
+  .w-ex { color: var(--text-muted); font-style: italic; margin: 2px 0; font-size: 13px; }
+
   /* Code blocks */
   .code-block {
     border-radius: 8px;
