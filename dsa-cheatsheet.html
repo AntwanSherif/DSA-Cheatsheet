@@ -2764,12 +2764,12 @@ function coinChange(coins: number[], amount: number): number {
     <li><strong>String matching with flexible rules</strong>
       <div class="w-desc">Matching with wildcards or patterns means the DP state must track position in both the text and the pattern simultaneously.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "wildcard matching", "regular expression", "pattern with '?' or '*'"</div>
-      <div class="w-ex">e.g. Edit Distance</div>
+      <div class="w-ex">e.g. Wildcard Matching</div>
     </li>
     <li><strong>Knapsack-style capacity and item selection</strong>
       <div class="w-desc">One dimension indexes items; the other indexes available capacity. dp[i][w] answers the best value using the first i items with capacity w.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "items with weights and values", "capacity constraint", "0/1 knapsack", "subset sum with limit"</div>
-      <div class="w-ex">e.g. Target Sum</div>
+      <div class="w-ex">e.g. 0/1 Knapsack (Partition Equal Subset Sum)</div>
     </li>
   </ul></div>
 
@@ -2814,8 +2814,9 @@ graph LR
     <tr><th>B</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">1</td><td class="dp-computed">1</td><td class="dp-computed">2</td></tr>
     <tr><th>C</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">2</td><td class="dp-computed">2</td><td class="dp-computed">2</td></tr>
     <tr><th>B</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">2</td><td class="dp-computed">2</td><td class="dp-answer">3</td></tr>
-  </table></div>
-  <div class="wm-note"><span class="wm-num">③</span> Base cases: row 0 and column 0 are all 0 (LCS with an empty string is 0). Row A (i=1): A≠B→max(0,0)=0; A≠C→0; A==A→diagonal+1=1; A≠B→max(0,1)=1. Row B (i=2): B==B→diagonal+1=1; B≠C→max(0,1)=1; B≠A→max(1,1)=1; B==B→diagonal+1=2. Row C (i=3): C≠B→max(1,1)=1; C==C→diagonal+1=2; C≠A→max(1,2)=2; C≠B→max(2,2)=2. Row B (i=4): B==B→diagonal+1=1; B≠C→max(1,1)=1; B≠A→max(2,1)=2; B==B→diagonal+1=3. Answer dp[4][4] = 3, i.e. LCS = "BCB".</div>
+  </table>
+  <div class="ascii-diagram">LCS = 3 ("BCB") ✓</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Base cases: row 0 and column 0 are all 0 (LCS with an empty string is 0). Row A (i=1): A≠B→max(dp[0][1],dp[1][0])=max(0,0)=0; A≠C→max(dp[0][2],dp[1][1])=max(0,0)=0; A==A→dp[0][2]+1=1; A≠B→max(dp[0][4],dp[1][3])=max(0,1)=1. Row B (i=2): B==B→dp[1][0]+1=1; B≠C→max(dp[1][2],dp[2][1])=max(0,1)=1; B≠A→max(dp[1][3],dp[2][2])=max(1,1)=1; B==B→dp[1][3]+1=2. Row C (i=3): C≠B→max(dp[2][1],dp[3][0])=max(1,0)=1; C==C→dp[2][1]+1=2; C≠A→max(dp[2][3],dp[3][2])=max(1,2)=2; C≠B→max(dp[2][4],dp[3][3])=max(2,2)=2. Row B (i=4): B==B→dp[3][0]+1=1; B≠C→max(dp[3][2],dp[4][1])=max(2,1)=2; B≠A→max(dp[3][3],dp[4][2])=max(2,2)=2; B==B→dp[3][3]+1=3. Answer dp[4][4] = 3, i.e. LCS = "BCB".</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
