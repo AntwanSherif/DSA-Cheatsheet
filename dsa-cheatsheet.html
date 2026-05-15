@@ -950,45 +950,67 @@ Postorder (L → R → Root): 1, 3, 2, 5, 7, 6, 4  ← good for deletion, height
   </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">class TreeNode {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Pattern — Traversal Orders (Inorder / Preorder / Postorder)</span>
+    </div>
+    <div class="code-problem">The order you visit a node relative to its children defines what you can compute. Inorder gives sorted output for BSTs; postorder lets you compute results from children first before the parent.</div>
+    <pre><code class="language-typescript">class TreeNode {
   val: number;
   left: TreeNode | null = null;
   right: TreeNode | null = null;
   constructor(val: number) { this.val = val; }
 }
 
-// Inorder (left → node → right)
-function inorder(root: TreeNode | null): number[] {
+function inorder(root: TreeNode | null): number[] {  // left → node → right (BST: sorted)
   if (!root) return [];
   return [...inorder(root.left), root.val, ...inorder(root.right)];
 }
+// Preorder:  [...preorder(root.left), ...preorder(root.right)] with root.val FIRST  (good for tree copy)
+// Postorder: [...postorder(root.left), ...postorder(root.right)] with root.val LAST (good for deletion, height)</code></pre>
+  </div>
 
-// Max depth (postorder — compute children first)
-function maxDepth(root: TreeNode | null): number {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Maximum Depth of Binary Tree</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given the root of a binary tree, return its maximum depth — the number of nodes along the longest path from root to the farthest leaf.</div>
+    <pre><code class="language-typescript">function maxDepth(root: TreeNode | null): number {
   if (!root) return 0;
+  // +1 accounts for the current node itself; recurse on both subtrees (postorder).
   return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
-}
+}</code></pre>
+  </div>
 
-// Path sum — does any root-to-leaf path sum to target?
-function hasPathSum(root: TreeNode | null, target: number): boolean {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Path Sum</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given the root of a binary tree and integer <code>targetSum</code>, return true if the tree has a root-to-leaf path whose node values sum to <code>targetSum</code>.</div>
+    <pre><code class="language-typescript">function hasPathSum(root: TreeNode | null, target: number): boolean {
   if (!root) return false;
-  if (!root.left && !root.right) return root.val === target; // leaf
+  // Base case: leaf node — check if this node's value equals the remaining target.
+  if (!root.left &amp;&amp; !root.right) return root.val === target;
+  // Subtract current node's value and recurse on children.
   return hasPathSum(root.left, target - root.val) ||
          hasPathSum(root.right, target - root.val);
 }
 
-// Iterative DFS with explicit stack (preorder)
+// Iterative DFS with explicit stack (preorder — right pushed first so left pops first)
 function dfsIterative(root: TreeNode | null): number[] {
   const result: number[] = [], stack: TreeNode[] = [];
   if (root) stack.push(root);
   while (stack.length) {
     const node = stack.pop()!;
     result.push(node.val);
-    if (node.right) stack.push(node.right); // push right first → left pops first
+    if (node.right) stack.push(node.right); // push right first → left pops first (LIFO)
     if (node.left) stack.push(node.left);
   }
   return result;
-}</code></pre></div>
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
@@ -1060,14 +1082,20 @@ Result by level: [[1], [2,3], [4,5,6,7]]</div>
   </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">// Level-order traversal — returns array of levels
-function levelOrder(root: TreeNode | null): number[][] {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Binary Tree Level Order Traversal</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given the root of a binary tree, return the node values level by level (left to right) as an array of arrays.</div>
+    <pre><code class="language-typescript">function levelOrder(root: TreeNode | null): number[][] {
   if (!root) return [];
   const result: number[][] = [];
   const queue: TreeNode[] = [root];
 
   while (queue.length) {
-    const levelSize = queue.length; // snapshot: all nodes on this level
+    // Snapshot queue length BEFORE the loop — children added inside would change it mid-iteration.
+    const levelSize = queue.length;
     const level: number[] = [];
 
     for (let i = 0; i &lt; levelSize; i++) {
@@ -1081,22 +1109,31 @@ function levelOrder(root: TreeNode | null): number[][] {
   }
 
   return result;
-}
+}</code></pre>
+  </div>
 
-// Minimum depth (first leaf encountered is at minimum depth)
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Minimum Depth of Binary Tree</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given the root of a binary tree, return the minimum depth — the number of nodes along the shortest path from root to the nearest leaf.</div>
+    <pre><code class="language-typescript">// BFS naturally finds the minimum depth: the first leaf we dequeue is the shallowest.
+// DFS would need to explore all paths before knowing the minimum.
 function minDepth(root: TreeNode | null): number {
   if (!root) return 0;
   const queue: [TreeNode, number][] = [[root, 1]];
 
   while (queue.length) {
     const [node, depth] = queue.shift()!;
-    if (!node.left && !node.right) return depth; // first leaf = min depth
+    if (!node.left &amp;&amp; !node.right) return depth; // first leaf = minimum depth
     if (node.left) queue.push([node.left, depth + 1]);
     if (node.right) queue.push([node.right, depth + 1]);
   }
 
   return 0;
-}</code></pre></div>
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
