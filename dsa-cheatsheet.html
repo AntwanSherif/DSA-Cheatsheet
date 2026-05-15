@@ -364,24 +364,24 @@ indices =   0   1   2   3   4   5
 
 Rule:  sum &lt; target  → L++   (need a bigger value on the left)
        sum &gt; target  → R--   (need a smaller value on the right)
-       sum == target → found</div>
+       sum == target → return [L+1, R+1]</div>
 
   <div class="wm-block"><div class="ascii-diagram">┌─ ① ──────────────────────────────┐
   [L=0]                        [R=5]
   sum = 1 + 11 = 12   &gt; 10  → R--
 └────────────────────────────────────┘</div></div>
-  <div class="wm-note"><span class="wm-num">①</span> Start wide: L at index 0,
-    R at the last index. Compute sum = arr[L] + arr[R] = 12. 12 is greater than
-    the target, so the right value is too big — move R left by one. The loop
-    keeps going while L &lt; R.</div>
+  <div class="wm-note"><span class="wm-num">①</span> Compute sum = arr[L] + arr[R]
+    = 1 + 11 = 12. 12 is greater than the target, so the right value is too big
+    — move R left by one. (The loop runs while L &lt; R.)</div>
 
   <div class="wm-block"><div class="ascii-diagram">┌─ ② ──────────────────────────────┐
   [L=0]                    [R=4]
   sum = 1 + 9 = 10    == 10  ✓
 └────────────────────────────────────┘</div></div>
   <div class="wm-note"><span class="wm-num">②</span> Recompute with the new R:
-    sum = 1 + 9 = 10, which equals the target → return [L, R] = [0, 4]. If no
-    pair ever matches, the loop ends once L &ge; R and the function returns [].</div>
+    sum = 1 + 9 = 10, which equals the target. The pointers are at 0-indexed
+    [0, 4]; this problem returns 1-indexed positions, so return [1, 5]. If no
+    pair ever matches, the loop ends once L &ge; R and returns [].</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
