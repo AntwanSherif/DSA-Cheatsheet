@@ -1832,47 +1832,69 @@ result = [5, 5, 6, 6, -1]  ✓</div></div>
   </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">// Next Greater Element
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Next Greater Element I</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given two arrays <code>nums1</code> (subset of <code>nums2</code>), for each element in nums1 find the first greater element to its right in nums2. Return -1 if none exists.</div>
+    <pre><code class="language-typescript">// Stack stores INDICES (not values) so we can write results at the correct position.
+// While current element > stack top's value: that element found its "next greater" → pop and record.
 function nextGreaterElement(nums: number[]): number[] {
   const result = new Array(nums.length).fill(-1);
-  const stack: number[] = []; // indices of elements awaiting their answer
+  const stack: number[] = []; // indices of elements waiting for their next greater
 
   for (let i = 0; i &lt; nums.length; i++) {
-    while (stack.length && nums[i] &gt; nums[stack[stack.length - 1]]) {
+    while (stack.length &amp;&amp; nums[i] &gt; nums[stack[stack.length - 1]]) {
       const idx = stack.pop()!;
-      result[idx] = nums[i]; // nums[i] is the next greater for idx
+      result[idx] = nums[i]; // nums[i] is the next greater element for the element at idx
     }
-    stack.push(i);
+    stack.push(i); // current element hasn't found its answer yet
   }
 
-  return result; // remaining in stack → no next greater → stays -1
-}
+  return result; // elements still in stack → no next greater → remain -1
+}</code></pre>
+  </div>
 
-// Daily Temperatures — days until warmer
-function dailyTemperatures(temps: number[]): number[] {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Daily Temperatures</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given an array of daily temperatures, return an array where <code>answer[i]</code> is the number of days you'd have to wait for a warmer temperature. Return 0 if no future day is warmer.</div>
+    <pre><code class="language-typescript">function dailyTemperatures(temps: number[]): number[] {
   const result = new Array(temps.length).fill(0);
-  const stack: number[] = []; // indices
+  const stack: number[] = []; // stack of indices (not temperatures)
 
   for (let i = 0; i &lt; temps.length; i++) {
-    while (stack.length && temps[i] &gt; temps[stack[stack.length - 1]]) {
+    while (stack.length &amp;&amp; temps[i] &gt; temps[stack[stack.length - 1]]) {
       const idx = stack.pop()!;
-      result[idx] = i - idx; // number of days waited
+      result[idx] = i - idx; // i - idx = number of days waited
     }
     stack.push(i);
   }
 
   return result;
-}
+}</code></pre>
+  </div>
 
-// Largest Rectangle in Histogram (monotonic INCREASING stack)
-function largestRectangle(heights: number[]): number {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Largest Rectangle in Histogram</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given an array of bar heights, find the area of the largest rectangle that can be formed within the histogram.</div>
+    <pre><code class="language-typescript">function largestRectangle(heights: number[]): number {
   const stack: number[] = [];
   let maxArea = 0;
-  const h = [...heights, 0]; // sentinel 0 flushes remaining stack at end
+  // Sentinel 0 at the end forces all remaining bars to be popped and evaluated at the end.
+  const h = [...heights, 0];
 
   for (let i = 0; i &lt; h.length; i++) {
-    while (stack.length && h[i] &lt; h[stack[stack.length - 1]]) {
+    while (stack.length &amp;&amp; h[i] &lt; h[stack[stack.length - 1]]) {
       const height = h[stack.pop()!];
+      // Width = distance between the two nearest bars shorter than `height`.
+      // stack.top() is the left boundary (exclusive); i is the right boundary (exclusive).
       const width = stack.length === 0 ? i : i - stack[stack.length - 1] - 1;
       maxArea = Math.max(maxArea, height * width);
     }
@@ -1880,7 +1902,8 @@ function largestRectangle(heights: number[]): number {
   }
 
   return maxArea;
-}</code></pre></div>
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
@@ -1949,11 +1972,18 @@ graph TD
   </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">// House Robber — dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">House Robber</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">You cannot rob two adjacent houses. Given an array of amounts, return the maximum you can rob without triggering alarms.</div>
+    <pre><code class="language-typescript">// dp[i] = max(skip house i → prev1, rob house i → prev2 + nums[i])
+// Space-optimize: only need the last two values, not the full dp array.
 function rob(nums: number[]): number {
   if (nums.length === 1) return nums[0];
-  let prev2 = nums[0];
-  let prev1 = Math.max(nums[0], nums[1]);
+  let prev2 = nums[0];                     // best without the previous house
+  let prev1 = Math.max(nums[0], nums[1]);  // best including the previous house
 
   for (let i = 2; i &lt; nums.length; i++) {
     const curr = Math.max(prev1, prev2 + nums[i]);
@@ -1962,31 +1992,49 @@ function rob(nums: number[]): number {
   }
 
   return prev1;
-}
+}</code></pre>
+  </div>
 
-// Climbing Stairs — dp[i] = dp[i-1] + dp[i-2]  (Fibonacci variant)
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Climbing Stairs</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">You can climb 1 or 2 steps at a time. How many distinct ways can you reach the top of an <code>n</code>-step staircase?</div>
+    <pre><code class="language-typescript">// This is Fibonacci: f(n) = f(n-1) + f(n-2).
+// f(n-1): took 1 step to get here. f(n-2): took 2 steps.
 function climbStairs(n: number): number {
   if (n &lt;= 2) return n;
   let a = 1, b = 2;
+  // Destructuring assignment swaps simultaneously: no temp variable needed.
   for (let i = 3; i &lt;= n; i++) [a, b] = [b, a + b];
   return b;
-}
+}</code></pre>
+  </div>
 
-// Coin Change — dp[i] = minimum coins to make amount i
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Coin Change</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given coin denominations and an amount, return the fewest number of coins needed to make up the amount. Return -1 if not possible.</div>
+    <pre><code class="language-typescript">// dp[i] = minimum coins to make amount i (Infinity = not yet reachable)
 function coinChange(coins: number[], amount: number): number {
   const dp = new Array(amount + 1).fill(Infinity);
-  dp[0] = 0;
+  dp[0] = 0; // base case: 0 coins needed to make amount 0
 
   for (let i = 1; i &lt;= amount; i++) {
     for (const coin of coins) {
       if (coin &lt;= i) {
+        // Use one coin of this denomination + the optimal solution for the remainder.
         dp[i] = Math.min(dp[i], dp[i - coin] + 1);
       }
     }
   }
 
   return dp[amount] === Infinity ? -1 : dp[amount];
-}</code></pre></div>
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
