@@ -1834,7 +1834,7 @@ function bfsGrid(grid: number[][], startR: number, startC: number): number {
   <div class="when-box"><ul>
     <li><strong>Count connected components</strong>
       <div class="w-desc">Find how many separate groups of nodes exist in a graph where no edges cross between groups.</div>
-      <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many connected components", "how many islands", "how many groups are there"</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many connected components", "how many groups are there"</div>
       <div class="w-ex">e.g. Number of Connected Components in Undirected Graph</div>
     </li>
     <li><strong>Detect cycles in a directed or undirected graph</strong>
@@ -1887,45 +1887,53 @@ Neighbors are processed left-to-right.</div>
     into dfs(D).</div>
 
   <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
-   dfs(D) called → dfs(F) called
-   visited = { A, B, D, F }
-   F has no neighbors → dfs(F) returns
-   D has no more neighbors → dfs(D) returns</div></div>
-  <div class="wm-note"><span class="wm-num">③</span> dfs(D) marks D visited and recurses
-    into its only neighbor F. dfs(F) marks F visited; F has no neighbors, so it
-    returns immediately. Back in dfs(D), there are no more neighbors, so dfs(D)
-    also returns. This is the backtrack: the call stack unwinds back to dfs(B).
-    visited = { A, B, D, F }.</div>
+   dfs(D) called
+   visited = { A, B, D }
+   D's only neighbor: F (unvisited) → recurse into dfs(F)
+   dfs(F) called → visited = { A, B, D, F }
+   F has no neighbors → dfs(F) returns</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> dfs(D) marks D visited
+    (visited = { A, B, D }). D's neighbor list is [F]. F is unvisited, so we
+    recurse into dfs(F). dfs(F) marks F visited (visited = { A, B, D, F }); F
+    has no neighbors, so dfs(F) returns immediately.</div>
 
   <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   back in dfs(D): no more unvisited neighbors
+   → dfs(D) returns  (backtrack to dfs(B))
+   visited = { A, B, D, F }</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> Control returns to dfs(D). D has
+    no remaining neighbors, so dfs(D) returns. The call stack unwinds back to
+    dfs(B). visited remains { A, B, D, F }.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
    back in dfs(B): next neighbor E (unvisited)
    dfs(E) called
    visited = { A, B, D, F, E }
    E has no neighbors → dfs(E) returns
    dfs(B) has no more neighbors → dfs(B) returns</div></div>
-  <div class="wm-note"><span class="wm-num">④</span> Back in dfs(B), we continue to the
+  <div class="wm-note"><span class="wm-num">⑤</span> Back in dfs(B), we continue to the
     next neighbor E. E is unvisited, so dfs(E) is called, marks E visited, finds
     no neighbors, and returns. dfs(B) now has no remaining neighbors and returns —
     another backtrack up to dfs(A).</div>
 
-  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
    back in dfs(A): next neighbor C (unvisited)
    dfs(C) called
    visited = { A, B, D, F, E, C }
    C has no neighbors → dfs(C) returns
    dfs(A) has no more neighbors → dfs(A) returns</div></div>
-  <div class="wm-note"><span class="wm-num">⑤</span> Back in dfs(A), the next neighbor
+  <div class="wm-note"><span class="wm-num">⑥</span> Back in dfs(A), the next neighbor
     C is unvisited. dfs(C) marks C visited, finds no neighbors, and returns.
     dfs(A) is now complete. Full DFS order: A → B → D → F → E → C.
     If the graph had a second component (unreachable from A), a top-level loop
     would call dfs on that component's start node next.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">⑦ ────────────────────────────────────
    skip-when-visited guard (cycle / shared neighbor scenario)
    suppose neighbor X is already in visited
    → the "if (!visited.has(X))" check is false
    → dfs(X) is NOT called; we move to the next neighbor</div></div>
-  <div class="wm-note"><span class="wm-num">⑥</span> Whenever the loop over a node's
+  <div class="wm-note"><span class="wm-num">⑦</span> Whenever the loop over a node's
     neighbors reaches a node X that is already in visited, the guard
     (!visited.has(X)) is false and we simply skip X. This prevents infinite
     recursion in graphs with cycles and avoids double-counting nodes in
@@ -2102,8 +2110,8 @@ Rules:
    arr[4] = 9  == 9   →  return 4  ✓</div></div>
   <div class="wm-note"><span class="wm-num">③</span> lo=4, hi=4. mid = 4. arr[4] = 9
     equals the target. Return index 4. If instead the target were absent (e.g.,
-    target = 10), the next iteration would have lo &gt; hi and the loop would exit,
-    returning -1.</div>
+    target = 10), after the final pointer update (say lo = 5) the loop guard
+    lo &le; hi fails (5 &gt; 4) and the loop exits, returning -1.</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
@@ -2269,24 +2277,33 @@ Complexity: O(n log n) time, O(n) auxiliary space (temporary merge buffer).</div
    mergeSort([8, 1])
    mid = 1
    left  = [8]   ← length 1, base case, returns [8]
-   right = [1]   ← length 1, base case, returns [1]
-   merge([8], [1]):
-   i=0 j=0: left[0]=8  right[0]=1  → 1 &lt; 8, take right → result=[1], j=1
-   j exhausted → append left remainder → result=[1, 8]</div></div>
+   right = [1]   ← length 1, base case, returns [1]</div></div>
   <div class="wm-note"><span class="wm-num">④</span> Back up the call stack to
-    mergeSort([8,1]). It splits into base cases [8] and [1], then merges: 1 &lt; 8
-    so we take 1 first, then append 8. Sorted sub-result: [1, 8].</div>
+    mergeSort([8,1]). mid = 1, so left = [8] and right = [1]. Both have length 1
+    (base case: arr.length &le; 1 → return arr), so each returns immediately.
+    We now merge [8] and [1].</div>
 
   <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+   merge([8], [1])
+   i=0 j=0: left[0]=8  right[0]=1  → 1 &lt; 8 (left[i] &le; right[j] is false)
+     take right → result=[1], j=1
+   j exhausted → append left remainder → result=[1, 8]</div></div>
+  <div class="wm-note"><span class="wm-num">⑤</span> Merging [8] and [1]: compare
+    left[0]=8 and right[0]=1. The rule is take left when left[i] &le; right[j];
+    here 8 &gt; 1, so we take 1 from the right and advance j. j is now exhausted;
+    we append the remaining left element 8. Sorted sub-result: [1, 8].</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
    merge([3, 5], [1, 8])   ← final merge
    i=0 j=0: 3 vs 1  → take 1,  j=1,  result=[1]
    i=0 j=1: 3 vs 8  → take 3,  i=1,  result=[1, 3]
    i=1 j=1: 5 vs 8  → take 5,  i=2,  result=[1, 3, 5]
    i exhausted → append right remainder [8] → result=[1, 3, 5, 8]</div></div>
-  <div class="wm-note"><span class="wm-num">⑤</span> The final merge combines the two
-    sorted halves [3,5] and [1,8]. We compare element-by-element: 1&lt;3 → take 1;
-    3&lt;8 → take 3; 5&lt;8 → take 5; left is exhausted so we append the remaining
-    right element 8. Final sorted array: [1, 3, 5, 8].</div>
+  <div class="wm-note"><span class="wm-num">⑥</span> The final merge combines the two
+    sorted halves [3,5] and [1,8]. left[i] &le; right[j] decides which element to
+    take: 3&le;1 is false → take 1; 3&le;8 → take 3; 5&le;8 → take 5; left is
+    exhausted so we append the remaining right element 8. Final sorted array:
+    [1, 3, 5, 8].</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
