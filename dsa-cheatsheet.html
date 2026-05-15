@@ -2923,46 +2923,110 @@ function lcs(text1: string, text2: string): number {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Generate all subsets, permutations, or combinations</li>
-    <li>Constraint satisfaction (N-Queens, Sudoku)</li>
-    <li>Find all paths in a graph satisfying a condition</li>
-    <li>Word search on a grid</li>
-    <li>Key signal: "find all possible..." or "generate all..."</li>
+    <li><strong>Generate all subsets or combinations</strong>
+      <div class="w-desc">Enumerate every subset of a given set, with no element repeated in a single subset.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "return all possible subsets", "power set", "choose k elements from n"</div>
+      <div class="w-ex">e.g. Subsets</div>
+    </li>
+    <li><strong>Generate all permutations</strong>
+      <div class="w-desc">Arrange all elements of an array into every possible ordering, using each element exactly once per arrangement.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "return all permutations", "all possible orderings / arrangements"</div>
+      <div class="w-ex">e.g. Permutations</div>
+    </li>
+    <li><strong>Constraint satisfaction (placement problems)</strong>
+      <div class="w-desc">Place items on a board or in slots one at a time, checking validity after each placement and undoing when a conflict is detected.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "place n queens so no two attack each other", "fill a Sudoku board", "valid placement on a grid"</div>
+      <div class="w-ex">e.g. N-Queens</div>
+    </li>
+    <li><strong>Word search on a grid</strong>
+      <div class="w-desc">Walk a 2-D grid character by character, marking cells visited as you go and restoring them when a path fails to complete the word.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "find the word in the board", "path of adjacent cells spelling a string"</div>
+      <div class="w-ex">e.g. Word Search</div>
+    </li>
+    <li><strong>Combinations summing to a target</strong>
+      <div class="w-desc">Collect numbers into a path, pruning the branch early once the running sum overshoots the target.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "find all combinations that sum to target", "return all unique combinations", "unlimited reuse allowed"</div>
+      <div class="w-ex">e.g. Combination Sum</div>
+    </li>
+    <li><strong>Partition into valid substrings</strong>
+      <div class="w-desc">Split a string into parts at every valid cut point, exploring all partitionings and recording those where every part satisfies a property.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "partition the string such that every substring is a palindrome"</div>
+      <div class="w-ex">e.g. Palindrome Partitioning</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Subsets of [1, 2, 3] decision tree</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    Root["[ ]"]:::root
-    Root -->|"add 1"| A["[1]"]:::branch
-    Root -->|"add 2"| B["[2]"]:::branch
-    Root -->|"add 3"| C["[3]"]:::branch
-    A -->|"add 2"| D["[1,2]"]:::branch2
-    A -->|"add 3"| E["[1,3]"]:::branch2
-    B -->|"add 3"| F["[2,3]"]:::branch2
-    D -->|"add 3"| G["[1,2,3]"]:::leaf
-    classDef root fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef branch fill:#f97316,stroke:#ea580c,color:#000
-    classDef branch2 fill:#a855f7,stroke:#9333ea,color:#fff
-    classDef leaf fill:#22c55e,stroke:#16a34a,color:#000
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">At each node: CHOOSE (add element) → RECURSE → UNCHOOSE (remove element)
-All 8 subsets: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]
+  <h3>How it works — Subsets of [1,2,3] (the universal template)</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Universal backtracking skeleton
+─────────────────────────────────────────
 
-Pruning: skip invalid choices early to avoid dead branches.
-  Example (Combination Sum): if remaining &lt; 0, return immediately.</div>
-  </div>
+  function bt(start, path):
+      record path            ← base case: every prefix is a valid subset
+      for i from start to end:
+          path.push(nums[i]) ← CHOOSE
+          bt(i + 1, path)    ← RECURSE  (i+1 enforces forward-only, no repeats)
+          path.pop()         ← UNCHOOSE (restore state for next sibling)
+          // PRUNE: skip choice before push if constraint already violated
 
-  <h3>How it works — The universal template</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Base case:</strong> When is the current path a valid complete solution? Add to results.</li>
-    <li><strong>Loop over choices:</strong> For each valid choice at the current step...</li>
-    <li><strong>Choose:</strong> Add the choice to the current path.</li>
-    <li><strong>Recurse:</strong> Call backtrack with updated state.</li>
-    <li><strong>Unchoose:</strong> Remove the choice (restore state for the next iteration).</li>
-    <li><strong>Prune early:</strong> Skip choices that cannot lead to a valid solution (e.g., sum &gt; target).</li>
-  </ol></div>
+Input:  nums = [1, 2, 3]
+Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]  (8 = 2^3 subsets)</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  root []              ← record [] immediately (empty subset)
+    |
+    +-- choose 1 --> [1]   ← CHOOSE: path.push(1), now path = [1]</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> The algorithm starts at the root
+    with an empty path. Before the loop even runs, the current path is recorded
+    as a valid subset ([] itself is a subset). Then the loop begins at index 0.
+    The first iteration CHOOSEs element 1 by pushing it onto the path, making
+    path = [1]. We are now on the "add 1" branch of the decision tree.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  [1]                  ← record [1]
+    |
+    +-- choose 2 --> [1,2]  ← record [1,2]
+          |
+          +-- choose 3 --> [1,2,3]  ← record [1,2,3] (leaf)</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> After choosing 1 the algorithm
+    RECURSEs with start = 2. It records [1] immediately, then continues deeper:
+    choose 2 → record [1,2] → recurse with start = 3 → choose 3 → record
+    [1,2,3]. [1,2,3] is a leaf — no elements remain to add — so the recursive
+    call returns without entering the loop. Every node on this branch is recorded
+    the moment it is visited (before the inner loop), capturing all prefixes as
+    valid subsets.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  [1,2,3]  ← leaf; return to parent [1,2]
+    path.pop() → [1,2]   ← UNCHOOSE 3
+  [1,2]    ← no more choices; return to parent [1]
+    path.pop() → [1]     ← UNCHOOSE 2
+  [1]      ← next sibling: choose 3 --> [1,3]  ← UNCHOOSE later</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Once the leaf [1,2,3] is
+    recorded the function returns. The parent frame (at [1,2]) calls path.pop(),
+    UNCHOOSing 3 and restoring path = [1,2]. The loop in that frame has no more
+    elements to try (start was 3, length is 3), so it returns too. The grandparent
+    frame (at [1]) then calls path.pop(), UNCHOOSing 2 and restoring path = [1].
+    Its loop still has i = 2 (element 3) to try, so it CHOOSes 3, RECURSEs to
+    produce [1,3], then UNCHOOSes. State is always fully restored before the next
+    sibling branch is explored — that is the core backtracking invariant.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+  Example: Combination Sum  (target = 5, candidates = [2, 3, 6])
+
+  [3, 3]  remaining = 5 - 3 - 3 = -1
+    if remaining &lt; 0: return   ← PRUNE — overshoot, skip entire subtree
+
+  (Without pruning the algorithm would recurse needlessly deeper.)</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> PRUNING cuts a branch before
+    any child is explored. In Combination Sum, if the running sum already exceeds
+    the target (remaining &lt; 0) the recursive call returns immediately — no
+    path.push, no deeper recursion, no path.pop needed. For the Subsets template
+    above no pruning is required because every prefix is valid; pruning becomes
+    essential when a constraint can be violated (sum &gt; target, row conflict in
+    N-Queens, cell already visited in Word Search). The full result for [1,2,3]
+    subsets with no pruning is: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3],
+    [3] — all 8 subsets of a 3-element set.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
