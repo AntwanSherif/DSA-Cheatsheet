@@ -1832,37 +1832,105 @@ function bfsGrid(grid: number[][], startR: number, startC: number): number {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Count connected components</li>
-    <li>Detect cycles in a directed or undirected graph</li>
-    <li>Topological sort (course scheduling)</li>
-    <li>Find all paths from source to destination</li>
-    <li>Flood fill / island problems</li>
+    <li><strong>Count connected components</strong>
+      <div class="w-desc">Find how many separate groups of nodes exist in a graph where no edges cross between groups.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many connected components", "how many islands", "how many groups are there"</div>
+      <div class="w-ex">e.g. Number of Connected Components in Undirected Graph</div>
+    </li>
+    <li><strong>Detect cycles in a directed or undirected graph</strong>
+      <div class="w-desc">Determine whether following edges from any node can bring you back to a node already on the current path.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "detect a cycle", "can all courses be finished", "is the graph a DAG"</div>
+      <div class="w-ex">e.g. Course Schedule</div>
+    </li>
+    <li><strong>Topological sort (dependency ordering)</strong>
+      <div class="w-desc">Order nodes so that every directed edge points from an earlier node to a later one; only possible when no cycle exists.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "order of tasks", "prerequisites", "build order", "find a valid ordering"</div>
+      <div class="w-ex">e.g. Course Schedule II</div>
+    </li>
+    <li><strong>Find all paths from source to destination</strong>
+      <div class="w-desc">Enumerate every route through a graph from a start node to an end node, exploring each branch fully before backtracking.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "all paths", "every possible route", "list all ways to reach"</div>
+      <div class="w-ex">e.g. All Paths From Source to Target</div>
+    </li>
+    <li><strong>Flood fill / island problems</strong>
+      <div class="w-desc">Spread out from a starting cell in a grid, visiting all connected cells that share a property, marking them so they are not revisited.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "grid of 0s and 1s", "connected land cells", "flood fill", "number of islands"</div>
+      <div class="w-ex">e.g. Number of Islands</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — DFS traversal order</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A((A)):::current --> B((B)):::path
-    A --> C((C)):::unvisited
-    B --> D((D)):::path
-    B --> E((E)):::unvisited
-    D --> F((F)):::path
-    classDef current fill:#22c55e,stroke:#16a34a,color:#000
-    classDef path fill:#f97316,stroke:#ea580c,color:#000
-    classDef unvisited fill:#475569,stroke:#64748b,color:#e2e8f0
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">DFS order from A: A → B → D → F (backtrack) → (backtrack) → E (backtrack) → C
-visited set prevents revisiting nodes in cycles</div>
-  </div>
+  <h3>How it works — Graph DFS (recursive)</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Graph (adjacency list):
+  A → [B, C]
+  B → [D, E]
+  D → [F]
+  E → []    C → []    F → []
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Call DFS(node).</strong> Mark node visited.</li>
-    <li>For each unvisited neighbor: <strong>recurse DFS(neighbor).</strong></li>
-    <li>After all neighbors: <strong>backtrack</strong> (implicit in recursion).</li>
-    <li>Call DFS on each unvisited node in the graph to handle <strong>disconnected components.</strong></li>
-  </ol></div>
+Call dfs(A).  visited = {} initially.
+Neighbors are processed left-to-right.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   dfs(A) called
+   visited = { A }
+   next neighbor to explore: B (first of A's neighbors)</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> dfs(A) is invoked. A is immediately
+    marked visited (visited = { A }). We then iterate A's neighbors in order:
+    [B, C]. B has not been visited, so we recurse into dfs(B) before touching C.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   dfs(B) called
+   visited = { A, B }
+   next neighbor to explore: D (first of B's neighbors)</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> dfs(B) runs. B is marked visited
+    (visited = { A, B }). B's neighbors are [D, E]. D is unvisited, so we recurse
+    into dfs(D).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   dfs(D) called → dfs(F) called
+   visited = { A, B, D, F }
+   F has no neighbors → dfs(F) returns
+   D has no more neighbors → dfs(D) returns</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> dfs(D) marks D visited and recurses
+    into its only neighbor F. dfs(F) marks F visited; F has no neighbors, so it
+    returns immediately. Back in dfs(D), there are no more neighbors, so dfs(D)
+    also returns. This is the backtrack: the call stack unwinds back to dfs(B).
+    visited = { A, B, D, F }.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   back in dfs(B): next neighbor E (unvisited)
+   dfs(E) called
+   visited = { A, B, D, F, E }
+   E has no neighbors → dfs(E) returns
+   dfs(B) has no more neighbors → dfs(B) returns</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> Back in dfs(B), we continue to the
+    next neighbor E. E is unvisited, so dfs(E) is called, marks E visited, finds
+    no neighbors, and returns. dfs(B) now has no remaining neighbors and returns —
+    another backtrack up to dfs(A).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+   back in dfs(A): next neighbor C (unvisited)
+   dfs(C) called
+   visited = { A, B, D, F, E, C }
+   C has no neighbors → dfs(C) returns
+   dfs(A) has no more neighbors → dfs(A) returns</div></div>
+  <div class="wm-note"><span class="wm-num">⑤</span> Back in dfs(A), the next neighbor
+    C is unvisited. dfs(C) marks C visited, finds no neighbors, and returns.
+    dfs(A) is now complete. Full DFS order: A → B → D → F → E → C.
+    If the graph had a second component (unreachable from A), a top-level loop
+    would call dfs on that component's start node next.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
+   skip-when-visited guard (cycle / shared neighbor scenario)
+   suppose neighbor X is already in visited
+   → the "if (!visited.has(X))" check is false
+   → dfs(X) is NOT called; we move to the next neighbor</div></div>
+  <div class="wm-note"><span class="wm-num">⑥</span> Whenever the loop over a node's
+    neighbors reaches a node X that is already in visited, the guard
+    (!visited.has(X)) is false and we simply skip X. This prevents infinite
+    recursion in graphs with cycles and avoids double-counting nodes in
+    disconnected-component problems.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
