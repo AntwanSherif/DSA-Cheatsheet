@@ -1018,33 +1018,64 @@ function isHappy(n: number): boolean {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Reverse an entire linked list</li>
-    <li>Reverse a sublist (positions m to n)</li>
-    <li>Check if a linked list is a palindrome (reverse second half)</li>
-    <li>Reorder list (interleave first and reversed second half)</li>
+    <li><strong>Reverse an entire linked list</strong>
+      <div class="w-desc">Re-point every node's next pointer so the list reads in the opposite direction, returning the former tail as the new head.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "reverse a linked list", "return the new head", "in-place reversal"</div>
+      <div class="w-ex">e.g. Reverse Linked List</div>
+    </li>
+    <li><strong>Reverse a sublist (positions m to n)</strong>
+      <div class="w-desc">Walk to the sublist boundary, reverse only that portion, then reconnect the modified section to the untouched parts.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "reverse between positions", "reverse from left to right", "reverse a portion of the list"</div>
+      <div class="w-ex">e.g. Reverse Linked List II</div>
+    </li>
+    <li><strong>Check if a linked list is a palindrome</strong>
+      <div class="w-desc">Find the middle with fast/slow pointers, reverse the second half in-place, then compare it to the first half node by node.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "palindrome linked list", "is the list the same forwards and backwards"</div>
+      <div class="w-ex">e.g. Palindrome Linked List</div>
+    </li>
+    <li><strong>Reorder list (interleave halves)</strong>
+      <div class="w-desc">Split the list at the middle, reverse the second half, then merge the two halves by alternating nodes from each.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "reorder to L0→Ln→L1→Ln-1…", "interleave first and last nodes"</div>
+      <div class="w-ex">e.g. Reorder List</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Step-by-step pointer changes</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-sequenceDiagram
-    participant P as prev (blue)
-    participant C as curr (green)
-    participant N as next (orange)
-    Note over P,N: Initial: null ← | 1→2→3→null
-    Note over C: curr = 1
-    C->>N: next = curr.next (save 2)
-    C->>P: curr.next = prev (point 1 → null)
-    P->>P: prev = curr (prev moves to 1)
-    N->>C: curr = next (curr moves to 2)
-    Note over P,N: null ← 1 | curr=2→3→null
-    C->>N: next = curr.next (save 3)
-    C->>P: curr.next = prev (point 2 → 1)
-    P->>P: prev = curr (prev moves to 2)
-    N->>C: curr = next (curr moves to 3)
-    Note over P,N: null ← 1 ← 2 | curr=3→null
-    Note over P,N: One more step → null ← 1 ← 2 ← 3, prev=3 (new head)
-  </div>
+  <h3>How it works — Reverse a linked list</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Input list:  1→2→3→null   (head = node 1)
+Three variables track state each iteration:
+  prev  — the already-reversed portion's new head (starts null)
+  curr  — the node being processed this step
+  next  — saved copy of curr.next before we overwrite it
+
+Loop invariant: at start of each iteration, nodes before curr are fully reversed.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   Before: prev=null  curr=1  (1→2→3→null)
+   next = curr.next       → next=2
+   curr.next = prev       → 1→null
+   prev = curr            → prev=1
+   curr = next            → curr=2
+   After:  null←1  |  curr=2→3→null</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Save curr.next before overwriting it (otherwise we lose the rest of the list). Flip curr.next to point at prev — node 1 now points to null, reversing its link. Advance prev to the current node (prev = 1) and curr to the saved next (curr = 2). The left portion null←1 is fully reversed; the right portion 2→3→null is untouched.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   Before: prev=1  curr=2  (2→3→null)
+   next = curr.next       → next=3
+   curr.next = prev       → 2→1→null
+   prev = curr            → prev=2
+   curr = next            → curr=3
+   After:  null←1←2  |  curr=3→null</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> The same four operations apply: save next, flip the pointer, advance prev, advance curr. Node 2 now points back to node 1, extending the reversed portion. The reversed chain so far is null←1←2; one node (3) remains to be processed.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   Before: prev=2  curr=3  (3→null)
+   next = curr.next       → next=null
+   curr.next = prev       → 3→2→1→null
+   prev = curr            → prev=3
+   curr = next            → curr=null  ← loop ends
+   Final:  null←1←2←3   new head = prev = 3</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Node 3's original next was already null, so saving it is harmless. After flipping, 3→2→1→null completes the reversal. curr becomes null, so the while-condition fails and the loop exits. prev points to node 3, which is the new head — return prev. If the input list is empty (head = null), curr starts as null, the loop never runs, and prev = null is returned correctly.</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
