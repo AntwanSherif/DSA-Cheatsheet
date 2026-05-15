@@ -2389,41 +2389,112 @@ function sortColors(nums: number[]): void {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Next Greater Element (first larger value to the right)</li>
-    <li>Previous Smaller Element</li>
-    <li>Daily Temperatures (days until warmer)</li>
-    <li>Largest Rectangle in Histogram</li>
-    <li>Any "nearest larger/smaller" pattern</li>
+    <li><strong>Next greater element to the right</strong>
+      <div class="w-desc">For each element in an array, find the first element to its right that is strictly larger; return -1 if none exists.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "next greater value", "first larger element to the right", "for each element find the nearest value that is bigger"</div>
+      <div class="w-ex">e.g. Next Greater Element I</div>
+    </li>
+    <li><strong>Days until a condition is met (waiting game)</strong>
+      <div class="w-desc">Given a sequence of daily measurements, find how many steps forward you must travel before a value exceeds the current one; return 0 if it never does.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many days until warmer", "how many steps until a larger value appears", "wait time for the next increase"</div>
+      <div class="w-ex">e.g. Daily Temperatures</div>
+    </li>
+    <li><strong>Largest rectangle / area under a histogram</strong>
+      <div class="w-desc">Given bar heights, compute the maximum area of a rectangle that can be formed by one or more contiguous bars without exceeding their heights.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "largest rectangle in histogram", "maximum area of bars", "widest block fitting under the heights"</div>
+      <div class="w-ex">e.g. Largest Rectangle in Histogram</div>
+    </li>
+    <li><strong>Previous smaller / nearest boundary</strong>
+      <div class="w-desc">For each position, find the closest prior position whose value is strictly smaller, used to compute left-boundary spans for area or range problems.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "previous smaller element", "left boundary of a bar", "nearest value to the left that is less than current"</div>
+      <div class="w-ex">e.g. Largest Rectangle in Histogram (left-boundary pass)</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Next Greater Element for [2, 1, 5, 3, 6]</h3>
-  <div class="diagram-box"><div class="ascii-diagram">Walk left-to-right. Stack holds INDICES of elements waiting for their "next greater".
-Pop when current element &gt; stack top (that element found its answer).
+  <h3>How it works — Next Greater Element</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">arr    = [ 2,  1,  5,  3,  6 ]
+indices =   0   1   2   3   4
+result = [-1, -1, -1, -1, -1 ]   (initialize: no answer yet)
 
-arr   =  [ 2,  1,  5,  3,  6 ]
-result=  [-1, -1, -1, -1, -1 ]   (initialize: no answer yet)
+Rule: walk left-to-right; stack holds INDICES of elements still waiting for their next greater.
+      while (stack not empty &amp;&amp; arr[stack.top] &lt; arr[i]) → pop, record arr[i] as the answer.
+      Then push i.</div>
 
-i=0: stack=[]        → push 0           stack=[0]        (waiting: arr[0]=2)
-i=1: arr[1]=1 ≤ arr[0]=2 → push 1      stack=[0,1]      (waiting: 2,1)
-i=2: arr[2]=5 &gt; arr[1]=1 → pop 1, result[1]=5            stack=[0]
-     arr[2]=5 &gt; arr[0]=2 → pop 0, result[0]=5            stack=[]
-     → push 2                           stack=[2]        (waiting: arr[2]=5)
-i=3: arr[3]=3 ≤ arr[2]=5 → push 3      stack=[2,3]      (waiting: 5,3)
-i=4: arr[4]=6 &gt; arr[3]=3 → pop 3, result[3]=6            stack=[2]
-     arr[4]=6 &gt; arr[2]=5 → pop 2, result[2]=6            stack=[]
-     → push 4                           stack=[4]
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   i=0   arr[0]=2
+   stack before: []
+   guard: stack empty → skip while loop
+   push 0
+   stack after:  [0]        result: [-1, -1, -1, -1, -1]</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> i=0, arr[0]=2. The stack is empty so the while-loop guard fails immediately
+    — nothing to pop. Push index 0. Stack is now [0], meaning index 0 (value 2) is
+    waiting for something larger to arrive.</div>
 
-End: remaining stack indices stay -1
-result = [5, 5, 6, 6, -1]  ✓</div></div>
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   i=1   arr[1]=1
+   stack before: [0]   arr[stack.top]=arr[0]=2
+   guard: arr[1]=1 &lt; arr[0]=2? NO  (1 is not &gt; 2)  → skip while loop
+   push 1
+   stack after:  [0, 1]     result: [-1, -1, -1, -1, -1]</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> i=1, arr[1]=1. Check while guard: arr[1]=1 is NOT greater than arr[stack.top]=arr[0]=2,
+    so the condition fails and we skip the pop loop. Push index 1. Stack [0, 1] means
+    both value-2 and value-1 are still waiting — the stack remains decreasing (2, 1).</div>
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Iterate through array.</strong> For each element at index i:</li>
-    <li>While stack is not empty AND <strong>current element &gt; arr[stack.top()]</strong>: pop and <strong>record answer</strong> for popped index.</li>
-    <li><strong>Push current index</strong> onto the stack.</li>
-    <li>After loop: any index still in stack has <strong>no next greater element</strong> (answer = -1).</li>
-    <li>Flip condition for monotonically increasing stack (previous smaller, histogram problems).</li>
-  </ol></div>
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   i=2   arr[2]=5
+   stack before: [0, 1]
+
+   — while iteration 1 —
+   guard: arr[2]=5 &gt; arr[stack.top]=arr[1]=1? YES → pop 1, result[1]=5
+   stack mid:    [0]        result: [-1,  5, -1, -1, -1]
+
+   — while iteration 2 —
+   guard: arr[2]=5 &gt; arr[stack.top]=arr[0]=2? YES → pop 0, result[0]=5
+   stack mid:    []         result: [ 5,  5, -1, -1, -1]
+
+   — while iteration 3 —
+   guard: stack empty → exit while loop
+   push 2
+   stack after:  [2]        result: [ 5,  5, -1, -1, -1]</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> i=2, arr[2]=5. This is the first multi-pop step. The while-loop fires twice in
+    succession. Iteration 1: stack.top is 1, arr[1]=1 &lt; 5 → pop 1 and set result[1]=5
+    (index 1 found its next greater). Iteration 2: stack.top is now 0, arr[0]=2 &lt; 5
+    → pop 0 and set result[0]=5 (index 0 found its next greater). Iteration 3: stack is
+    empty → loop exits. Push 2. Both pending indices resolved in one outer iteration.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   i=3   arr[3]=3
+   stack before: [2]   arr[stack.top]=arr[2]=5
+   guard: arr[3]=3 &gt; arr[2]=5? NO  (3 is not &gt; 5)  → skip while loop
+   push 3
+   stack after:  [2, 3]     result: [ 5,  5, -1, -1, -1]</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> i=3, arr[3]=3. The while guard checks arr[3]=3 &gt; arr[2]=5 — false, so no pops.
+    Push index 3. Stack [2, 3] maintains the decreasing-value invariant (5, 3).
+    Index 2 (value 5) and index 3 (value 3) are both still waiting.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+   i=4   arr[4]=6
+   stack before: [2, 3]
+
+   — while iteration 1 —
+   guard: arr[4]=6 &gt; arr[stack.top]=arr[3]=3? YES → pop 3, result[3]=6
+   stack mid:    [2]         result: [ 5,  5, -1,  6, -1]
+
+   — while iteration 2 —
+   guard: arr[4]=6 &gt; arr[stack.top]=arr[2]=5? YES → pop 2, result[2]=6
+   stack mid:    []          result: [ 5,  5,  6,  6, -1]
+
+   — while iteration 3 —
+   guard: stack empty → exit while loop
+   push 4
+   stack after:  [4]         result: [ 5,  5,  6,  6, -1]</div></div>
+  <div class="wm-note"><span class="wm-num">⑤</span> i=4, arr[4]=6. Second multi-pop step. Iteration 1: stack.top is 3, arr[3]=3 &lt; 6
+    → pop 3, result[3]=6. Iteration 2: stack.top is 2, arr[2]=5 &lt; 6 → pop 2,
+    result[2]=6. Iteration 3: stack empty → exit. Push 4. The for-loop is now done.
+    Index 4 remains in the stack — arr[4]=6 has no larger element to its right, so
+    result[4] stays -1 (its initialized value). Final answer: [5, 5, 6, 6, -1] ✓</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
