@@ -519,33 +519,50 @@ Key insight: prefix[i] = sum of all elements before index i
   </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">// Build prefix sum array
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Range Sum Query – Immutable</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given an integer array, handle multiple queries <code>sumRange(i, j)</code> — return the sum of elements between indices <code>i</code> and <code>j</code> inclusive. Preprocess once for O(1) queries.</div>
+    <pre><code class="language-typescript">// Build once: prefix[i] = sum of all elements before index i
 function buildPrefix(nums: number[]): number[] {
-  const prefix = [0];
+  const prefix = [0]; // prefix[0] = 0 (empty prefix)
   for (const n of nums) {
     prefix.push(prefix[prefix.length - 1] + n);
   }
   return prefix;
 }
 
+// Query in O(1): sum(i..j) = prefix[j+1] - prefix[i]
 function rangeSum(prefix: number[], i: number, j: number): number {
   return prefix[j + 1] - prefix[i];
-}
+}</code></pre>
+  </div>
 
-// Count subarrays with sum === k  (Medium pattern)
-function subarraySum(nums: number[], k: number): number {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Subarray Sum Equals K</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given an array of integers (can be negative) and an integer <code>k</code>, return the total number of subarrays whose elements sum to <code>k</code>.</div>
+    <pre><code class="language-typescript">function subarraySum(nums: number[], k: number): number {
+  // Seed with {0: 1}: the empty prefix has sum 0, and it "exists" once.
+  // This handles subarrays starting from index 0.
   const prefixCounts = new Map([[0, 1]]); // prefixSum → frequency
   let currentSum = 0, result = 0;
 
   for (const n of nums) {
     currentSum += n;
-    // How many previous prefixes, when subtracted, give sum = k?
+    // If (currentSum - k) was a previous prefix sum, those prefixes
+    // form subarrays ending here that sum exactly to k.
     result += prefixCounts.get(currentSum - k) ?? 0;
     prefixCounts.set(currentSum, (prefixCounts.get(currentSum) ?? 0) + 1);
   }
 
   return result;
-}</code></pre></div>
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
@@ -595,27 +612,45 @@ PATTERN 3: Grouping by key
   "aet"→[eat,tea,ate], "ant"→[tan,nat], "abt"→[bat]</div></div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">// Pattern 1: Frequency count
-const freq = new Map&lt;string, number&gt;();
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Pattern — Frequency Count</span>
+    </div>
+    <div class="code-problem">Count how many times each element appears — used to detect anagrams, find majority elements, or compare character distributions.</div>
+    <pre><code class="language-typescript">const freq = new Map&lt;string, number&gt;();
 for (const ch of s) {
-  freq.set(ch, (freq.get(ch) ?? 0) + 1);
-}
+  freq.set(ch, (freq.get(ch) ?? 0) + 1); // ?? 0 handles the "first time seen" case
+}</code></pre>
+  </div>
 
-// Pattern 2: Complement lookup (Two Sum)
-function twoSum(nums: number[], target: number): number[] {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Two Sum</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given an array of integers and a target, return the indices of the two numbers that add up to the target. Each input has exactly one solution.</div>
+    <pre><code class="language-typescript">function twoSum(nums: number[], target: number): number[] {
   const seen = new Map&lt;number, number&gt;(); // value → index
   for (let i = 0; i &lt; nums.length; i++) {
     const complement = target - nums[i];
+    // Check BEFORE inserting: if we inserted first, we'd risk matching the element with itself.
     if (seen.has(complement)) return [seen.get(complement)!, i];
     seen.set(nums[i], i);
   }
   return [];
-}
+}</code></pre>
+  </div>
 
-// Pattern 3: Group by computed key
-function groupAnagrams(strs: string[]): string[][] {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Group Anagrams</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given an array of strings, group the anagrams together and return the groups in any order.</div>
+    <pre><code class="language-typescript">function groupAnagrams(strs: string[]): string[][] {
   const groups = new Map&lt;string, string[]&gt;();
   for (const word of strs) {
+    // Sorting the characters gives a canonical key shared by all anagrams.
     const key = [...word].sort().join('');
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key)!.push(word);
@@ -623,12 +658,13 @@ function groupAnagrams(strs: string[]): string[][] {
   return [...groups.values()];
 }
 
-// Set: deduplicate / existence check
+// Bonus — Set dedup / existence check:
 const seen = new Set&lt;number&gt;();
 for (const n of nums) {
-  if (seen.has(n)) return true; // duplicate found
+  if (seen.has(n)) return true; // duplicate found in O(1)
   seen.add(n);
-}</code></pre></div>
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
