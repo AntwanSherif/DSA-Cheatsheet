@@ -308,6 +308,13 @@ repeat this review gate before Phase 2.
 > Phase 2 begins only after the Task 4 gate is approved. The Two Pointers tab
 > as committed is the **locked reference**: copy its exact markup shape and
 > CSS classes. Do not introduce new classes or restructure.
+>
+> **Before authoring any tab, read "Locked format standards" in spec §1.**
+> Non-negotiables: open top-rule delimiter (circled-num + space + **36 ×
+> U+2500 ─**, no closed box); `<div class="ascii-diagram">` (not `<pre>`);
+> examples must exercise every algorithmic branch with the terminal case as
+> prose in the final note; pointer spacing is schematic (do not hand-tune);
+> all `<`/`>`/`>=` escaped as `&lt;`/`&gt;`/`&ge;`.
 
 Tabs to migrate (everything except `two-pointers`), grouped by archetype
 (see spec §2). Process **one tab per task**, in this order. For each tab the

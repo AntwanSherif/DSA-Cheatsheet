@@ -37,37 +37,63 @@ by the prose note that explains exactly that block. The label glyph (`①`,
 `②`, …) appears **both inside the ASCII art and on the prose note**, so the
 correspondence is visual and unambiguous.
 
-Markup template:
+Markup template (LOCKED — this is the exact pilot format, verified on the
+Two Pointers tab; replicate it on every tab):
 
 ```html
 <h3>How it works — Two Sum II</h3>
 <div class="walkthrough-merged">
-  <div class="wm-setup">arr = [1,3,5,7,9,11]   target = 10   (shared header / legend / rule)</div>
+  <div class="wm-setup">arr     = [ 1,  3,  5,  7, 11 ]   target = 10
+indices =   0   1   2   3   4
 
-  <div class="wm-block"><pre class="ascii-diagram">┌─ ① ──────────────────┐
-  L=0              R=5
-  sum = 1+11 = 12 > 10 → R--
-└────────────────────────┘</pre></div>
-  <div class="wm-note"><span class="wm-num">①</span> Start wide: L at index 0,
-    R at the last index. Sum is too big, so the right value must shrink — move R left.</div>
+Rule:  sum &lt; target  → L++   (left value too small — move L right)
+       sum &gt; target  → R--   (right value too big — move R left)
+       sum == target → return [L+1, R+1]</div>
 
-  <div class="wm-block"><pre class="ascii-diagram">┌─ ② ──────────────────┐
-  L=0          R=4
-  sum = 1+9 = 10 == 10  ✓
-└────────────────────────┘</pre></div>
-  <div class="wm-note"><span class="wm-num">②</span> Match found → return [L, R]. Done.</div>
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   [L=0]                        [R=4]
+   sum = 1 + 11 = 12   &gt; 10  → R--</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Compute sum = arr[L] + arr[R]
+    = 1 + 11 = 12. 12 is greater than the target … — move R left by one.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   [L=0]                  [R=3]
+   sum = 1 + 7 = 8     &lt; 10  → L++</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> … below the target … move L right by one.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   [L=1]                  [R=3]
+   sum = 3 + 7 = 10    == 10  ✓</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> … equals the target. 0-indexed
+    [1, 3]; problem returns 1-indexed → return [2, 4]. … loop ends once L &ge; R.</div>
 </div>
 ```
 
-Notes:
+### Locked format standards (apply to ALL tabs in Phase 2)
 
-- `wm-setup` holds the shared array/target/legend/rule that applied to the
-  whole old diagram (not part of any single step).
-- Block labels are authored manually inside the ASCII art **and** in the
-  `<span class="wm-num">` of the matching note. They must stay in sync; this
-  is hand-drawn ASCII art so a CSS counter cannot drive the in-art label.
-- `&lt;` / `&gt;` escaping rules already used elsewhere in the file still
-  apply inside `<pre>`.
+1. **Open top-rule delimiter, never a closed box.** Each block opens with
+   `<circled-num> ` + exactly **36 × U+2500 (─)** dashes. No bottom border,
+   no side borders. (Closed boxes were rejected: top/bottom width-matching is
+   fragile and the circled glyph can render double-width → trapezoids.)
+2. **Rule line = circled number + single space + 36 U+2500 dashes.** Total
+   width 38 chars. Do NOT use ASCII hyphen or U+2212.
+3. **The block uses `<div class="ascii-diagram">…</div>`** (not `<pre>`); the
+   `.ascii-diagram` rule supplies `white-space: pre`.
+4. **Examples must exercise every algorithmic branch.** Choose the input so
+   the trace shows each decision path (e.g. both pointer directions) plus the
+   success case. The terminal/empty-result case goes in the final note as
+   prose, not as an extra diagram step (unless it has a distinct path that
+   can't be shown otherwise).
+5. **Labels carry the state; pointer spacing is schematic.** The `[L=..]` /
+   `[R=..]` text is authoritative; horizontal spacing is approximate and is
+   NOT a fidelity constraint — do not hand-tune it.
+6. **`wm-setup`** holds only what is shared across all steps (array, indices,
+   legend/rule). It is the first child; `.wm-setup + .wm-block` zeroes the
+   first block's top margin.
+7. Block labels are authored manually in the `ascii-diagram` **and** in the
+   matching note's `<span class="wm-num">`; they must stay in sync.
+8. `&lt;` / `&gt;` / `&ge;` escaping applies to all text inside
+   `wm-setup`, `ascii-diagram`, and `wm-note` — never a bare `<` or `>`.
 
 ## 2. Diagram archetypes
 
