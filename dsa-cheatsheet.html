@@ -2401,13 +2401,13 @@ function sortColors(nums: number[]): void {
     </li>
     <li><strong>Largest rectangle / area under a histogram</strong>
       <div class="w-desc">Given bar heights, compute the maximum area of a rectangle that can be formed by one or more contiguous bars without exceeding their heights.</div>
-      <div class="w-sig"><span class="w-sig-label">Signal:</span> "largest rectangle in histogram", "maximum area of bars", "widest block fitting under the heights"</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "maximum area rectangle fitting within bar heights", "maximum area of bars", "widest block fitting under the heights"</div>
       <div class="w-ex">e.g. Largest Rectangle in Histogram</div>
     </li>
     <li><strong>Previous smaller / nearest boundary</strong>
       <div class="w-desc">For each position, find the closest prior position whose value is strictly smaller, used to compute left-boundary spans for area or range problems.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "previous smaller element", "left boundary of a bar", "nearest value to the left that is less than current"</div>
-      <div class="w-ex">e.g. Largest Rectangle in Histogram (left-boundary pass)</div>
+      <div class="w-ex">e.g. Trapping Rain Water</div>
     </li>
   </ul></div>
 
@@ -2434,7 +2434,7 @@ Rule: walk left-to-right; stack holds INDICES of elements still waiting for thei
   <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
    i=1   arr[1]=1
    stack before: [0]   arr[stack.top]=arr[0]=2
-   guard: arr[1]=1 &lt; arr[0]=2? NO  (1 is not &gt; 2)  → skip while loop
+   guard: arr[1]=1 &gt; arr[0]=2? NO  (1 is not greater than 2)  → skip while loop
    push 1
    stack after:  [0, 1]     result: [-1, -1, -1, -1, -1]</div></div>
   <div class="wm-note"><span class="wm-num">②</span> i=1, arr[1]=1. Check while guard: arr[1]=1 is NOT greater than arr[stack.top]=arr[0]=2,
