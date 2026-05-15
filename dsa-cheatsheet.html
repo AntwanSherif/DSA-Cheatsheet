@@ -2751,52 +2751,72 @@ function coinChange(coins: number[], amount: number): number {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Grid path counting / min-cost path (Unique Paths, Min Path Sum)</li>
-    <li>Two-sequence problems (Longest Common Subsequence, Edit Distance)</li>
-    <li>String matching with flexibility (wildcards, edit operations)</li>
-    <li>Knapsack-style problems</li>
+    <li><strong>Grid path counting or min-cost traversal</strong>
+      <div class="w-desc">A robot or agent moves through a 2D grid with constrained directions; count paths or minimise accumulated cost to reach the destination.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "m × n grid", "move only right or down", "unique paths", "minimum path sum"</div>
+      <div class="w-ex">e.g. Unique Paths</div>
+    </li>
+    <li><strong>Two-sequence alignment (LCS / edit distance)</strong>
+      <div class="w-desc">The state requires knowing a prefix of each string simultaneously; the table rows correspond to one string and the columns to the other.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "two strings", "longest common subsequence", "minimum edit operations", "insert / delete / replace"</div>
+      <div class="w-ex">e.g. Longest Common Subsequence</div>
+    </li>
+    <li><strong>String matching with flexible rules</strong>
+      <div class="w-desc">Matching with wildcards or patterns means the DP state must track position in both the text and the pattern simultaneously.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "wildcard matching", "regular expression", "pattern with '?' or '*'"</div>
+      <div class="w-ex">e.g. Edit Distance</div>
+    </li>
+    <li><strong>Knapsack-style capacity and item selection</strong>
+      <div class="w-desc">One dimension indexes items; the other indexes available capacity. dp[i][w] answers the best value using the first i items with capacity w.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "items with weights and values", "capacity constraint", "0/1 knapsack", "subset sum with limit"</div>
+      <div class="w-ex">e.g. Target Sum</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Unique Paths (3×4 grid) + LCS</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
+  <h3>How it works — Unique Paths &amp; LCS</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Two independent 2-D DP problems share the same grid-filling pattern.
+
+── Unique Paths ────────────────────────────────────────
+Subproblem:  dp[i][j] = number of distinct paths from (0,0) to (i,j)
+Recurrence:  dp[i][j] = dp[i-1][j] + dp[i][j-1]   (paths from above + from left)
+Base cases:  dp[0][j] = 1 for all j   (top row: only one way — move all the way right)
+             dp[i][0] = 1 for all i   (left column: only one way — move all the way down)
+
+── LCS ─────────────────────────────────────────────────
+Subproblem:  dp[i][j] = LCS length of s1[0..i-1] and s2[0..j-1]
+Recurrence:  if s1[i-1] == s2[j-1]:  dp[i][j] = dp[i-1][j-1] + 1
+             else:                    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+Base cases:  dp[0][j] = 0  (empty prefix of s1)
+             dp[i][0] = 0  (empty prefix of s2)</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────  recurrence</div><div class="mermaid">
 graph LR
     R["Recurrence:\ndp[i][j] = dp[i-1][j] + dp[i][j-1]\n(paths from above + from left)"]:::formula
     B["Base cases:\ndp[0][j] = 1 (top row)\ndp[i][0] = 1 (left column)"]:::base
     classDef formula fill:#a855f7,stroke:#9333ea,color:#fff
     classDef base fill:#22c55e,stroke:#16a34a,color:#000
-  </div>
-  <div style="margin-top:16px;overflow-x:auto">
-  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px">Unique Paths — 3×4 grid (move only right or down):</p>
-  <table class="dp-table">
+  </div></div>
+  <div class="wm-note"><span class="wm-num">①</span> The recurrence graph captures both the Unique Paths formula and its base cases. Every interior cell (i,j) is reachable from exactly two neighbors: the cell directly above (dp[i-1][j], representing arriving by moving down) and the cell to the left (dp[i][j-1], representing arriving by moving right). The two annotated nodes show how to seed the table: every cell in the top row and every cell in the leftmost column has exactly one path to it.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────  fill the dp table — Unique Paths 3×4</div><table class="dp-table">
     <tr><th></th><th>j=0</th><th>j=1</th><th>j=2</th><th>j=3</th></tr>
     <tr><th>i=0</th><td class="dp-base">1</td><td class="dp-base">1</td><td class="dp-base">1</td><td class="dp-base">1</td></tr>
     <tr><th>i=1</th><td class="dp-base">1</td><td class="dp-computed">2</td><td class="dp-computed">3</td><td class="dp-computed">4</td></tr>
     <tr><th>i=2</th><td class="dp-base">1</td><td class="dp-computed">3</td><td class="dp-computed">6</td><td class="dp-answer">10</td></tr>
-  </table>
-  </div>
-  <div style="margin-top:16px;overflow-x:auto">
-  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px">LCS — s1="ABCB", s2="BCAB" (if chars match: +1 from diagonal; else max from up/left):</p>
-  <table class="dp-table">
+  </table></div>
+  <div class="wm-note"><span class="wm-num">②</span> Base cases: the entire top row (i=0) and the entire left column (j=0) are filled with 1 — there is only one way to reach any edge cell. Interior cells: dp[1][1] = dp[0][1] + dp[1][0] = 1+1 = 2; dp[1][2] = dp[0][2] + dp[1][1] = 1+2 = 3; dp[1][3] = 1+3 = 4. Row 2: dp[2][1] = dp[1][1] + dp[2][0] = 2+1 = 3; dp[2][2] = dp[1][2] + dp[2][1] = 3+3 = 6; dp[2][3] = dp[1][3] + dp[2][2] = 4+6 = 10. The answer is dp[2][3] = 10.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────  fill the dp table — LCS s1="ABCB" s2="BCAB"</div><table class="dp-table">
     <tr><th></th><th>""</th><th>B</th><th>C</th><th>A</th><th>B</th></tr>
     <tr><th>""</th><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td></tr>
     <tr><th>A</th><td class="dp-base">0</td><td class="dp-computed">0</td><td class="dp-computed">0</td><td class="dp-computed">1</td><td class="dp-computed">1</td></tr>
     <tr><th>B</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">1</td><td class="dp-computed">1</td><td class="dp-computed">2</td></tr>
     <tr><th>C</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">2</td><td class="dp-computed">2</td><td class="dp-computed">2</td></tr>
     <tr><th>B</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">2</td><td class="dp-computed">2</td><td class="dp-answer">3</td></tr>
-  </table>
-  <div class="ascii-diagram" style="margin-top:8px">LCS = 3 ("BCB") ✓</div>
+  </table></div>
+  <div class="wm-note"><span class="wm-num">③</span> Base cases: row 0 and column 0 are all 0 (LCS with an empty string is 0). Row A (i=1): A≠B→max(0,0)=0; A≠C→0; A==A→diagonal+1=1; A≠B→max(0,1)=1. Row B (i=2): B==B→diagonal+1=1; B≠C→max(0,1)=1; B≠A→max(1,1)=1; B==B→diagonal+1=2. Row C (i=3): C≠B→max(1,1)=1; C==C→diagonal+1=2; C≠A→max(1,2)=2; C≠B→max(2,2)=2. Row B (i=4): B==B→diagonal+1=1; B≠C→max(1,1)=1; B≠A→max(2,1)=2; B==B→diagonal+1=3. Answer dp[4][4] = 3, i.e. LCS = "BCB".</div>
   </div>
-  </div>
-
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Define dp[i][j]:</strong> What question does this cell answer? (e.g., "# paths to reach cell (i,j)")</li>
-    <li><strong>Write the recurrence:</strong> How does dp[i][j] depend on neighboring cells?</li>
-    <li><strong>Fill base cases:</strong> First row, first column, or empty-string cases.</li>
-    <li><strong>Fill the table</strong> row by row (or column by column).</li>
-    <li>Read the answer from <strong>dp[m][n]</strong> (or relevant cell).</li>
-  </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
