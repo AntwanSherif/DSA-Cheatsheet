@@ -366,21 +366,21 @@ Rule:  sum &lt; target  → L++   (need a bigger value on the left)
        sum &gt; target  → R--   (need a smaller value on the right)
        sum == target → return [L+1, R+1]</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
    [L=0]                        [R=4]
    sum = 1 + 11 = 12   &gt; 10  → R--</div></div>
   <div class="wm-note"><span class="wm-num">①</span> Compute sum = arr[L] + arr[R]
     = 1 + 11 = 12. 12 is greater than the target, so the right value is too big
     — move R left by one. (The loop runs while L &lt; R.)</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
    [L=0]                  [R=3]
    sum = 1 + 7 = 8     &lt; 10  → L++</div></div>
   <div class="wm-note"><span class="wm-num">②</span> The new R gives sum = 1 + 7
     = 8, now below the target, so the left value is too small — move L right by
     one.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
    [L=1]                  [R=3]
    sum = 3 + 7 = 10    == 10  ✓</div></div>
   <div class="wm-note"><span class="wm-num">③</span> sum = 3 + 7 = 10 equals the
