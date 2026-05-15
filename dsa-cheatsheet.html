@@ -199,6 +199,33 @@
 
   /* Divider */
   .section-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* Per-example code block header */
+  .code-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 14px;
+  }
+  .code-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+  .code-problem {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.55;
+  }
+  .code-block + .code-block { margin-top: 14px; }
 </style>
 </head>
 <body>
