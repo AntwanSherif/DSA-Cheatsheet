@@ -721,44 +721,69 @@ Find middle: when fast reaches end, slow is at the middle.
   </div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">class ListNode {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Linked List Cycle</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given the head of a linked list, determine if the list contains a cycle.</div>
+    <pre><code class="language-typescript">class ListNode {
   val: number;
   next: ListNode | null = null;
   constructor(val: number) { this.val = val; }
 }
 
-// Detect cycle
+// Floyd's cycle detection: fast moves 2× speed.
+// In a cycle, fast "laps" slow — they must meet inside the cycle.
+// No cycle → fast reaches null first.
 function hasCycle(head: ListNode | null): boolean {
   let slow = head, fast = head;
-  while (fast !== null && fast.next !== null) {
+  while (fast !== null &amp;&amp; fast.next !== null) {
     slow = slow!.next;
     fast = fast.next.next;
     if (slow === fast) return true;
   }
   return false;
-}
+}</code></pre>
+  </div>
 
-// Find middle node (slow is at middle when fast exhausts list)
-function middleNode(head: ListNode): ListNode {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Middle of the Linked List</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given the head of a singly linked list, return the middle node. If two middle nodes exist, return the second one.</div>
+    <pre><code class="language-typescript">function middleNode(head: ListNode): ListNode {
   let slow: ListNode = head, fast: ListNode = head;
-  while (fast.next !== null && fast.next.next !== null) {
+  // Terminate when fast.next or fast.next.next is null.
+  // For even-length lists this leaves slow at the SECOND middle (as required).
+  while (fast.next !== null &amp;&amp; fast.next.next !== null) {
     slow = slow.next!;
     fast = fast.next.next;
   }
   return slow;
-}
+}</code></pre>
+  </div>
 
-// Happy number (treat digit-sum as a "next" pointer)
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Happy Number</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Starting from <code>n</code>, repeatedly replace the number with the sum of squares of its digits. Return true if the process eventually reaches 1; false if it loops forever.</div>
+    <pre><code class="language-typescript">// Unhappy numbers always enter a cycle — this is a cycle-detection problem.
+// Apply Floyd's algorithm on the abstract "next" function (digit-square-sum).
 function isHappy(n: number): boolean {
   const digitSquareSum = (x: number) =&gt;
     String(x).split('').reduce((s, d) =&gt; s + Number(d) ** 2, 0);
   let slow = n, fast = n;
   do {
-    slow = digitSquareSum(slow);
-    fast = digitSquareSum(digitSquareSum(fast));
+    slow = digitSquareSum(slow);                         // 1 step
+    fast = digitSquareSum(digitSquareSum(fast));          // 2 steps
   } while (slow !== fast);
-  return slow === 1;
-}</code></pre></div>
+  return slow === 1; // met at 1 → happy; met elsewhere → cycle → not happy
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
@@ -815,39 +840,53 @@ sequenceDiagram
   </div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">// Reverse entire list — returns new head
-function reverseList(head: ListNode | null): ListNode | null {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Reverse Linked List</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given the head of a singly linked list, reverse the list in-place and return the new head.</div>
+    <pre><code class="language-typescript">function reverseList(head: ListNode | null): ListNode | null {
   let prev: ListNode | null = null;
   let curr = head;
 
   while (curr !== null) {
-    const next = curr.next; // save next before overwriting
-    curr.next = prev;       // reverse the pointer
-    prev = curr;            // advance prev
-    curr = next;            // advance curr
+    const next = curr.next; // 1. save next (we're about to overwrite curr.next)
+    curr.next = prev;       // 2. reverse the pointer
+    prev = curr;            // 3. advance prev to current node
+    curr = next;            // 4. advance curr to saved next
   }
 
-  return prev; // prev is now the new head
-}
+  return prev; // prev is now the new head (last node of original list)
+}</code></pre>
+  </div>
 
-// Reverse sublist from position left to right (1-indexed)
-function reverseBetween(head: ListNode | null, left: number, right: number): ListNode | null {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Reverse Linked List II</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given the head of a singly linked list and two integers <code>left</code> and <code>right</code>, reverse the nodes from position <code>left</code> to <code>right</code> (1-indexed) and return the modified list.</div>
+    <pre><code class="language-typescript">function reverseBetween(head: ListNode | null, left: number, right: number): ListNode | null {
+  // Dummy node lets us handle the edge case where left=1 without special-casing the head.
   const dummy = new ListNode(0);
   dummy.next = head;
   let pre: ListNode = dummy;
 
-  for (let i = 0; i &lt; left - 1; i++) pre = pre.next!;
+  for (let i = 0; i &lt; left - 1; i++) pre = pre.next!; // walk to node before sublist
 
   let curr = pre.next!;
+  // In-place insertion: each iteration pulls curr.next to the front of the sublist.
   for (let i = 0; i &lt; right - left; i++) {
     const next = curr.next!;
-    curr.next = next.next;
-    next.next = pre.next;
+    curr.next = next.next;  // unlink `next` from its position
+    next.next = pre.next;   // insert `next` at front of sublist
     pre.next = next;
   }
 
   return dummy.next;
-}</code></pre></div>
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
