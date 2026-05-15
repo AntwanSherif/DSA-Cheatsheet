@@ -330,11 +330,31 @@
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Sorted array — find a pair that sums to a target</li>
-    <li>Check if a string is a palindrome</li>
-    <li>Merge two sorted arrays in-place</li>
-    <li>Remove duplicates / move zeroes in-place</li>
-    <li>Find container with most water</li>
+    <li><strong>Pair summing to a target (sorted)</strong>
+      <div class="w-desc">Given a sorted array, find two elements that add up to a target value.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "sorted array" + "two numbers / a pair that sum to / add up to"</div>
+      <div class="w-ex">e.g. Two Sum II — Input Array Is Sorted</div>
+    </li>
+    <li><strong>Palindrome check</strong>
+      <div class="w-desc">Verify a string or array reads the same forward and backward.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "is a palindrome", "reads the same backward", "ignoring non-alphanumeric"</div>
+      <div class="w-ex">e.g. Valid Palindrome</div>
+    </li>
+    <li><strong>Merge / compare two sorted sequences in place</strong>
+      <div class="w-desc">Walk two sorted arrays with one pointer each to merge or compare them without extra space.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "two sorted arrays", "merge in-place", "without using extra space"</div>
+      <div class="w-ex">e.g. Merge Sorted Array</div>
+    </li>
+    <li><strong>In-place array rewrite (fast / slow pointer)</strong>
+      <div class="w-desc">Overwrite an array in one pass so kept elements move to the front; a slow pointer marks the write boundary while a fast pointer scans.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "in-place", "remove duplicates", "move zeroes", "return the new length"</div>
+      <div class="w-ex">e.g. Remove Duplicates from Sorted Array</div>
+    </li>
+    <li><strong>Maximize over a shrinking range</strong>
+      <div class="w-desc">Pointers start at both ends; move the limiting one inward to optimize an area or quantity.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "container with most water", "maximize area", "move the shorter side"</div>
+      <div class="w-ex">e.g. Container With Most Water</div>
+    </li>
   </ul></div>
 
   <h3>Diagram — Two Sum II</h3>
