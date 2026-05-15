@@ -2206,41 +2206,87 @@ function minFeasible(lo: number, hi: number, feasible: (k: number) =&gt; boolean
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Sort before applying two pointers or binary search</li>
-    <li>Merge intervals (sort by start time first)</li>
-    <li>Custom sort comparator (by frequency, by second element, etc.)</li>
-    <li>Sort Colors (Dutch National Flag — 3-way partition)</li>
+    <li><strong>Sort before applying two pointers or binary search</strong>
+      <div class="w-desc">Many problems become straightforward once the input is ordered; sort first, then apply a linear or logarithmic technique.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "find a pair / triplet that sums to", "find if target exists", combined with an unsorted input</div>
+      <div class="w-ex">e.g. 3Sum</div>
+    </li>
+    <li><strong>Merge overlapping intervals</strong>
+      <div class="w-desc">Sort intervals by start time so that any overlap with the current interval is always with the immediately preceding one, enabling a single linear pass.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "list of intervals", "merge overlapping", "insert interval and merge"</div>
+      <div class="w-ex">e.g. Merge Intervals</div>
+    </li>
+    <li><strong>Custom sort comparator</strong>
+      <div class="w-desc">Reorder elements by a derived key (frequency, second field, largest-number concatenation) that the default sort cannot produce.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "sort by frequency", "arrange to form the largest number", "sort by second element"</div>
+      <div class="w-ex">e.g. Top K Frequent Elements</div>
+    </li>
+    <li><strong>Three-way partition (Dutch National Flag)</strong>
+      <div class="w-desc">Partition an array with three distinct values into three contiguous regions in a single pass using lo, mid, hi pointers.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "sort array of 0s, 1s, 2s in-place", "one pass", "without using library sort"</div>
+      <div class="w-ex">e.g. Sort Colors</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Merge Sort divide &amp; conquer</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A["[5,3,8,1,4,2]"]:::root --> B["[5,3,8]"]:::left
-    A --> C["[1,4,2]"]:::right
-    B --> D["[5]"]:::base
-    B --> E["[3,8]"]:::left
-    C --> F["[1]"]:::base
-    C --> G["[4,2]"]:::right
-    E --> H["[3]"]:::base
-    E --> I["[8]"]:::base
-    G --> J["[4]"]:::base
-    G --> K["[2]"]:::base
-    H & I --> L["[3,8]"]:::merge
-    J & K --> M["[2,4]"]:::merge
-    D & L --> N["[3,5,8]"]:::merge
-    F & M --> O["[1,2,4]"]:::merge
-    N & O --> P["[1,2,3,4,5,8]"]:::result
-    classDef root fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef left fill:#a855f7,stroke:#9333ea,color:#fff
-    classDef right fill:#f97316,stroke:#ea580c,color:#000
-    classDef base fill:#475569,stroke:#64748b,color:#e2e8f0
-    classDef merge fill:#eab308,stroke:#ca8a04,color:#000
-    classDef result fill:#22c55e,stroke:#16a34a,color:#000
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">Merge Sort: O(n log n) time, O(n) space — stable
-Quick Sort: O(n log n) avg, O(n²) worst, O(log n) space — in-place
-Built-in JS/TS Array.sort(): TimSort (merge+insertion), O(n log n), stable</div>
+  <h3>How it works — Merge sort</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">arr = [ 5, 3, 8, 1 ]
+
+Merge sort is recursive: split the array in half until every sub-array has
+length 1 (base case), then merge sorted halves back together bottom-up.
+
+Complexity: O(n log n) time, O(n) auxiliary space (temporary merge buffer).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   mergeSort([5, 3, 8, 1])
+   mid = 2
+   left  = arr[0..1] = [5, 3]
+   right = arr[2..3] = [8, 1]
+   → recurse into mergeSort([5, 3]) first</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> The input [5,3,8,1] has length 4,
+    so we split at mid = 2: left half [5,3] and right half [8,1]. We recurse
+    into mergeSort([5,3]) before touching the right half.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   mergeSort([5, 3])
+   mid = 1
+   left  = [5]   ← length 1, base case, returns [5]
+   right = [3]   ← length 1, base case, returns [3]</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> [5,3] splits into [5] and [3].
+    Both have length 1, which is the base case (arr.length &le; 1 → return arr),
+    so each returns immediately. We now merge [5] and [3].</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   merge([5], [3])
+   i=0 j=0: left[0]=5  right[0]=3  → 3 &lt; 5, take right → result=[3], j=1
+   j exhausted → append left remainder → result=[3, 5]</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Merging [5] and [3]: compare
+    left[0]=5 and right[0]=3. 3 &lt; 5 so we take 3 from the right and advance j.
+    j is now exhausted; we append the remaining left element 5. Sorted sub-result:
+    [3, 5]. This is returned to the caller of mergeSort([5,3]).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   mergeSort([8, 1])
+   mid = 1
+   left  = [8]   ← length 1, base case, returns [8]
+   right = [1]   ← length 1, base case, returns [1]
+   merge([8], [1]):
+   i=0 j=0: left[0]=8  right[0]=1  → 1 &lt; 8, take right → result=[1], j=1
+   j exhausted → append left remainder → result=[1, 8]</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> Back up the call stack to
+    mergeSort([8,1]). It splits into base cases [8] and [1], then merges: 1 &lt; 8
+    so we take 1 first, then append 8. Sorted sub-result: [1, 8].</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+   merge([3, 5], [1, 8])   ← final merge
+   i=0 j=0: 3 vs 1  → take 1,  j=1,  result=[1]
+   i=0 j=1: 3 vs 8  → take 3,  i=1,  result=[1, 3]
+   i=1 j=1: 5 vs 8  → take 5,  i=2,  result=[1, 3, 5]
+   i exhausted → append right remainder [8] → result=[1, 3, 5, 8]</div></div>
+  <div class="wm-note"><span class="wm-num">⑤</span> The final merge combines the two
+    sorted halves [3,5] and [1,8]. We compare element-by-element: 1&lt;3 → take 1;
+    3&lt;8 → take 3; 5&lt;8 → take 5; left is exhausted so we append the remaining
+    right element 8. Final sorted array: [1, 3, 5, 8].</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
