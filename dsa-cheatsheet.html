@@ -871,28 +871,61 @@ for (const n of nums) {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Detect a cycle in a linked list</li>
-    <li>Find the middle of a linked list</li>
-    <li>Find the start of a cycle</li>
-    <li>Happy number (abstract "next" function creates an implicit list)</li>
+    <li><strong>Cycle detection in a linked list</strong>
+      <div class="w-desc">Determine whether a linked list contains a loop — a node whose next pointer points back to an earlier node rather than null.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "linked list", "cycle", "loop", "detect if a list is circular"</div>
+      <div class="w-ex">e.g. Linked List Cycle</div>
+    </li>
+    <li><strong>Find the middle of a linked list</strong>
+      <div class="w-desc">Locate the midpoint in one pass without knowing the length — useful as a sub-step when reversing a half or merging.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "middle node", "split the list in half", "find the median node"</div>
+      <div class="w-ex">e.g. Middle of the Linked List</div>
+    </li>
+    <li><strong>Find the start of a cycle</strong>
+      <div class="w-desc">After detecting a cycle, locate the exact node where it begins using a second phase of Floyd's algorithm.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "return the node where the cycle begins", "find cycle entrance", "detect and locate cycle"</div>
+      <div class="w-ex">e.g. Linked List Cycle II</div>
+    </li>
+    <li><strong>Abstract cycle detection (Happy Number)</strong>
+      <div class="w-desc">Any sequence defined by a "next" function that may loop can be treated as an implicit linked list — apply fast/slow to detect if the sequence cycles.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "repeatedly apply a transformation", "will it ever reach X", "does it loop forever"</div>
+      <div class="w-ex">e.g. Happy Number</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Cycle detection</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph LR
-    n1((1)):::visited --> n2((2)):::visited --> n3((3)):::slow --> n4((4)):::visited --> n5((5)):::fast --> n6((6)):::visited --> n3
-    classDef visited fill:#475569,stroke:#64748b,color:#e2e8f0
-    classDef slow fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef fast fill:#f97316,stroke:#ea580c,color:#000
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">After several steps, slow (blue) and fast (orange) meet inside the cycle.
-No cycle → fast reaches null first.
+  <h3>How it works — Cycle detection (Floyd's)</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">List A (no cycle):  1→2→3→4→5→null
+List B (cycle):     1→2→3→4→5→6→3  (node 6 points back to node 3)
 
-Find middle: when fast reaches end, slow is at the middle.
-  List: 1→2→3→4→5
-  Steps: slow=1,fast=1 → slow=2,fast=3 → slow=3,fast=5(end)
-  slow=3 is the middle ✓</div>
+slow moves 1 step per iteration; fast moves 2 steps.
+Rule: if fast or fast.next reaches null → no cycle → return false.
+      if slow === fast → cycle detected → return true.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   NO-CYCLE BRANCH  (List A: 1→2→3→4→5→null)
+   start:  slow=1, fast=1
+   step 1: slow=2, fast=3
+   step 2: slow=3, fast=5
+   step 3: slow=4, fast=null  ← fast.next is null → exit loop</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> When there is no cycle fast eventually reaches the end of the list. After step 2 fast is at node 5; fast.next is null, so the while-condition <code>fast !== null &amp;&amp; fast.next !== null</code> fails and the loop exits. We return false — no meeting point was ever found.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   CYCLE BRANCH  (List B: 1→2→3→4→5→6→3)
+   start:  slow=1, fast=1
+   step 1: slow=2, fast=3
+   step 2: slow=3, fast=5
+   step 3: slow=4, fast=3  (fast wrapped: 5→6→3)
+   step 4: slow=5, fast=5  ← slow === fast → cycle!</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Inside a cycle fast "laps" slow: fast moves two nodes per step while slow moves one, so fast gains one node on slow each iteration. They must eventually land on the same node. Here they meet at node 5 after step 4. The moment slow === fast we return true. The meeting point is somewhere inside the cycle — not necessarily the cycle entrance.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   FIND-MIDDLE BONUS  (List A: 1→2→3→4→5)
+   start:  slow=1, fast=1
+   step 1: slow=2, fast=3
+   step 2: slow=3, fast=5  ← fast.next is null → stop
+   slow=3 is the middle node ✓</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> A second application: to find the middle in one pass, stop when fast.next or fast.next.next is null. Because fast travels at 2× speed, when fast reaches the last node slow is exactly at the midpoint. For an even-length list (e.g. 1→2→3→4) this condition fires when fast=3, leaving slow at node 2 — the second of the two middle nodes, which is what LC 876 requires.</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
