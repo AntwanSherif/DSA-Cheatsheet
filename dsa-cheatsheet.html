@@ -1192,47 +1192,70 @@ BST Invariant: for every node N,
   </div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">// Search
-function searchBST(root: TreeNode | null, val: number): TreeNode | null {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Validate Binary Search Tree</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given the root of a binary tree, determine if it is a valid BST. A valid BST requires ALL left descendants &lt; node &lt; ALL right descendants — not just direct children.</div>
+    <pre><code class="language-typescript">function searchBST(root: TreeNode | null, val: number): TreeNode | null {
   if (!root || root.val === val) return root;
-  return val &lt; root.val
-    ? searchBST(root.left, val)
-    : searchBST(root.right, val);
+  return val &lt; root.val ? searchBST(root.left, val) : searchBST(root.right, val);
 }
 
-// Validate BST — pass min/max bounds down the tree
+// Pass bounds down the tree — a node may be a local BST but violate the global invariant.
+// E.g., a node with value 10 in the left subtree of 8 is invalid even if its own children are fine.
 function isValidBST(
   root: TreeNode | null,
   min = -Infinity,
   max = Infinity
 ): boolean {
   if (!root) return true;
-  if (root.val &lt;= min || root.val &gt;= max) return false;
-  return isValidBST(root.left, min, root.val) &amp;&amp;
-         isValidBST(root.right, root.val, max);
-}
+  if (root.val &lt;= min || root.val &gt;= max) return false; // strict inequalities: no equal values allowed
+  return isValidBST(root.left, min, root.val) &amp;&amp;   // left subtree must be &lt; current
+         isValidBST(root.right, root.val, max);     // right subtree must be &gt; current
+}</code></pre>
+  </div>
 
-// Kth smallest — inorder gives sorted order
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Kth Smallest Element in a BST</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given the root of a BST and an integer <code>k</code>, return the kth smallest value (1-indexed) among all node values.</div>
+    <pre><code class="language-typescript">// Iterative inorder: stops as soon as the kth element is found (no need to traverse all).
+// Walk left as far as possible, then pop, then go right (classic inorder stack traversal).
 function kthSmallest(root: TreeNode, k: number): number {
   const stack: TreeNode[] = [];
   let curr: TreeNode | null = root;
 
   while (curr || stack.length) {
-    while (curr) { stack.push(curr); curr = curr.left; }
+    while (curr) { stack.push(curr); curr = curr.left; } // go as far left as possible
     curr = stack.pop()!;
-    if (--k === 0) return curr.val;
+    if (--k === 0) return curr.val; // kth element found
     curr = curr.right;
   }
 
   return -1;
-}
+}</code></pre>
+  </div>
 
-// Lowest Common Ancestor
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Lowest Common Ancestor of a BST</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given a BST and two nodes <code>p</code> and <code>q</code>, find their lowest common ancestor — the deepest node that has both as descendants (a node is a descendant of itself).</div>
+    <pre><code class="language-typescript">// Three cases — BST properties make this O(h) with no extra space:
+// 1. Both p and q are in the left subtree  → recurse left
+// 2. Both p and q are in the right subtree → recurse right
+// 3. They diverge here (one on each side, or current node equals p or q) → current node is LCA
 function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNode {
   if (p.val &lt; root.val &amp;&amp; q.val &lt; root.val) return lowestCommonAncestor(root.left!, p, q);
   if (p.val &gt; root.val &amp;&amp; q.val &gt; root.val) return lowestCommonAncestor(root.right!, p, q);
-  return root; // they diverge here — root is LCA
-}</code></pre></div>
+  return root;
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
