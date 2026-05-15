@@ -129,13 +129,6 @@
   .when-box li::marker { color: var(--accent); }
 
   /* Diagrams */
-  .diagram-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-    overflow-x: auto;
-  }
   .ascii-diagram {
     font-family: 'Fira Code', 'Cascadia Code', monospace;
     font-size: 13px;
@@ -145,10 +138,40 @@
   }
   .mermaid { display: flex; justify-content: center; }
 
-  /* Walkthrough steps */
-  .walkthrough ol { padding-left: 22px; }
-  .walkthrough li { margin: 6px 0; }
-  .walkthrough li strong { color: var(--yellow); }
+  /* Merged walkthrough (diagram block + its explanation) */
+  .walkthrough-merged {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+  }
+  .wm-setup {
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+  .wm-block { margin-top: 14px; }
+  .wm-setup + .wm-block { margin-top: 0; }
+  .wm-note {
+    margin: 8px 0 4px 14px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .wm-num { color: var(--yellow); font-weight: 700; margin-right: 4px; }
+
+  /* Enriched "when to use" entries */
+  .when-box li { margin: 12px 0; }
+  .when-box li strong { color: var(--yellow); }
+  .w-desc { color: var(--text); margin: 2px 0; }
+  .w-sig, .w-ex { color: var(--text-muted); margin: 2px 0; font-size: 13px; }
+  .w-sig-label { color: var(--accent); font-weight: 600; }
+  .w-ex { font-style: italic; }
 
   /* Code blocks */
   .code-block {
@@ -295,33 +318,64 @@
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Sorted array — find a pair that sums to a target</li>
-    <li>Check if a string is a palindrome</li>
-    <li>Merge two sorted arrays in-place</li>
-    <li>Remove duplicates / move zeroes in-place</li>
-    <li>Find container with most water</li>
+    <li><strong>Pair summing to a target (sorted)</strong>
+      <div class="w-desc">Given a sorted array, find two elements that add up to a target value.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> a "sorted array" together with "find two numbers / a pair that sum to / add up to"</div>
+      <div class="w-ex">e.g. Two Sum II — Input Array Is Sorted</div>
+    </li>
+    <li><strong>Palindrome check</strong>
+      <div class="w-desc">Verify a string or array reads the same forward and backward.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "is a palindrome", "reads the same backward", "ignoring non-alphanumeric"</div>
+      <div class="w-ex">e.g. Valid Palindrome</div>
+    </li>
+    <li><strong>Merge / compare two sorted sequences in place</strong>
+      <div class="w-desc">Advance one pointer per sorted array; when merging in place (e.g. LC 88), fill from the back of the destination so unread values are never overwritten.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "two sorted arrays", "merge in-place", "without using extra space"</div>
+      <div class="w-ex">e.g. Merge Sorted Array</div>
+    </li>
+    <li><strong>In-place array rewrite (fast / slow pointer)</strong>
+      <div class="w-desc">Overwrite an array in one pass so kept elements move to the front; a slow pointer marks the write boundary while a fast pointer scans.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "in-place", "remove duplicates", "move zeroes", "return the new length"</div>
+      <div class="w-ex">e.g. Remove Duplicates from Sorted Array</div>
+    </li>
+    <li><strong>Maximize over a shrinking range</strong>
+      <div class="w-desc">Pointers start at both ends; move the limiting one inward to optimize an area or quantity.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "maximize an area / quantity bounded by two ends", opposite-end pointers where you move the limiting side inward</div>
+      <div class="w-ex">e.g. Container With Most Water</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Two Sum II</h3>
-  <div class="diagram-box"><div class="ascii-diagram">arr    =  [ 1,  3,  5,  7,  9, 11 ]   target = 10
-indices=    0   1   2   3   4   5
+  <h3>How it works — Two Sum II</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">arr     = [ 1,  3,  5,  7, 11 ]   target = 10
+indices =   0   1   2   3   4
 
-Step 1:   [L=0]               [R=5]   sum = 1+11 = 12  > target → R--
-Step 2:   [L=0]           [R=4]       sum = 1+9  = 10  == target ✓ → return [0, 4]
+Rule:  sum &lt; target  → L++   (left value too small — move L right)
+       sum &gt; target  → R--   (right value too big — move R left)
+       sum == target → return [L+1, R+1]</div>
 
-Rule: sum &lt; target → L++  (need a bigger number on the left)
-      sum &gt; target → R--  (need a smaller number on the right)
-      sum == target → found!</div></div>
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   [L=0]                        [R=4]
+   sum = 1 + 11 = 12   &gt; 10  → R--</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Compute sum = arr[L] + arr[R]
+    = 1 + 11 = 12. 12 is greater than the target, so the right value is too big
+    — move R left by one. (The loop runs while L &lt; R.)</div>
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Place L at index 0, R at last index.</strong></li>
-    <li><strong>Compute sum</strong> = arr[L] + arr[R].</li>
-    <li>If sum === target → return [L, R].</li>
-    <li>If sum &lt; target → L++ (need larger value).</li>
-    <li>If sum &gt; target → R-- (need smaller value).</li>
-    <li>Repeat until L &ge; R.</li>
-  </ol></div>
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   [L=0]                  [R=3]
+   sum = 1 + 7 = 8     &lt; 10  → L++</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> The new R gives sum = 1 + 7
+    = 8, now below the target, so the left value is too small — move L right by
+    one.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   [L=1]                  [R=3]
+   sum = 3 + 7 = 10    == 10  ✓</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> sum = 3 + 7 = 10 equals the
+    target. The pointers are at 0-indexed [1, 3]; this problem returns 1-indexed
+    positions, so return [2, 4]. If no pair ever matches, the loop ends once
+    L &ge; R and returns [].</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
 
@@ -393,32 +447,64 @@ Rule: sum &lt; target → L++  (need a bigger number on the left)
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Longest/shortest subarray or substring satisfying a condition</li>
-    <li>Maximum sum of a fixed-size window</li>
-    <li>Minimum window containing all required characters</li>
-    <li>Substring without repeating characters</li>
+    <li><strong>Longest/shortest subarray or substring satisfying a condition</strong>
+      <div class="w-desc">Given an array or string, find the longest (or shortest) contiguous subarray/substring that obeys a constraint such as "at most k distinct characters" or "sum at most S".</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "longest subarray", "shortest subarray", "contiguous", "satisfying a condition", "at most k"</div>
+      <div class="w-ex">e.g. Minimum Size Subarray Sum</div>
+    </li>
+    <li><strong>Maximum sum of a fixed-size window</strong>
+      <div class="w-desc">Slide a window of exactly k elements across the array; add the entering element and subtract the leaving element each step instead of recomputing the whole sum.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "subarray of length k", "fixed window", "maximum average subarray"</div>
+      <div class="w-ex">e.g. Maximum Average Subarray I</div>
+    </li>
+    <li><strong>Minimum window containing all required characters</strong>
+      <div class="w-desc">Expand the right pointer until the window contains every required element, then shrink the left pointer to minimise the window size while maintaining coverage.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum window", "contains all characters", "smallest substring that includes"</div>
+      <div class="w-ex">e.g. Minimum Window Substring</div>
+    </li>
+    <li><strong>Substring without repeating characters</strong>
+      <div class="w-desc">Maintain a window where no character appears twice; when a duplicate is encountered, advance the left pointer past the previous occurrence.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "no repeating characters", "all unique characters", "longest substring without"</div>
+      <div class="w-ex">e.g. Longest Substring Without Repeating Characters</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Max sum window of size k=3</h3>
-  <div class="diagram-box"><div class="ascii-diagram">arr = [ 2,  1,  5,  1,  3,  2 ]   k = 3
+  <h3>How it works — Max sum window (k=3) &amp; variable shrink</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">FIXED WINDOW — arr = [ 2,  1,  5,  1,  3,  2 ]   k = 3
+indices =              0   1   2   3   4   5
 
-       [L=0  →  R=2]           window=[2,1,5]  sum=8
-            [L=1  →  R=3]      window=[1,5,1]  sum=7
-                 [L=2  →  R=4] window=[5,1,3]  sum=9  ← max ✓
-                      [L=3 → R=5] window=[1,3,2] sum=6
+Rule: slide right one step each time — add arr[R], subtract arr[R-k], update max.
 
-Variable window (e.g. longest substring):
-→ expand R each step
-→ shrink L when constraint broken (duplicate found, sum too large, etc.)</div></div>
+VARIABLE WINDOW — s = "abcba"   (longest substring, no repeating chars)
+Rule: expand R each step; when duplicate detected → advance L past last occurrence.</div>
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Start with L=0, R=0.</strong> Expand R each iteration.</li>
-    <li><strong>Track state</strong> inside the window (sum, char counts, etc.).</li>
-    <li>If constraint is <strong>violated</strong> → shrink by advancing L until valid again.</li>
-    <li>At each step, <strong>update the answer</strong> (max/min window size, etc.).</li>
-    <li>Fixed window: slide L and R together, keeping window size = k.</li>
-  </ol></div>
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   FIXED: [L=0 → R=2]  window=[2,1,5]  sum=8   max=8</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Seed the first window by summing arr[0..k-1] = 2+1+5 = 8. This is the starting max.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   FIXED: [L=1 → R=3]  window=[1,5,1]  sum=7   max=8
+   FIXED: [L=2 → R=4]  window=[5,1,3]  sum=9   max=9  ← updated
+   FIXED: [L=3 → R=5]  window=[1,3,2]  sum=6   max=9  ← final</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Each slide: windowSum += arr[R] - arr[R-k]. At R=3 the sum is 8 + arr[3] − arr[0] = 8 + 1 − 2 = 7, max stays 8. At R=4 the sum rises to 9 — new max. At R=5 sum drops to 6, max stays 9. Return 9.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   VARIABLE: [L=0, R=0]  window="a"   seen={a:0}  len=1
+             [L=0, R=1]  window="ab"  seen={a:0,b:1}  len=2
+             [L=0, R=2]  window="abc" seen={a:0,b:1,c:2}  len=3  ← max</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Variable window: expand R one character at a time. While no duplicate exists in the window, update maxLen = R - L + 1. After "abc", maxLen = 3.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   VARIABLE: R=3, ch='b' — duplicate! lastSeen[b]=1 &ge; L=0 → L = 1+1 = 2
+             [L=2, R=3]  window="cb"  seen={...,b:3}  len=2</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> At R=3 the character 'b' was already seen at index 1, which is inside the current window (index 1 &ge; L=0). Shrink: jump L to lastSeen['b']+1 = 2. Window is now "cb"; maxLen stays 3.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+   VARIABLE: R=4, ch='a' — lastSeen[a]=0 &lt; L=2 → no shrink (outside window)
+             [L=2, R=4]  window="cba"  len=3   maxLen=3 (unchanged)</div></div>
+  <div class="wm-note"><span class="wm-num">⑤</span> At R=4 'a' is in the map but its last index (0) is to the left of L (2) — it is not inside the current window — so no shrink. Window "cba" has length 3. Loop ends; return maxLen = 3. If the string were empty, the loop never runs and 0 is returned.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -490,33 +576,69 @@ Variable window (e.g. longest substring):
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Range sum queries on a static array</li>
-    <li>Count subarrays whose sum equals k</li>
-    <li>Find if a subarray with a given property exists</li>
-    <li>2D matrix region sum queries</li>
+    <li><strong>Range sum queries on a static array</strong>
+      <div class="w-desc">Precompute a prefix array once so that any sum over a contiguous subarray can be answered in O(1) by subtracting two prefix values.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "sum of elements from i to j", "range sum query", "multiple queries on static array"</div>
+      <div class="w-ex">e.g. Range Sum Query – Immutable</div>
+    </li>
+    <li><strong>Count subarrays whose sum equals k</strong>
+      <div class="w-desc">Track a running prefix sum in a hashmap; if (currentSum − k) has been seen before, those past prefixes form subarrays ending here that sum exactly to k.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "number of subarrays", "sum equals k", "count continuous subarrays"</div>
+      <div class="w-ex">e.g. Subarray Sum Equals K</div>
+    </li>
+    <li><strong>Find if a subarray with a given property exists</strong>
+      <div class="w-desc">Store prefix sums (or parity/mod values) in a set; a matching value found later confirms the desired subarray exists between the two positions.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "subarray sum equals k", "count subarrays divisible by k", a cumulative-sum remainder seen before</div>
+      <div class="w-ex">e.g. Continuous Subarray Sum</div>
+    </li>
+    <li><strong>2D matrix region sum queries</strong>
+      <div class="w-desc">Extend the prefix idea to two dimensions: prefix2D[r][c] stores the sum of the rectangle from (0,0) to (r-1,c-1), enabling any rectangular region sum in O(1).</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "sum of rectangle", "region sum", "matrix subregion", "2D range query"</div>
+      <div class="w-ex">e.g. Range Sum Query 2D – Immutable</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram</h3>
-  <div class="diagram-box"><div class="ascii-diagram">arr    =  [  1,   2,   3,   4,   5  ]
-index  =     0    1    2    3    4
+  <h3>How it works — Subarray Sum / range query</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">arr    = [ 1,  2,  3,  4,  5 ]
+index  =   0   1   2   3   4
 
-prefix =  [  0,   1,   3,   6,  10,  15 ]
-index  =     0    1    2    3    4    5
+Build prefix (size n+1):  prefix[0] = 0,  prefix[i+1] = prefix[i] + arr[i]
+prefix = [ 0,  1,  3,  6, 10, 15 ]
+index  =   0   1   2   3   4   5
 
-Query: sum(i=1, j=3) = prefix[j+1] - prefix[i]
-                     = prefix[4]   - prefix[1]
-                     = 10 - 1 = 9  ✓  (2+3+4 = 9)
+Range query formula:  rangeSum(i, j) = prefix[j+1] - prefix[i]
+Subarray-sum-k rule:  for each index, if (currentSum - k) is in the map → add its count.</div>
 
-Key insight: prefix[i] = sum of all elements before index i
-             rangeSum(i,j) = prefix[j+1] - prefix[i]</div></div>
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   Build prefix:
+   prefix[0]=0
+   prefix[1]=0+1=1
+   prefix[2]=1+2=3
+   prefix[3]=3+3=6
+   prefix[4]=6+4=10
+   prefix[5]=10+5=15</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Initialise prefix[0] = 0 (empty prefix). Then iterate: prefix[i+1] = prefix[i] + arr[i]. The full prefix array is [0, 1, 3, 6, 10, 15]. This O(n) build is done once.</div>
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Build prefix array</strong> of size n+1. prefix[0] = 0.</li>
-    <li>prefix[i+1] = prefix[i] + arr[i] for each i.</li>
-    <li><strong>Range query</strong>: sum(i, j) = prefix[j+1] - prefix[i]. O(1).</li>
-    <li>For <em>subarray sum = k</em>: use a hashmap of prefix sums seen so far. At each index, check if (currentSum − k) was seen before.</li>
-  </ol></div>
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   Range query: rangeSum(i=1, j=3)
+   = prefix[j+1] - prefix[i]
+   = prefix[4]   - prefix[1]
+   = 10 - 1 = 9  ✓   (arr[1]+arr[2]+arr[3] = 2+3+4 = 9)</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> To sum elements from index 1 to 3 inclusive, subtract the prefix up to i from the prefix up to j+1. The operation is O(1) regardless of how many queries follow.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   Subarray sum = k (k=5), arr=[1,2,3,4,5]
+   Seed map = { 0:1 }    currentSum=0
+
+   i=0: currentSum=1  need=1-5=-4  not in map → map={0:1, 1:1}
+   i=1: currentSum=3  need=3-5=-2  not in map → map={0:1,1:1,3:1}
+   i=2: currentSum=6  need=6-5=1   found map[1]=1  → result += 1
+        map={0:1,1:1,3:1,6:1}
+   i=3: currentSum=10 need=10-5=5  not in map → map={...,10:1}
+   i=4: currentSum=15 need=15-5=10 found map[10]=1 → result += 1</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Seed the hashmap with {0:1} so subarrays starting at index 0 are handled. At each element add it to currentSum, then check whether (currentSum - k) was a previous prefix sum. At i=2 (currentSum=6), need = 6-5 = 1 which exists in the map — the subarray arr[1..2] = [2, 3] sums to 5. At i=4 (currentSum=15), need = 15-5 = 10 which exists — the subarray arr[4] = [5] sums to 5. Total count = 2. If the array is empty no iterations run and 0 is returned. The {0:1} seed is critical: it lets a prefix sum that itself equals k match immediately (currentSum - k = 0 is found on the very first hit), covering subarrays that start at index 0.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -589,27 +711,68 @@ function rangeSum(prefix: number[], i: number, j: number): number {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Count element frequencies</li>
-    <li>"Have I seen this before?" — existence check in O(1)</li>
-    <li>Find complement: target − current (Two Sum)</li>
-    <li>Group elements by a computed key (anagrams)</li>
-    <li>Deduplicate or track unique elements</li>
+    <li><strong>Count element frequencies</strong>
+      <div class="w-desc">Iterate once, incrementing each element's count in a map; then query the map for majority elements, anagram comparisons, or character distributions.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "frequency", "count occurrences", "most common", "anagram", "character count"</div>
+      <div class="w-ex">e.g. Valid Anagram</div>
+    </li>
+    <li><strong>"Have I seen this before?" — existence check in O(1)</strong>
+      <div class="w-desc">Add elements to a Set as you go; a hit on <code>has()</code> means the element appeared earlier, turning an O(n²) scan into a single pass.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "contains duplicate", "already visited", "seen before", "detect duplicate"</div>
+      <div class="w-ex">e.g. Contains Duplicate</div>
+    </li>
+    <li><strong>Find complement: target − current (Two Sum)</strong>
+      <div class="w-desc">Store each value with its index as you iterate; before inserting, look up whether the complement (target − current) already exists in the map.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "two numbers that add up to", "find indices such that", "complement", "pair summing to target"</div>
+      <div class="w-ex">e.g. Two Sum</div>
+    </li>
+    <li><strong>Group elements by a computed key (anagrams)</strong>
+      <div class="w-desc">Derive a canonical key for each element (e.g. sort its characters) and accumulate into a map of key → list; elements that share a key are in the same group.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "group anagrams", "group by", "cluster", "canonical form", "sort characters"</div>
+      <div class="w-ex">e.g. Group Anagrams</div>
+    </li>
+    <li><strong>Deduplicate or track unique elements</strong>
+      <div class="w-desc">Load all elements into a Set; membership checks then run in O(1), enabling algorithms like finding the start of a consecutive sequence without repeated inner loops.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "unique", "deduplicate", "no repeats", "longest consecutive sequence"</div>
+      <div class="w-ex">e.g. Longest Consecutive Sequence</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Three core patterns</h3>
-  <div class="diagram-box"><div class="ascii-diagram">PATTERN 1: Frequency count
-  "aabbc" → { a:2, b:2, c:1 }
-  Use: anagram check, character counting
+  <h3>How it works — Three core hash-map patterns</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Three independent patterns; each is a self-contained trace.
 
-PATTERN 2: Complement lookup  (Two Sum)
-  nums=[2,7,11,15], target=9
-  i=0: need 9-2=7, not in map → store {2:0}
-  i=1: need 9-7=2, found at map[2]=0 → return [0,1] ✓
+PATTERN 1 — Frequency count:  s = "aabbc"
+PATTERN 2 — Complement lookup (Two Sum):  nums=[2,7,11,15]  target=9
+PATTERN 3 — Grouping by key (Group Anagrams):  words=["eat","tea","tan","ate","nat","bat"]</div>
 
-PATTERN 3: Grouping by key
-  ["eat","tea","tan","ate","nat","bat"]
-  sort each word → key:
-  "aet"→[eat,tea,ate], "ant"→[tan,nat], "abt"→[bat]</div></div>
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   PATTERN 1 — Frequency count
+   ch='a': freq={a:1}
+   ch='a': freq={a:2}
+   ch='b': freq={a:2,b:1}
+   ch='b': freq={a:2,b:2}
+   ch='c': freq={a:2,b:2,c:1}</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Scan the string once. For each character, increment its count in the map (default 0 if unseen: <code>freq.get(ch) ?? 0</code>). After the loop the map holds every character's frequency. Use this to check anagrams (compare two frequency maps), find the majority element, or compare character distributions — all in O(n) time and O(k) space where k is the alphabet size.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   PATTERN 2 — Complement lookup
+   seen = {}
+   i=0: nums[0]=2  need=9-2=7   not in seen → seen={2:0}
+   i=1: nums[1]=7  need=9-7=2   found seen[2]=0 → return [0,1] ✓</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Check the complement BEFORE inserting the current value. If we inserted first we could accidentally match an element with itself. At i=1, need = 9-7 = 2 was stored at index 0, so return [0, 1]. If no pair exists the loop finishes without a match. This pattern generalises to any "find two things that satisfy a relationship" problem.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   PATTERN 3 — Grouping by key
+   "eat" → sort → "aet" : groups={"aet":["eat"]}
+   "tea" → sort → "aet" : groups={"aet":["eat","tea"]}
+   "tan" → sort → "ant" : groups={"aet":[...],"ant":["tan"]}
+   "ate" → sort → "aet" : groups={"aet":["eat","tea","ate"],...}
+   "nat" → sort → "ant" : groups={...,"ant":["tan","nat"]}
+   "bat" → sort → "abt" : groups={...,"abt":["bat"]}
+   result → [["eat","tea","ate"],["tan","nat"],["bat"]]</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Derive a canonical key that is identical for all equivalent elements — here, sorting a word's characters. Use the key to look up (or create) the group list in the map, then append the original word. Any element-to-key mapping works: character-frequency tuples, mod values, sorted digits, etc. Return all map values at the end. If the input array is empty the map stays empty and an empty list is returned.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -696,28 +859,61 @@ for (const n of nums) {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Detect a cycle in a linked list</li>
-    <li>Find the middle of a linked list</li>
-    <li>Find the start of a cycle</li>
-    <li>Happy number (abstract "next" function creates an implicit list)</li>
+    <li><strong>Cycle detection in a linked list</strong>
+      <div class="w-desc">Determine whether a linked list contains a loop — a node whose next pointer points back to an earlier node rather than null.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "linked list", "cycle", "loop", "detect if a list is circular"</div>
+      <div class="w-ex">e.g. Linked List Cycle</div>
+    </li>
+    <li><strong>Find the middle of a linked list</strong>
+      <div class="w-desc">Locate the midpoint in one pass without knowing the length — useful as a sub-step when reversing a half or merging.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "middle node", "split the list in half", "find the median node"</div>
+      <div class="w-ex">e.g. Middle of the Linked List</div>
+    </li>
+    <li><strong>Find the start of a cycle</strong>
+      <div class="w-desc">After detecting a cycle, locate the exact node where it begins using a second phase of Floyd's algorithm.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "return the node where the cycle begins", "find cycle entrance", "detect and locate cycle"</div>
+      <div class="w-ex">e.g. Linked List Cycle II</div>
+    </li>
+    <li><strong>Abstract cycle detection (Happy Number)</strong>
+      <div class="w-desc">Any sequence defined by a "next" function that may loop can be treated as an implicit linked list — apply fast/slow to detect if the sequence cycles.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "repeatedly apply a transformation", "will it ever reach X", "does it loop forever"</div>
+      <div class="w-ex">e.g. Happy Number</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Cycle detection</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph LR
-    n1((1)):::visited --> n2((2)):::visited --> n3((3)):::slow --> n4((4)):::visited --> n5((5)):::fast --> n6((6)):::visited --> n3
-    classDef visited fill:#475569,stroke:#64748b,color:#e2e8f0
-    classDef slow fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef fast fill:#f97316,stroke:#ea580c,color:#000
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">After several steps, slow (blue) and fast (orange) meet inside the cycle.
-No cycle → fast reaches null first.
+  <h3>How it works — Cycle detection (Floyd's)</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">List A (no cycle):  1→2→3→4→5→null
+List B (cycle):     1→2→3→4→5→6→3  (node 6 points back to node 3)
 
-Find middle: when fast reaches end, slow is at the middle.
-  List: 1→2→3→4→5
-  Steps: slow=1,fast=1 → slow=2,fast=3 → slow=3,fast=5(end)
-  slow=3 is the middle ✓</div>
+slow moves 1 step per iteration; fast moves 2 steps.
+Rule: if fast or fast.next reaches null → no cycle → return false.
+      if slow === fast → cycle detected → return true.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   NO-CYCLE BRANCH  (List A: 1→2→3→4→5→null)
+   start:  slow=1, fast=1
+   step 1: slow=2, fast=3
+   step 2: slow=3, fast=5
+   step 3 check: fast.next is null → while-condition fails → exit (slow stays put, no advance)</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> When there is no cycle fast eventually reaches the end of the list. After step 2 fast is at node 5; fast.next is null, so the while-condition <code>fast !== null &amp;&amp; fast.next !== null</code> fails and the loop exits. We return false — no meeting point was ever found.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   CYCLE BRANCH  (List B: 1→2→3→4→5→6→3)
+   start:  slow=1, fast=1
+   step 1: slow=2, fast=3
+   step 2: slow=3, fast=5
+   step 3: slow=4, fast=3  (fast wrapped: 5→6→3)
+   step 4: slow=5, fast=5  ← slow === fast → cycle!</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Inside a cycle fast "laps" slow: fast moves two nodes per step while slow moves one, so within the cycle, fast closes the gap on slow by one node per iteration (fast moves 2, slow moves 1), so they are guaranteed to meet. They must eventually land on the same node. Here they meet at node 5 after step 4. The moment slow === fast we return true. The meeting point is somewhere inside the cycle — not necessarily the cycle entrance.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   FIND-MIDDLE BONUS  (List A: 1→2→3→4→5)
+   start:  slow=1, fast=1
+   step 1: slow=2, fast=3
+   step 2: slow=3, fast=5  ← fast.next is null → stop
+   slow=3 is the middle node ✓</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> A second application: to find the middle in one pass, stop when fast.next or fast.next.next is null. Because fast travels at 2× speed, when fast reaches the last node slow is exactly at the midpoint. For an even-length list (e.g. 1→2→3→4) this condition fires when fast=3, leaving slow at node 2 — the second of the two middle nodes, which is what LC 876 requires.</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
@@ -810,33 +1006,64 @@ function isHappy(n: number): boolean {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Reverse an entire linked list</li>
-    <li>Reverse a sublist (positions m to n)</li>
-    <li>Check if a linked list is a palindrome (reverse second half)</li>
-    <li>Reorder list (interleave first and reversed second half)</li>
+    <li><strong>Reverse an entire linked list</strong>
+      <div class="w-desc">Re-point every node's next pointer so the list reads in the opposite direction, returning the former tail as the new head.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "reverse a linked list", "return the new head", "in-place reversal"</div>
+      <div class="w-ex">e.g. Reverse Linked List</div>
+    </li>
+    <li><strong>Reverse a sublist (positions m to n)</strong>
+      <div class="w-desc">Walk to the sublist boundary, reverse only that portion, then reconnect the modified section to the untouched parts.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "reverse between positions", "reverse from left to right", "reverse a portion of the list"</div>
+      <div class="w-ex">e.g. Reverse Linked List II</div>
+    </li>
+    <li><strong>Check if a linked list is a palindrome</strong>
+      <div class="w-desc">Find the middle with fast/slow pointers, reverse the second half in-place, then compare it to the first half node by node.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "palindrome linked list", "is the list the same forwards and backwards"</div>
+      <div class="w-ex">e.g. Palindrome Linked List</div>
+    </li>
+    <li><strong>Reorder list (interleave halves)</strong>
+      <div class="w-desc">Split the list at the middle, reverse the second half, then merge the two halves by alternating nodes from each.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "reorder to L0→Ln→L1→Ln-1…", "interleave first and last nodes"</div>
+      <div class="w-ex">e.g. Reorder List</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Step-by-step pointer changes</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-sequenceDiagram
-    participant P as prev (blue)
-    participant C as curr (green)
-    participant N as next (orange)
-    Note over P,N: Initial: null ← | 1→2→3→null
-    Note over C: curr = 1
-    C->>N: next = curr.next (save 2)
-    C->>P: curr.next = prev (point 1 → null)
-    P->>P: prev = curr (prev moves to 1)
-    N->>C: curr = next (curr moves to 2)
-    Note over P,N: null ← 1 | curr=2→3→null
-    C->>N: next = curr.next (save 3)
-    C->>P: curr.next = prev (point 2 → 1)
-    P->>P: prev = curr (prev moves to 2)
-    N->>C: curr = next (curr moves to 3)
-    Note over P,N: null ← 1 ← 2 | curr=3→null
-    Note over P,N: One more step → null ← 1 ← 2 ← 3, prev=3 (new head)
-  </div>
+  <h3>How it works — Reverse a linked list</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Input list:  1→2→3→null   (head = node 1)
+Three variables track state each iteration:
+  prev  — the already-reversed portion's new head (starts null)
+  curr  — the node being processed this step
+  next  — saved copy of curr.next before we overwrite it
+
+Loop invariant: at start of each iteration, nodes before curr are fully reversed.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   Before: prev=null  curr=1  (1→2→3→null)
+   next = curr.next       → next=2
+   curr.next = prev       → 1→null
+   prev = curr            → prev=1
+   curr = next            → curr=2
+   After:  null←1  |  curr=2→3→null</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Save curr.next before overwriting it (otherwise we lose the rest of the list). Flip curr.next to point at prev — node 1 now points to null, reversing its link. Advance prev to the current node (prev = 1) and curr to the saved next (curr = 2). The left portion null←1 is fully reversed; the right portion 2→3→null is untouched.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   Before: prev=1  curr=2  (2→3→null)
+   next = curr.next       → next=3
+   curr.next = prev       → 2→1→null
+   prev = curr            → prev=2
+   curr = next            → curr=3
+   After:  null←1←2  |  curr=3→null</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> The same four operations apply: save next, flip the pointer, advance prev, advance curr. Node 2 now points back to node 1, extending the reversed portion. The reversed chain so far is null←1←2; one node (3) remains to be processed.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   Before: prev=2  curr=3  (3→null)
+   next = curr.next       → next=null
+   curr.next = prev       → 3→2→1→null
+   prev = curr            → prev=3
+   curr = next            → curr=null  ← loop ends
+   Final:  null←1←2←3   new head = prev = 3</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Node 3's original next was already null, so saving it is harmless. After flipping, 3→2→1→null completes the reversal. curr becomes null, so the while-condition fails and the loop exits. prev points to node 3, which is the new head — return prev. If the input list is empty (head = null), curr starts as null, the loop never runs, and prev = null is returned correctly.</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
@@ -913,41 +1140,103 @@ sequenceDiagram
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Compute height / depth of a tree</li>
-    <li>Path sum problems (root-to-leaf)</li>
-    <li>Inorder traversal (gives sorted output for BST)</li>
-    <li>Validate BST, invert binary tree, serialize tree</li>
-    <li>Any problem asking about subtree properties</li>
+    <li><strong>Compute height / depth of a tree</strong>
+      <div class="w-desc">Recursively measure the longest path from root to leaf — the answer depends on both subtrees, so it's computed postorder (children first).</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "maximum depth", "height of the tree", "number of levels", "longest root-to-leaf path"</div>
+      <div class="w-ex">e.g. Maximum Depth of Binary Tree</div>
+    </li>
+    <li><strong>Path sum problems (root-to-leaf)</strong>
+      <div class="w-desc">Carry a running total down the tree; at each leaf check if the accumulated sum equals the target. Preorder is natural since you need the parent's value before descending.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "root-to-leaf path", "sum of a path", "does any path equal target"</div>
+      <div class="w-ex">e.g. Path Sum</div>
+    </li>
+    <li><strong>Inorder traversal (sorted output for BST)</strong>
+      <div class="w-desc">Visit left subtree, then the node, then right subtree — for a valid BST this produces values in ascending order.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "BST in sorted order", "kth smallest in BST", "validate BST", "in-order successor"</div>
+      <div class="w-ex">e.g. Kth Smallest Element in a BST</div>
+    </li>
+    <li><strong>Validate BST, invert or serialize a tree</strong>
+      <div class="w-desc">Structural transformations (invert, serialize/deserialize) and validity checks recurse on both subtrees, combining child results before or after visiting the current node.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "validate BST", "invert binary tree", "serialize / deserialize", "mirror the tree"</div>
+      <div class="w-ex">e.g. Invert Binary Tree</div>
+    </li>
+    <li><strong>Any problem asking about subtree properties</strong>
+      <div class="w-desc">If the answer at a node depends on answers from both children (diameter, lowest common ancestor, subtree sum), process children first (postorder) and combine their results at the parent.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "diameter", "subtree sum", "lowest common ancestor", "is this subtree balanced"</div>
+      <div class="w-ex">e.g. Diameter of Binary Tree</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Traversal orders on the same tree</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A((4)):::root --> B((2)):::left
-    A --> C((6)):::right
-    B --> D((1)):::leaf
-    B --> E((3)):::leaf
-    C --> F((5)):::leaf
-    C --> G((7)):::leaf
-    classDef root fill:#eab308,stroke:#ca8a04,color:#000
-    classDef left fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef right fill:#a855f7,stroke:#9333ea,color:#fff
-    classDef leaf fill:#475569,stroke:#64748b,color:#e2e8f0
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">Inorder   (L → Root → R): 1, 2, 3, 4, 5, 6, 7  ← sorted for BST
-Preorder  (Root → L → R): 4, 2, 1, 3, 6, 5, 7  ← good for tree copy/serialize
-Postorder (L → R → Root): 1, 3, 2, 5, 7, 6, 4  ← good for deletion, height</div>
-  </div>
+  <h3>How it works — Tree DFS — pre / in / post order</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Tree used in all three blocks:
+        4          ← root
+       / \
+      2   6
+     / \ / \
+    1  3 5  7
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Base case:</strong> if node is null, return (or return 0, false, [], etc.)</li>
-    <li><strong>Recurse left</strong> subtree.</li>
-    <li><strong>Process node</strong> (preorder: before recursion; postorder: after; inorder: between).</li>
-    <li><strong>Recurse right</strong> subtree.</li>
-    <li>Return combined result up the call stack.</li>
-  </ol></div>
+Rule for every traversal: if node is null, return immediately (base case).
+The only difference is WHEN the current node is "visited" (its value recorded)
+relative to the left and right recursive calls.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   PREORDER  (Root → Left → Right)
+   visit(4) → recurse left
+     visit(2) → recurse left
+       visit(1) → left=null, right=null → return
+     recurse right
+       visit(3) → left=null, right=null → return
+   recurse right
+     visit(6) → recurse left
+       visit(5) → left=null, right=null → return
+     recurse right
+       visit(7) → left=null, right=null → return
+   Result: 4, 2, 1, 3, 6, 5, 7</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> In preorder the current node is recorded BEFORE recursing into either child. The recursive rule is: visit node → recurse left → recurse right. This visits the root first, then explores the entire left subtree, then the entire right subtree. Preorder output (4,2,1,3,6,5,7) reconstructs the tree unambiguously — useful for serialization and copying.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   INORDER  (Left → Root → Right)
+   recurse left of 4
+     recurse left of 2
+       recurse left of 1 → null → return
+       visit(1)
+       recurse right of 1 → null → return
+     visit(2)
+     recurse right of 2
+       visit(3)
+   visit(4)
+   recurse right of 4
+     recurse left of 6
+       recurse left of 5 → null → return
+       visit(5)
+       recurse right of 5 → null → return
+     visit(6)
+     recurse right of 6
+       recurse left of 7 → null → return
+       visit(7)
+       recurse right of 7 → null → return
+   Result: 1, 2, 3, 4, 5, 6, 7</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> In inorder the current node is recorded BETWEEN the two recursive calls: recurse left → visit node → recurse right. For any valid BST this ordering always produces the values in ascending sorted order (1,2,3,4,5,6,7 here). Use inorder to find the kth smallest element, validate a BST, or extract a sorted sequence without sorting.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   POSTORDER  (Left → Right → Root)
+   recurse left of 4
+     recurse left of 2
+       visit(1)
+     recurse right of 2
+       visit(3)
+     visit(2)
+   recurse right of 4
+     recurse left of 6
+       visit(5)
+     recurse right of 6
+       visit(7)
+     visit(6)
+   visit(4)
+   Result: 1, 3, 2, 5, 7, 6, 4</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> In postorder the current node is recorded AFTER both children have been fully processed: recurse left → recurse right → visit node. Children are always handled before their parent, which makes postorder ideal when a parent's answer depends on its children — computing height (leaf heights bubble up), deleting a tree (delete children before parent), or aggregating subtree sums. A null node returns the identity value (0, false, [] etc.) before any work is done — this is the base case shared by all three orders.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -1042,44 +1331,76 @@ function dfsIterative(root: TreeNode | null): number[] {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Level-order traversal (process nodes level by level)</li>
-    <li>Minimum depth of a binary tree</li>
-    <li>Connect nodes at the same level</li>
-    <li>Zigzag level order traversal</li>
-    <li>Any "closest" or "nearest" question on a tree</li>
+    <li><strong>Level-order traversal</strong>
+      <div class="w-desc">Visit all nodes at depth d before any node at depth d+1; collect or process them grouped by level.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "level order", "level by level", "return an array of arrays grouped by depth"</div>
+      <div class="w-ex">e.g. Binary Tree Level Order Traversal</div>
+    </li>
+    <li><strong>Minimum depth / nearest leaf</strong>
+      <div class="w-desc">BFS finds the shallowest leaf first because it never advances past the current depth until all nodes at that depth are exhausted.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum depth", "nearest leaf", "shortest path from root to a leaf"</div>
+      <div class="w-ex">e.g. Minimum Depth of Binary Tree</div>
+    </li>
+    <li><strong>Connect or group nodes at the same depth</strong>
+      <div class="w-desc">Each BFS level corresponds exactly to one depth, so you can wire next-pointers or alternate direction while inside the level loop.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "populate next right pointer", "zigzag level order", "nodes at the same level"</div>
+      <div class="w-ex">e.g. Binary Tree Zigzag Level Order Traversal</div>
+    </li>
+    <li><strong>Any "closest" or "nearest" question on a tree</strong>
+      <div class="w-desc">BFS guarantees that the first time you encounter a target (e.g. a leaf, a node with a specific value), you have reached it in the fewest edges.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "closest node", "fewest edges", "nearest ancestor/descendant with property X"</div>
+      <div class="w-ex">e.g. Find Bottom Left Tree Value</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Level-by-level traversal</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A((1)):::l0 --> B((2)):::l1
-    A --> C((3)):::l1
-    B --> D((4)):::l2
-    B --> E((5)):::l2
-    C --> F((6)):::l2
-    C --> G((7)):::l2
-    classDef l0 fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef l1 fill:#22c55e,stroke:#16a34a,color:#000
-    classDef l2 fill:#f97316,stroke:#ea580c,color:#000
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">Queue evolution:
-Start:     [1]
-Process 1: enqueue children → [2, 3]
-Process 2: enqueue children → [3, 4, 5]
-Process 3: enqueue children → [4, 5, 6, 7]
-...
+  <h3>How it works — Level-order BFS</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Tree:          1          (level 0)
+              /   \
+             2     3         (level 1)
+           /  \   /  \
+          4    5 6    7      (level 2)
 
-Result by level: [[1], [2,3], [4,5,6,7]]</div>
-  </div>
+result = []   queue = []
+Rule: snapshot queue.length BEFORE the inner loop so newly-enqueued
+      children don't inflate the count for the current level.</div>
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Enqueue root.</strong></li>
-    <li>While queue is not empty: <strong>snapshot queue length</strong> — that's the current level size.</li>
-    <li>Dequeue exactly that many nodes, process each, <strong>enqueue their children.</strong></li>
-    <li>After processing all nodes at this level, move to the next.</li>
-  </ol></div>
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   Seed: enqueue root
+   queue = [1]   result = []</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Before the while-loop, push the root
+    into the queue. The queue is non-empty, so the loop begins.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   levelSize = 1   (snapshot queue.length)
+   Dequeue 1 → level = [1]
+   Enqueue children 2, 3
+   queue = [2, 3]   result = [[1]]</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Snapshot levelSize = 1. Dequeue node 1,
+    record its value. Node 1 has children 2 and 3 — enqueue both. The inner
+    for-loop is done (i reached levelSize). Push level [1] into result.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   levelSize = 2   (snapshot queue.length)
+   Dequeue 2 → level = [2]; enqueue 4, 5
+   Dequeue 3 → level = [2, 3]; enqueue 6, 7
+   queue = [4, 5, 6, 7]   result = [[1], [2, 3]]</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Snapshot levelSize = 2. First iteration:
+    dequeue node 2, enqueue its children 4 and 5. Second iteration: dequeue
+    node 3, enqueue its children 6 and 7. Inner loop ends. Push level [2, 3]
+    into result.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   levelSize = 4   (snapshot queue.length)
+   Dequeue 4, 5, 6, 7 → level = [4, 5, 6, 7]
+   None have children → nothing enqueued
+   queue = []   result = [[1], [2, 3], [4, 5, 6, 7]]</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> Snapshot levelSize = 4. All four leaf
+    nodes are dequeued and recorded; none have children so nothing is enqueued.
+    Push level [4, 5, 6, 7] into result. queue is now empty — the while-loop
+    condition fails and BFS terminates. Return result. If root were null the
+    early-return guard fires before we ever reach the loop.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -1160,35 +1481,69 @@ function minDepth(root: TreeNode | null): number {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Validate that a binary tree is a valid BST</li>
-    <li>Find kth smallest/largest element</li>
-    <li>Search, insert, or delete in O(log n) average</li>
-    <li>Find lowest common ancestor of two BST nodes</li>
-    <li>Convert sorted array → BST or BST → sorted array</li>
+    <li><strong>Validate a BST</strong>
+      <div class="w-desc">Confirm that every node obeys the global BST invariant — not just its direct children but all descendants in its subtree.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "is a valid BST", "verify BST property", "check that left subtree &lt; node &lt; right subtree globally"</div>
+      <div class="w-ex">e.g. Validate Binary Search Tree</div>
+    </li>
+    <li><strong>Find kth smallest/largest element</strong>
+      <div class="w-desc">An inorder traversal of a BST yields nodes in sorted order; stop at the kth node without fully traversing the tree.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "kth smallest", "kth largest", "inorder traversal", "ranked element in a BST"</div>
+      <div class="w-ex">e.g. Kth Smallest Element in a BST</div>
+    </li>
+    <li><strong>Search, insert, or delete in O(log n) average</strong>
+      <div class="w-desc">At each node compare the target to the node value and recurse left or right, halving the search space each step.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "search in a BST", "insert a value maintaining BST order", "delete while preserving BST property"</div>
+      <div class="w-ex">e.g. Search in a Binary Search Tree</div>
+    </li>
+    <li><strong>Find lowest common ancestor of two BST nodes</strong>
+      <div class="w-desc">If both target nodes are less than the current node go left; if both are greater go right; otherwise the current node is the split point and is the LCA.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "lowest common ancestor", "deepest shared ancestor", "LCA in a BST"</div>
+      <div class="w-ex">e.g. Lowest Common Ancestor of a BST</div>
+    </li>
+    <li><strong>Convert between sorted array and BST</strong>
+      <div class="w-desc">A sorted array maps to a height-balanced BST by repeatedly picking the midpoint as root; the reverse (BST to sorted array) uses inorder traversal.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "convert sorted array to BST", "height-balanced BST", "BST to sorted array"</div>
+      <div class="w-ex">e.g. Convert Sorted Array to Binary Search Tree</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — BST search path</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A((8)):::visited --> B((3)):::visited
-    A --> C((10)):::unvisited
-    B --> D((1)):::unvisited
-    B --> E((6)):::target
-    E --> F((4)):::unvisited
-    E --> G((7)):::unvisited
-    classDef visited fill:#eab308,stroke:#ca8a04,color:#000
-    classDef target fill:#22c55e,stroke:#16a34a,color:#000
-    classDef unvisited fill:#475569,stroke:#64748b,color:#e2e8f0
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">Searching for 6:
-  root=8: 6 &lt; 8  → go left
-  node=3: 6 &gt; 3  → go right
-  node=6: 6 == 6 → found ✓
+  <h3>How it works — BST search</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Tree (searching for target = 6):
 
-BST Invariant: for every node N,
-  ALL nodes in left subtree  &lt; N.val
-  ALL nodes in right subtree &gt; N.val</div>
+        8          ← root
+       / \
+      3   10
+     / \
+    1   6          ← target node
+       / \
+      4   7
+
+BST invariant: all nodes in left subtree &lt; node.val &lt; all nodes in right subtree.
+Rule: target &lt; node.val → go left; target &gt; node.val → go right; equal → found.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   curr = node(8)
+   target 6 &lt; 8  → go left</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Start at the root (value 8). Compare
+    target 6 to 8: 6 &lt; 8, so the target must be in the left subtree — move
+    curr to node(3).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   curr = node(3)
+   target 6 &gt; 3  → go right</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Compare target 6 to 3: 6 &gt; 3, so
+    the target must be in the right subtree — move curr to node(6).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   curr = node(6)
+   target 6 == 6  → return node(6)  ✓</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> curr.val equals the target — return
+    curr. This is the found case. If instead curr became null before a match
+    (e.g. searching for 9 in this tree: 9 &gt; 8 → right to node(10), 9 &lt; 10
+    → left, but node(10) has no left child → curr = null → return null),
+    the function returns null signalling not-found.</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
@@ -1282,40 +1637,104 @@ function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNod
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Shortest path / minimum steps in an unweighted graph or grid</li>
-    <li>Level-by-level graph exploration</li>
-    <li>Rotting Oranges, 01-Matrix type problems</li>
-    <li>Word Ladder (transform one word to another)</li>
+    <li><strong>Shortest path / minimum steps in an unweighted graph or grid</strong>
+      <div class="w-desc">BFS explores nodes in order of increasing distance from the source, so the first time it reaches any node that distance is guaranteed minimal.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum steps", "shortest path", "fewest moves", unweighted edges (or uniform cost)</div>
+      <div class="w-ex">e.g. Word Ladder</div>
+    </li>
+    <li><strong>Level-by-level graph exploration</strong>
+      <div class="w-desc">Process all nodes at distance d before any node at distance d+1; useful when you need to track which "generation" or "wave" a node belongs to.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "group by distance from source", "all nodes reachable in k steps", "process level by level"</div>
+      <div class="w-ex">e.g. Pattern — BFS on Adjacency List</div>
+    </li>
+    <li><strong>Multi-source simultaneous spread</strong>
+      <div class="w-desc">Seed the queue with all source nodes at step 0; BFS naturally propagates outward from every source in parallel, so each cell is reached at its true minimum distance to any source.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "multiple starting points spread simultaneously", "time to infect / rot all cells", "01-Matrix distance to nearest 0"</div>
+      <div class="w-ex">e.g. Rotting Oranges</div>
+    </li>
+    <li><strong>Word transformation / state-space search</strong>
+      <div class="w-desc">Model each state as a node and each valid one-step transformation as an edge; BFS finds the minimum number of transformations to reach the goal state.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "transform X to Y one step at a time", "minimum operations to reach state", "shortest sequence of moves"</div>
+      <div class="w-ex">e.g. Word Ladder</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — BFS frontier expansion</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A((A\nstart)):::start --> B((B\nlevel 1)):::l1
-    A --> C((C\nlevel 1)):::l1
-    B --> D((D\nlevel 2)):::l2
-    B --> E((E\nlevel 2)):::l2
-    C --> F((F\nlevel 2)):::l2
-    classDef start fill:#22c55e,stroke:#16a34a,color:#000
-    classDef l1 fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef l2 fill:#f97316,stroke:#ea580c,color:#000
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">Queue: [A]
-Dequeue A (dist=0) → enqueue neighbors B, C   visited={A}
-Dequeue B (dist=1) → enqueue D, E             visited={A,B}
-Dequeue C (dist=1) → enqueue F                visited={A,B,C}
-Dequeue D (dist=2) → no unvisited neighbors   ...
-First time we reach a target node = shortest path</div>
-  </div>
+  <h3>How it works — Graph BFS (shortest unweighted path)</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Graph (undirected, unweighted):
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Enqueue start node, mark visited.</strong></li>
-    <li>While queue is not empty: <strong>dequeue a node.</strong></li>
-    <li>For each unvisited neighbor: <strong>mark visited, enqueue, record distance.</strong></li>
-    <li>The first time you reach the target = shortest distance.</li>
-  </ol></div>
+  A ── B ── D
+  |    \── E
+  +── C ── F   ← target
+
+Adjacency: A:[B,C]  B:[A,D,E]  C:[A,F]  D:[B]  E:[B]  F:[C]
+Goal: shortest path distance from A to F.
+Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   Seed: mark A visited, enqueue A
+   queue = [A]   visited = {A}   dist = {A:0}</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Before the while-loop, mark the start
+    node A as visited and push it with distance 0. Marking at enqueue time
+    (not dequeue time) prevents the same node from being added to the queue
+    more than once.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   Dequeue A (dist=0)
+   Neighbors of A: B (unvisited) → mark, enqueue dist=1
+                   C (unvisited) → mark, enqueue dist=1
+   queue = [B, C]   visited = {A, B, C}   dist = {A:0, B:1, C:1}</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Dequeue A. Iterate over A's neighbors:
+    B is not yet visited — mark it, set dist[B]=1, enqueue. C is not yet
+    visited — mark it, set dist[C]=1, enqueue. Both level-1 nodes are now in
+    the queue.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   Dequeue B (dist=1)
+   Neighbors of B: A (visited, skip)
+                   D (unvisited) → mark, enqueue dist=2
+                   E (unvisited) → mark, enqueue dist=2
+   queue = [C, D, E]   visited = {A, B, C, D, E}
+   dist = {A:0, B:1, C:1, D:2, E:2}</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Dequeue B. Neighbor A is already
+    visited — skip it to avoid revisiting. Neighbors D and E are unvisited —
+    mark each, record dist=2, and enqueue. This is the neighbor-skipping
+    mechanism that keeps BFS O(V + E).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   Dequeue C (dist=1)
+   Neighbors of C: A (visited, skip)
+                   F (unvisited) → mark, enqueue dist=2
+   queue = [D, E, F]   visited = {A, B, C, D, E, F}
+   dist = {A:0, B:1, C:1, D:2, E:2, F:2}</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> Dequeue C. Neighbor A is visited —
+    skip. Neighbor F is unvisited — mark it, set dist[F]=2, enqueue. F is
+    the target node; because we enqueue at the moment of discovery, dist[F]=2
+    is already the shortest path.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+   Dequeue D (dist=2): neighbors = [B] all visited, skip
+   Dequeue E (dist=2): neighbors = [B] all visited, skip
+   queue = [F]   visited = {A, B, C, D, E, F}
+   dist = {A:0, B:1, C:1, D:2, E:2, F:2}</div></div>
+  <div class="wm-note"><span class="wm-num">⑤</span> Dequeue D: its only neighbor B is
+    already visited — nothing is enqueued. Dequeue E: its only neighbor B is
+    already visited — nothing is enqueued. Both are "dead-end" dequeues at
+    level 2; they consume queue slots without expanding the frontier. F remains
+    in the queue.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
+   Dequeue F (dist=2): F == target → return dist[F] = 2  ✓
+   queue = []
+   dist = {A:0, B:1, C:1, D:2, E:2, F:2}</div></div>
+  <div class="wm-note"><span class="wm-num">⑥</span> Dequeue F. F is the target node —
+    return dist[F] = 2, the shortest path length from A to F. Because we
+    marked F visited and recorded its distance at enqueue time (block ④), the
+    value is already correct and final. If no target had been found, the
+    while-loop would exhaust the queue and exit; the caller returns -1 (or
+    signals "unreachable") to indicate there is no path from the source to the
+    target.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -1401,37 +1820,113 @@ function bfsGrid(grid: number[][], startR: number, startC: number): number {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Count connected components</li>
-    <li>Detect cycles in a directed or undirected graph</li>
-    <li>Topological sort (course scheduling)</li>
-    <li>Find all paths from source to destination</li>
-    <li>Flood fill / island problems</li>
+    <li><strong>Count connected components</strong>
+      <div class="w-desc">Find how many separate groups of nodes exist in a graph where no edges cross between groups.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many connected components", "how many groups are there"</div>
+      <div class="w-ex">e.g. Number of Connected Components in Undirected Graph</div>
+    </li>
+    <li><strong>Detect cycles in a directed or undirected graph</strong>
+      <div class="w-desc">Determine whether following edges from any node can bring you back to a node already on the current path.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "detect a cycle", "can all courses be finished", "is the graph a DAG"</div>
+      <div class="w-ex">e.g. Course Schedule</div>
+    </li>
+    <li><strong>Topological sort (dependency ordering)</strong>
+      <div class="w-desc">Order nodes so that every directed edge points from an earlier node to a later one; only possible when no cycle exists.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "order of tasks", "prerequisites", "build order", "find a valid ordering"</div>
+      <div class="w-ex">e.g. Course Schedule II</div>
+    </li>
+    <li><strong>Find all paths from source to destination</strong>
+      <div class="w-desc">Enumerate every route through a graph from a start node to an end node, exploring each branch fully before backtracking.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "all paths", "every possible route", "list all ways to reach"</div>
+      <div class="w-ex">e.g. All Paths From Source to Target</div>
+    </li>
+    <li><strong>Flood fill / island problems</strong>
+      <div class="w-desc">Spread out from a starting cell in a grid, visiting all connected cells that share a property, marking them so they are not revisited.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "grid of 0s and 1s", "connected land cells", "flood fill", "number of islands"</div>
+      <div class="w-ex">e.g. Number of Islands</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — DFS traversal order</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A((A)):::current --> B((B)):::path
-    A --> C((C)):::unvisited
-    B --> D((D)):::path
-    B --> E((E)):::unvisited
-    D --> F((F)):::path
-    classDef current fill:#22c55e,stroke:#16a34a,color:#000
-    classDef path fill:#f97316,stroke:#ea580c,color:#000
-    classDef unvisited fill:#475569,stroke:#64748b,color:#e2e8f0
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">DFS order from A: A → B → D → F (backtrack) → (backtrack) → E (backtrack) → C
-visited set prevents revisiting nodes in cycles</div>
-  </div>
+  <h3>How it works — Graph DFS (recursive)</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Graph (adjacency list):
+  A → [B, C]
+  B → [D, E]
+  D → [F]
+  E → []    C → []    F → []
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Call DFS(node).</strong> Mark node visited.</li>
-    <li>For each unvisited neighbor: <strong>recurse DFS(neighbor).</strong></li>
-    <li>After all neighbors: <strong>backtrack</strong> (implicit in recursion).</li>
-    <li>Call DFS on each unvisited node in the graph to handle <strong>disconnected components.</strong></li>
-  </ol></div>
+Call dfs(A).  visited = {} initially.
+Neighbors are processed left-to-right.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   dfs(A) called
+   visited = { A }
+   next neighbor to explore: B (first of A's neighbors)</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> dfs(A) is invoked. A is immediately
+    marked visited (visited = { A }). We then iterate A's neighbors in order:
+    [B, C]. B has not been visited, so we recurse into dfs(B) before touching C.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   dfs(B) called
+   visited = { A, B }
+   next neighbor to explore: D (first of B's neighbors)</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> dfs(B) runs. B is marked visited
+    (visited = { A, B }). B's neighbors are [D, E]. D is unvisited, so we recurse
+    into dfs(D).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   dfs(D) called
+   visited = { A, B, D }
+   D's only neighbor: F (unvisited) → recurse into dfs(F)
+   dfs(F) called → visited = { A, B, D, F }
+   F has no neighbors → dfs(F) returns</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> dfs(D) marks D visited
+    (visited = { A, B, D }). D's neighbor list is [F]. F is unvisited, so we
+    recurse into dfs(F). dfs(F) marks F visited (visited = { A, B, D, F }); F
+    has no neighbors, so dfs(F) returns immediately.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   back in dfs(D): no more unvisited neighbors
+   → dfs(D) returns  (backtrack to dfs(B))
+   visited = { A, B, D, F }</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> Control returns to dfs(D). D has
+    no remaining neighbors, so dfs(D) returns. The call stack unwinds back to
+    dfs(B). visited remains { A, B, D, F }.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+   back in dfs(B): next neighbor E (unvisited)
+   dfs(E) called
+   visited = { A, B, D, F, E }
+   E has no neighbors → dfs(E) returns
+   dfs(B) has no more neighbors → dfs(B) returns</div></div>
+  <div class="wm-note"><span class="wm-num">⑤</span> Back in dfs(B), we continue to the
+    next neighbor E. E is unvisited, so dfs(E) is called, marks E visited, finds
+    no neighbors, and returns. dfs(B) now has no remaining neighbors and returns —
+    another backtrack up to dfs(A).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
+   back in dfs(A): next neighbor C (unvisited)
+   dfs(C) called
+   visited = { A, B, D, F, E, C }
+   C has no neighbors → dfs(C) returns
+   dfs(A) has no more neighbors → dfs(A) returns</div></div>
+  <div class="wm-note"><span class="wm-num">⑥</span> Back in dfs(A), the next neighbor
+    C is unvisited. dfs(C) marks C visited, finds no neighbors, and returns.
+    dfs(A) is now complete. Full DFS order: A → B → D → F → E → C.
+    If the graph had a second component (unreachable from A), a top-level loop
+    would call dfs on that component's start node next.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑦ ────────────────────────────────────
+   skip-when-visited guard (cycle / shared neighbor scenario)
+   suppose neighbor X is already in visited
+   → the "if (!visited.has(X))" check is false
+   → dfs(X) is NOT called; we move to the next neighbor</div></div>
+  <div class="wm-note"><span class="wm-num">⑦</span> Whenever the loop over a node's
+    neighbors reaches a node X that is already in visited, the guard
+    (!visited.has(X)) is false and we simply skip X. This prevents infinite
+    recursion in graphs with cycles and avoids double-counting nodes in
+    disconnected-component problems.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -1543,37 +2038,69 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Find a target in a sorted array</li>
-    <li>Find leftmost/rightmost position of a value</li>
-    <li>Search in a rotated sorted array</li>
-    <li><strong>Binary search on the answer</strong>: "minimum X such that condition holds" — if you can write a boolean function that flips from false→true at some threshold, binary search on it</li>
+    <li><strong>Find a target in a sorted array</strong>
+      <div class="w-desc">Given a sorted array and a value, return the index where that value lives, or report it is absent.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "sorted array" + "find the index of / return position of / search for a target value"</div>
+      <div class="w-ex">e.g. Binary Search</div>
+    </li>
+    <li><strong>Find leftmost or rightmost occurrence of a value</strong>
+      <div class="w-desc">Locate the first or last index where a value appears, or where a sorted transition (false → true) happens.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "first occurrence", "insert position", "lower bound", "leftmost index where condition holds"</div>
+      <div class="w-ex">e.g. Search Insert Position</div>
+    </li>
+    <li><strong>Search in a rotated sorted array</strong>
+      <div class="w-desc">The array was once sorted but then cyclically shifted; one of the two halves around mid is always fully sorted, which lets you decide which half to keep.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "rotated sorted array", "unknown pivot", "search in O(log n)"</div>
+      <div class="w-ex">e.g. Search in Rotated Sorted Array</div>
+    </li>
+    <li><strong>Binary search on the answer</strong>
+      <div class="w-desc">When a problem asks for the minimum value satisfying some condition, and you can write a feasibility check that flips false → true monotonically, binary search over the answer space directly.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum speed / capacity / days such that …", "find the smallest X where condition holds"</div>
+      <div class="w-ex">e.g. Koko Eating Bananas</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram</h3>
-  <div class="diagram-box"><div class="ascii-diagram">arr = [ 1,  3,  5,  7,  9, 11, 13, 15 ]   target = 7
-idx =   0   1   2   3   4   5   6   7
-       lo=0              hi=7
+  <h3>How it works — Binary search</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">arr    = [  1,  3,  5,  7,  9, 11, 13, 15 ]   target = 9
+indices =   0   1   2   3   4   5   6   7
 
-Step 1: mid = (0+7)//2 = 3  → arr[3]=7 == target ✓  return 3
+Loop runs while lo &le; hi.
+mid = lo + Math.floor((hi - lo) / 2)   (avoids integer overflow)
 
-More steps if no match:
-  arr[mid] &lt; target → lo = mid + 1  (discard left half)
-  arr[mid] &gt; target → hi = mid - 1  (discard right half)
-  lo &gt; hi           → not found
+Rules:
+  arr[mid] &lt; target  →  lo = mid + 1   (target must be in the right half)
+  arr[mid] &gt; target  →  hi = mid - 1   (target must be in the left half)
+  arr[mid] == target →  return mid      (found)
+  lo &gt; hi            →  return -1       (not found — loop exits)</div>
 
-Binary search on answer example (Koko Eating Bananas):
-  "What is the minimum speed k such that all piles eaten in h hours?"
-  → lo=1, hi=max(piles), binary search on k, check feasibility</div></div>
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   lo=0, hi=7
+   mid = 0 + floor((7-0)/2) = 3
+   arr[3] = 7   &lt; 9   →  lo = mid + 1 = 4</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Initial state: lo=0, hi=7.
+    mid = 3. arr[3] = 7 which is less than the target 9, so the target must lie
+    in the right half. We discard indices 0–3 by setting lo = 4. The loop
+    condition lo &le; hi (4 &le; 7) is still true, so we iterate.</div>
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Set lo=0, hi=n-1.</strong></li>
-    <li>Compute <strong>mid = lo + Math.floor((hi - lo) / 2)</strong> (avoids integer overflow).</li>
-    <li>If arr[mid] === target → found.</li>
-    <li>If arr[mid] &lt; target → <strong>lo = mid + 1</strong> (target in right half).</li>
-    <li>If arr[mid] &gt; target → <strong>hi = mid - 1</strong> (target in left half).</li>
-    <li>If lo &gt; hi → not found.</li>
-  </ol></div>
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   lo=4, hi=7
+   mid = 4 + floor((7-4)/2) = 5
+   arr[5] = 11  &gt; 9   →  hi = mid - 1 = 4</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> lo=4, hi=7. mid = 5. arr[5] = 11
+    which is greater than the target 9, so the target must lie in the left half.
+    We discard indices 5–7 by setting hi = 4. The loop condition lo &le; hi
+    (4 &le; 4) is still true, so we iterate.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   lo=4, hi=4
+   mid = 4 + floor((4-4)/2) = 4
+   arr[4] = 9  == 9   →  return 4  ✓</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> lo=4, hi=4. mid = 4. arr[4] = 9
+    equals the target. Return index 4. If instead the target were absent (e.g.,
+    target = 10), after the final pointer update (say lo = 5) the loop guard
+    lo &le; hi fails (5 &gt; 4) and the loop exits, returning -1.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -1675,41 +2202,96 @@ function minFeasible(lo: number, hi: number, feasible: (k: number) =&gt; boolean
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Sort before applying two pointers or binary search</li>
-    <li>Merge intervals (sort by start time first)</li>
-    <li>Custom sort comparator (by frequency, by second element, etc.)</li>
-    <li>Sort Colors (Dutch National Flag — 3-way partition)</li>
+    <li><strong>Sort before applying two pointers or binary search</strong>
+      <div class="w-desc">Many problems become straightforward once the input is ordered; sort first, then apply a linear or logarithmic technique.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "find a pair / triplet that sums to", "find if target exists", combined with an unsorted input</div>
+      <div class="w-ex">e.g. 3Sum</div>
+    </li>
+    <li><strong>Merge overlapping intervals</strong>
+      <div class="w-desc">Sort intervals by start time so that any overlap with the current interval is always with the immediately preceding one, enabling a single linear pass.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "list of intervals", "merge overlapping", "insert interval and merge"</div>
+      <div class="w-ex">e.g. Merge Intervals</div>
+    </li>
+    <li><strong>Custom sort comparator</strong>
+      <div class="w-desc">Reorder elements by a derived key (frequency, second field, largest-number concatenation) that the default sort cannot produce.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "sort by frequency", "arrange to form the largest number", "sort by second element"</div>
+      <div class="w-ex">e.g. Top K Frequent Elements</div>
+    </li>
+    <li><strong>Three-way partition (Dutch National Flag)</strong>
+      <div class="w-desc">Partition an array with three distinct values into three contiguous regions in a single pass using lo, mid, hi pointers.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "sort array of 0s, 1s, 2s in-place", "one pass", "without using library sort"</div>
+      <div class="w-ex">e.g. Sort Colors</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Merge Sort divide &amp; conquer</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A["[5,3,8,1,4,2]"]:::root --> B["[5,3,8]"]:::left
-    A --> C["[1,4,2]"]:::right
-    B --> D["[5]"]:::base
-    B --> E["[3,8]"]:::left
-    C --> F["[1]"]:::base
-    C --> G["[4,2]"]:::right
-    E --> H["[3]"]:::base
-    E --> I["[8]"]:::base
-    G --> J["[4]"]:::base
-    G --> K["[2]"]:::base
-    H & I --> L["[3,8]"]:::merge
-    J & K --> M["[2,4]"]:::merge
-    D & L --> N["[3,5,8]"]:::merge
-    F & M --> O["[1,2,4]"]:::merge
-    N & O --> P["[1,2,3,4,5,8]"]:::result
-    classDef root fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef left fill:#a855f7,stroke:#9333ea,color:#fff
-    classDef right fill:#f97316,stroke:#ea580c,color:#000
-    classDef base fill:#475569,stroke:#64748b,color:#e2e8f0
-    classDef merge fill:#eab308,stroke:#ca8a04,color:#000
-    classDef result fill:#22c55e,stroke:#16a34a,color:#000
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">Merge Sort: O(n log n) time, O(n) space — stable
-Quick Sort: O(n log n) avg, O(n²) worst, O(log n) space — in-place
-Built-in JS/TS Array.sort(): TimSort (merge+insertion), O(n log n), stable</div>
+  <h3>How it works — Merge sort</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">arr = [ 5, 3, 8, 1 ]
+
+Merge sort is recursive: split the array in half until every sub-array has
+length 1 (base case), then merge sorted halves back together bottom-up.
+
+Complexity: O(n log n) time, O(n) auxiliary space (temporary merge buffer).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   mergeSort([5, 3, 8, 1])
+   mid = 2
+   left  = arr[0..1] = [5, 3]
+   right = arr[2..3] = [8, 1]
+   → recurse into mergeSort([5, 3]) first</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> The input [5,3,8,1] has length 4,
+    so we split at mid = 2: left half [5,3] and right half [8,1]. We recurse
+    into mergeSort([5,3]) before touching the right half.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   mergeSort([5, 3])
+   mid = 1
+   left  = [5]   ← length 1, base case, returns [5]
+   right = [3]   ← length 1, base case, returns [3]</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> [5,3] splits into [5] and [3].
+    Both have length 1, which is the base case (arr.length &le; 1 → return arr),
+    so each returns immediately. We now merge [5] and [3].</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   merge([5], [3])
+   i=0 j=0: left[0]=5  right[0]=3  → 3 &lt; 5, take right → result=[3], j=1
+   j exhausted → append left remainder → result=[3, 5]</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Merging [5] and [3]: compare
+    left[0]=5 and right[0]=3. 3 &lt; 5 so we take 3 from the right and advance j.
+    j is now exhausted; we append the remaining left element 5. Sorted sub-result:
+    [3, 5]. This is returned to the caller of mergeSort([5,3]).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   mergeSort([8, 1])
+   mid = 1
+   left  = [8]   ← length 1, base case, returns [8]
+   right = [1]   ← length 1, base case, returns [1]</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> Back up the call stack to
+    mergeSort([8,1]). mid = 1, so left = [8] and right = [1]. Both have length 1
+    (base case: arr.length &le; 1 → return arr), so each returns immediately.
+    We now merge [8] and [1].</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+   merge([8], [1])
+   i=0 j=0: left[0]=8  right[0]=1  → 1 &lt; 8 (left[i] &le; right[j] is false)
+     take right → result=[1], j=1
+   j exhausted → append left remainder → result=[1, 8]</div></div>
+  <div class="wm-note"><span class="wm-num">⑤</span> Merging [8] and [1]: compare
+    left[0]=8 and right[0]=1. The rule is take left when left[i] &le; right[j];
+    here 8 &gt; 1, so we take 1 from the right and advance j. j is now exhausted;
+    we append the remaining left element 8. Sorted sub-result: [1, 8].</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
+   merge([3, 5], [1, 8])   ← final merge
+   i=0 j=0: 3 vs 1  → take 1,  j=1,  result=[1]
+   i=0 j=1: 3 vs 8  → take 3,  i=1,  result=[1, 3]
+   i=1 j=1: 5 vs 8  → take 5,  i=2,  result=[1, 3, 5]
+   i exhausted → append right remainder [8] → result=[1, 3, 5, 8]</div></div>
+  <div class="wm-note"><span class="wm-num">⑥</span> The final merge combines the two
+    sorted halves [3,5] and [1,8]. left[i] &le; right[j] decides which element to
+    take: 3&le;1 is false → take 1; 3&le;8 → take 3; 5&le;8 → take 5; left is
+    exhausted so we append the remaining right element 8. Final sorted array:
+    [1, 3, 5, 8].</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
@@ -1795,41 +2377,112 @@ function sortColors(nums: number[]): void {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Next Greater Element (first larger value to the right)</li>
-    <li>Previous Smaller Element</li>
-    <li>Daily Temperatures (days until warmer)</li>
-    <li>Largest Rectangle in Histogram</li>
-    <li>Any "nearest larger/smaller" pattern</li>
+    <li><strong>Next greater element to the right</strong>
+      <div class="w-desc">For each element in an array, find the first element to its right that is strictly larger; return -1 if none exists.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "next greater value", "first larger element to the right", "for each element find the nearest value that is bigger"</div>
+      <div class="w-ex">e.g. Next Greater Element I</div>
+    </li>
+    <li><strong>Days until a condition is met (waiting game)</strong>
+      <div class="w-desc">Given a sequence of daily measurements, find how many steps forward you must travel before a value exceeds the current one; return 0 if it never does.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many days until warmer", "how many steps until a larger value appears", "wait time for the next increase"</div>
+      <div class="w-ex">e.g. Daily Temperatures</div>
+    </li>
+    <li><strong>Largest rectangle / area under a histogram</strong>
+      <div class="w-desc">Given bar heights, compute the maximum area of a rectangle that can be formed by one or more contiguous bars without exceeding their heights.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "maximum area rectangle fitting within bar heights", "maximum area of bars", "widest block fitting under the heights"</div>
+      <div class="w-ex">e.g. Largest Rectangle in Histogram</div>
+    </li>
+    <li><strong>Previous smaller / nearest boundary</strong>
+      <div class="w-desc">For each position, find the closest prior position whose value is strictly smaller, used to compute left-boundary spans for area or range problems.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "previous smaller element", "left boundary of a bar", "nearest value to the left that is less than current"</div>
+      <div class="w-ex">e.g. Trapping Rain Water</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Next Greater Element for [2, 1, 5, 3, 6]</h3>
-  <div class="diagram-box"><div class="ascii-diagram">Walk left-to-right. Stack holds INDICES of elements waiting for their "next greater".
-Pop when current element &gt; stack top (that element found its answer).
+  <h3>How it works — Next Greater Element</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">arr    = [ 2,  1,  5,  3,  6 ]
+indices =   0   1   2   3   4
+result = [-1, -1, -1, -1, -1 ]   (initialize: no answer yet)
 
-arr   =  [ 2,  1,  5,  3,  6 ]
-result=  [-1, -1, -1, -1, -1 ]   (initialize: no answer yet)
+Rule: walk left-to-right; stack holds INDICES of elements still waiting for their next greater.
+      while (stack not empty &amp;&amp; arr[stack.top] &lt; arr[i]) → pop, record arr[i] as the answer.
+      Then push i.</div>
 
-i=0: stack=[]        → push 0           stack=[0]        (waiting: arr[0]=2)
-i=1: arr[1]=1 ≤ arr[0]=2 → push 1      stack=[0,1]      (waiting: 2,1)
-i=2: arr[2]=5 &gt; arr[1]=1 → pop 1, result[1]=5            stack=[0]
-     arr[2]=5 &gt; arr[0]=2 → pop 0, result[0]=5            stack=[]
-     → push 2                           stack=[2]        (waiting: arr[2]=5)
-i=3: arr[3]=3 ≤ arr[2]=5 → push 3      stack=[2,3]      (waiting: 5,3)
-i=4: arr[4]=6 &gt; arr[3]=3 → pop 3, result[3]=6            stack=[2]
-     arr[4]=6 &gt; arr[2]=5 → pop 2, result[2]=6            stack=[]
-     → push 4                           stack=[4]
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   i=0   arr[0]=2
+   stack before: []
+   guard: stack empty → skip while loop
+   push 0
+   stack after:  [0]        result: [-1, -1, -1, -1, -1]</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> i=0, arr[0]=2. The stack is empty so the while-loop guard fails immediately
+    — nothing to pop. Push index 0. Stack is now [0], meaning index 0 (value 2) is
+    waiting for something larger to arrive.</div>
 
-End: remaining stack indices stay -1
-result = [5, 5, 6, 6, -1]  ✓</div></div>
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   i=1   arr[1]=1
+   stack before: [0]   arr[stack.top]=arr[0]=2
+   guard: arr[1]=1 &gt; arr[0]=2? NO  (1 is not greater than 2)  → skip while loop
+   push 1
+   stack after:  [0, 1]     result: [-1, -1, -1, -1, -1]</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> i=1, arr[1]=1. Check while guard: arr[1]=1 is NOT greater than arr[stack.top]=arr[0]=2,
+    so the condition fails and we skip the pop loop. Push index 1. Stack [0, 1] means
+    both value-2 and value-1 are still waiting — the stack remains decreasing (2, 1).</div>
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Iterate through array.</strong> For each element at index i:</li>
-    <li>While stack is not empty AND <strong>current element &gt; arr[stack.top()]</strong>: pop and <strong>record answer</strong> for popped index.</li>
-    <li><strong>Push current index</strong> onto the stack.</li>
-    <li>After loop: any index still in stack has <strong>no next greater element</strong> (answer = -1).</li>
-    <li>Flip condition for monotonically increasing stack (previous smaller, histogram problems).</li>
-  </ol></div>
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   i=2   arr[2]=5
+   stack before: [0, 1]
+
+   — while iteration 1 —
+   guard: arr[2]=5 &gt; arr[stack.top]=arr[1]=1? YES → pop 1, result[1]=5
+   stack mid:    [0]        result: [-1,  5, -1, -1, -1]
+
+   — while iteration 2 —
+   guard: arr[2]=5 &gt; arr[stack.top]=arr[0]=2? YES → pop 0, result[0]=5
+   stack mid:    []         result: [ 5,  5, -1, -1, -1]
+
+   — while iteration 3 —
+   guard: stack empty → exit while loop
+   push 2
+   stack after:  [2]        result: [ 5,  5, -1, -1, -1]</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> i=2, arr[2]=5. This is the first multi-pop step. The while-loop fires twice in
+    succession. Iteration 1: stack.top is 1, arr[1]=1 &lt; 5 → pop 1 and set result[1]=5
+    (index 1 found its next greater). Iteration 2: stack.top is now 0, arr[0]=2 &lt; 5
+    → pop 0 and set result[0]=5 (index 0 found its next greater). Iteration 3: stack is
+    empty → loop exits. Push 2. Both pending indices resolved in one outer iteration.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   i=3   arr[3]=3
+   stack before: [2]   arr[stack.top]=arr[2]=5
+   guard: arr[3]=3 &gt; arr[2]=5? NO  (3 is not &gt; 5)  → skip while loop
+   push 3
+   stack after:  [2, 3]     result: [ 5,  5, -1, -1, -1]</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> i=3, arr[3]=3. The while guard checks arr[3]=3 &gt; arr[2]=5 — false, so no pops.
+    Push index 3. Stack [2, 3] maintains the decreasing-value invariant (5, 3).
+    Index 2 (value 5) and index 3 (value 3) are both still waiting.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+   i=4   arr[4]=6
+   stack before: [2, 3]
+
+   — while iteration 1 —
+   guard: arr[4]=6 &gt; arr[stack.top]=arr[3]=3? YES → pop 3, result[3]=6
+   stack mid:    [2]         result: [ 5,  5, -1,  6, -1]
+
+   — while iteration 2 —
+   guard: arr[4]=6 &gt; arr[stack.top]=arr[2]=5? YES → pop 2, result[2]=6
+   stack mid:    []          result: [ 5,  5,  6,  6, -1]
+
+   — while iteration 3 —
+   guard: stack empty → exit while loop
+   push 4
+   stack after:  [4]         result: [ 5,  5,  6,  6, -1]</div></div>
+  <div class="wm-note"><span class="wm-num">⑤</span> i=4, arr[4]=6. Second multi-pop step. Iteration 1: stack.top is 3, arr[3]=3 &lt; 6
+    → pop 3, result[3]=6. Iteration 2: stack.top is 2, arr[2]=5 &lt; 6 → pop 2,
+    result[2]=6. Iteration 3: stack empty → exit. Push 4. The for-loop is now done.
+    Index 4 remains in the stack — arr[4]=6 has no larger element to its right, so
+    result[4] stays -1 (its initialized value). Final answer: [5, 5, 6, 6, -1] ✓</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -1930,16 +2583,44 @@ function nextGreaterElement(nums: number[]): number[] {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>"How many ways to reach X?"</li>
-    <li>"Maximum/minimum value you can achieve"</li>
-    <li>"Can you reach the end / make the target?"</li>
-    <li>Decisions at each step affect future options (overlapping subproblems)</li>
-    <li>Key signal: brute-force recursion has repeated subproblems</li>
+    <li><strong>Count distinct ways to reach a target</strong>
+      <div class="w-desc">The problem asks for the number of different sequences of steps or choices that arrive at a goal state.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many ways", "how many distinct paths", "how many combinations to reach X"</div>
+      <div class="w-ex">e.g. Climbing Stairs</div>
+    </li>
+    <li><strong>Maximize or minimize a value over a sequence</strong>
+      <div class="w-desc">At each position you make a greedy-seeming choice, but the best local move is not always globally optimal — past decisions constrain future ones.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "maximum amount you can rob / collect", "minimum cost", "best you can achieve"</div>
+      <div class="w-ex">e.g. House Robber</div>
+    </li>
+    <li><strong>Reachability / feasibility check</strong>
+      <div class="w-desc">Determine whether a goal state can be reached at all given the allowed moves or coin denominations.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "can you reach the end", "is it possible to make the target", "return true/false"</div>
+      <div class="w-ex">e.g. Jump Game</div>
+    </li>
+    <li><strong>Overlapping subproblems from step-by-step decisions</strong>
+      <div class="w-desc">Each decision at index i (use this coin / skip this house) affects which subproblems you need next, and the same sub-state recurs in multiple decision branches.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> decisions at each step constrain future options; brute-force recursion revisits the same arguments</div>
+      <div class="w-ex">e.g. Coin Change</div>
+    </li>
+    <li><strong>Optimal segmentation or partition</strong>
+      <div class="w-desc">Decide where to cut or split a string / array so that every piece satisfies a condition and the overall cost is minimised.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "partition the string", "can be segmented", "word break", "minimum cuts"</div>
+      <div class="w-ex">e.g. Word Break</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — House Robber recurrence + dp table</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
+  <h3>How it works — House Robber</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">nums = [2, 7, 9, 3, 1]   (house values, 0-indexed)
+
+Subproblem:  dp[i] = maximum money robbing any subset of houses 0..i
+Recurrence:  dp[i] = max(dp[i-1],          &lt;-- skip house i (keep best so far)
+                         dp[i-2] + nums[i]) &lt;-- rob house i (must skip i-1)
+Base cases:  dp[0] = nums[0] = 2
+             dp[1] = max(nums[0], nums[1]) = max(2, 7) = 7</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────  recurrence</div><div class="mermaid">
 graph TD
     R["rob(nums):\nmax money without adjacent"]:::root
     R --> F["Recurrence:\ndp[i] = max(dp[i-1], dp[i-2] + nums[i])"]:::formula
@@ -1949,27 +2630,19 @@ graph TD
     classDef formula fill:#a855f7,stroke:#9333ea,color:#fff
     classDef choice1 fill:#475569,stroke:#64748b,color:#e2e8f0
     classDef choice2 fill:#22c55e,stroke:#16a34a,color:#000
-  </div>
-  <div style="margin-top:16px;overflow-x:auto">
-  <table class="dp-table">
+  </div></div>
+  <div class="wm-note"><span class="wm-num">①</span> At every house i there are exactly two choices: skip it (inherit dp[i-1], the best result ignoring house i) or rob it (add nums[i] to dp[i-2], because the immediately preceding house i-1 must then be skipped). The recurrence takes the max of these two branches.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────  fill the dp table</div><table class="dp-table">
     <tr><th>index i</th><th>nums[i]</th><th>dp[i]</th><th>decision</th></tr>
     <tr><td class="dp-base">0</td><td class="dp-base">2</td><td class="dp-base">2</td><td>base case</td></tr>
     <tr><td class="dp-base">1</td><td class="dp-base">7</td><td class="dp-base">7</td><td>max(2, 7) = 7</td></tr>
     <tr><td class="dp-computed">2</td><td class="dp-computed">9</td><td class="dp-computed">11</td><td>max(7, 2+9) = 11</td></tr>
     <tr><td class="dp-computed">3</td><td class="dp-computed">3</td><td class="dp-computed">11</td><td>max(11, 7+3) = 11</td></tr>
     <tr><td class="dp-answer">4</td><td class="dp-answer">1</td><td class="dp-answer">12</td><td>max(11, 11+1) = 12 ✓</td></tr>
-  </table>
+  </table></div>
+  <div class="wm-note"><span class="wm-num">②</span> Base cases: dp[0] = 2 (only one house, take it); dp[1] = 7 (max of first two houses). i=2: rob house 2 (dp[0]+9=11) beats skipping (dp[1]=7) → 11. i=3: rob house 3 would give dp[1]+3=10, less than skipping (dp[2]=11) → stay at 11. i=4: rob house 4 gives dp[2]+1=12, beats skipping (dp[3]=11) → 12. Answer is dp[4] = 12. Space optimisation: since dp[i] only references dp[i-1] and dp[i-2], replace the array with two rolling variables (prev2, prev1).</div>
   </div>
-  </div>
-
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Define the subproblem:</strong> What does dp[i] represent? (e.g., "max money robbing houses 0..i")</li>
-    <li><strong>Write the recurrence:</strong> How does dp[i] depend on previous values?</li>
-    <li><strong>Identify base cases:</strong> dp[0], dp[1], etc.</li>
-    <li><strong>Build bottom-up:</strong> Fill dp array from index 0 upward.</li>
-    <li><strong>Space optimization:</strong> If dp[i] only needs dp[i-1] and dp[i-2], use two variables instead of an array.</li>
-  </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -2066,33 +2739,63 @@ function coinChange(coins: number[], amount: number): number {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Grid path counting / min-cost path (Unique Paths, Min Path Sum)</li>
-    <li>Two-sequence problems (Longest Common Subsequence, Edit Distance)</li>
-    <li>String matching with flexibility (wildcards, edit operations)</li>
-    <li>Knapsack-style problems</li>
+    <li><strong>Grid path counting or min-cost traversal</strong>
+      <div class="w-desc">A robot or agent moves through a 2D grid with constrained directions; count paths or minimise accumulated cost to reach the destination.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "m × n grid", "move only right or down", "unique paths", "minimum path sum"</div>
+      <div class="w-ex">e.g. Unique Paths</div>
+    </li>
+    <li><strong>Two-sequence alignment (LCS / edit distance)</strong>
+      <div class="w-desc">The state requires knowing a prefix of each string simultaneously; the table rows correspond to one string and the columns to the other.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "two strings", "longest common subsequence", "minimum edit operations", "insert / delete / replace"</div>
+      <div class="w-ex">e.g. Longest Common Subsequence</div>
+    </li>
+    <li><strong>String matching with flexible rules</strong>
+      <div class="w-desc">Matching with wildcards or patterns means the DP state must track position in both the text and the pattern simultaneously.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "wildcard matching", "regular expression", "pattern with '?' or '*'"</div>
+      <div class="w-ex">e.g. Wildcard Matching</div>
+    </li>
+    <li><strong>Knapsack-style capacity and item selection</strong>
+      <div class="w-desc">One dimension indexes items; the other indexes available capacity. dp[i][w] answers the best value using the first i items with capacity w.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "items with weights and values", "capacity constraint", "0/1 knapsack", "subset sum with limit"</div>
+      <div class="w-ex">e.g. 0/1 Knapsack (Partition Equal Subset Sum)</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Unique Paths (3×4 grid) + LCS</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
+  <h3>How it works — Unique Paths &amp; LCS</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Two independent 2-D DP problems share the same grid-filling pattern.
+
+── Unique Paths ────────────────────────────────────────
+Subproblem:  dp[i][j] = number of distinct paths from (0,0) to (i,j)
+Recurrence:  dp[i][j] = dp[i-1][j] + dp[i][j-1]   (paths from above + from left)
+Base cases:  dp[0][j] = 1 for all j   (top row: only one way — move all the way right)
+             dp[i][0] = 1 for all i   (left column: only one way — move all the way down)
+
+── LCS ─────────────────────────────────────────────────
+Subproblem:  dp[i][j] = LCS length of s1[0..i-1] and s2[0..j-1]
+Recurrence:  if s1[i-1] == s2[j-1]:  dp[i][j] = dp[i-1][j-1] + 1
+             else:                    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+Base cases:  dp[0][j] = 0  (empty prefix of s1)
+             dp[i][0] = 0  (empty prefix of s2)</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────  recurrence</div><div class="mermaid">
 graph LR
     R["Recurrence:\ndp[i][j] = dp[i-1][j] + dp[i][j-1]\n(paths from above + from left)"]:::formula
     B["Base cases:\ndp[0][j] = 1 (top row)\ndp[i][0] = 1 (left column)"]:::base
     classDef formula fill:#a855f7,stroke:#9333ea,color:#fff
     classDef base fill:#22c55e,stroke:#16a34a,color:#000
-  </div>
-  <div style="margin-top:16px;overflow-x:auto">
-  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px">Unique Paths — 3×4 grid (move only right or down):</p>
-  <table class="dp-table">
+  </div></div>
+  <div class="wm-note"><span class="wm-num">①</span> The recurrence graph captures both the Unique Paths formula and its base cases. Every interior cell (i,j) is reachable from exactly two neighbors: the cell directly above (dp[i-1][j], representing arriving by moving down) and the cell to the left (dp[i][j-1], representing arriving by moving right). The two annotated nodes show how to seed the table: every cell in the top row and every cell in the leftmost column has exactly one path to it.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────  fill the dp table — Unique Paths 3×4</div><table class="dp-table">
     <tr><th></th><th>j=0</th><th>j=1</th><th>j=2</th><th>j=3</th></tr>
     <tr><th>i=0</th><td class="dp-base">1</td><td class="dp-base">1</td><td class="dp-base">1</td><td class="dp-base">1</td></tr>
     <tr><th>i=1</th><td class="dp-base">1</td><td class="dp-computed">2</td><td class="dp-computed">3</td><td class="dp-computed">4</td></tr>
     <tr><th>i=2</th><td class="dp-base">1</td><td class="dp-computed">3</td><td class="dp-computed">6</td><td class="dp-answer">10</td></tr>
-  </table>
-  </div>
-  <div style="margin-top:16px;overflow-x:auto">
-  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px">LCS — s1="ABCB", s2="BCAB" (if chars match: +1 from diagonal; else max from up/left):</p>
-  <table class="dp-table">
+  </table></div>
+  <div class="wm-note"><span class="wm-num">②</span> Base cases: the entire top row (i=0) and the entire left column (j=0) are filled with 1 — there is only one way to reach any edge cell. Interior cells: dp[1][1] = dp[0][1] + dp[1][0] = 1+1 = 2; dp[1][2] = dp[0][2] + dp[1][1] = 1+2 = 3; dp[1][3] = 1+3 = 4. Row 2: dp[2][1] = dp[1][1] + dp[2][0] = 2+1 = 3; dp[2][2] = dp[1][2] + dp[2][1] = 3+3 = 6; dp[2][3] = dp[1][3] + dp[2][2] = 4+6 = 10. The answer is dp[2][3] = 10.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────  fill the dp table — LCS s1="ABCB" s2="BCAB"</div><table class="dp-table">
     <tr><th></th><th>""</th><th>B</th><th>C</th><th>A</th><th>B</th></tr>
     <tr><th>""</th><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td></tr>
     <tr><th>A</th><td class="dp-base">0</td><td class="dp-computed">0</td><td class="dp-computed">0</td><td class="dp-computed">1</td><td class="dp-computed">1</td></tr>
@@ -2100,18 +2803,9 @@ graph LR
     <tr><th>C</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">2</td><td class="dp-computed">2</td><td class="dp-computed">2</td></tr>
     <tr><th>B</th><td class="dp-base">0</td><td class="dp-computed">1</td><td class="dp-computed">2</td><td class="dp-computed">2</td><td class="dp-answer">3</td></tr>
   </table>
-  <div class="ascii-diagram" style="margin-top:8px">LCS = 3 ("BCB") ✓</div>
+  <div class="ascii-diagram">LCS = 3 ("BCB") ✓</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Base cases: row 0 and column 0 are all 0 (LCS with an empty string is 0). Row A (i=1): A≠B→max(dp[0][1],dp[1][0])=max(0,0)=0; A≠C→max(dp[0][2],dp[1][1])=max(0,0)=0; A==A→dp[0][2]+1=1; A≠B→max(dp[0][4],dp[1][3])=max(0,1)=1. Row B (i=2): B==B→dp[1][0]+1=1; B≠C→max(dp[1][2],dp[2][1])=max(0,1)=1; B≠A→max(dp[1][3],dp[2][2])=max(1,1)=1; B==B→dp[1][3]+1=2. Row C (i=3): C≠B→max(dp[2][1],dp[3][0])=max(1,0)=1; C==C→dp[2][1]+1=2; C≠A→max(dp[2][3],dp[3][2])=max(1,2)=2; C≠B→max(dp[2][4],dp[3][3])=max(2,2)=2. Row B (i=4): B==B→dp[3][0]+1=1; B≠C→max(dp[3][2],dp[4][1])=max(2,1)=2; B≠A→max(dp[3][3],dp[4][2])=max(2,2)=2; B==B→dp[3][3]+1=3. Answer dp[4][4] = 3, i.e. LCS = "BCB".</div>
   </div>
-  </div>
-
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Define dp[i][j]:</strong> What question does this cell answer? (e.g., "# paths to reach cell (i,j)")</li>
-    <li><strong>Write the recurrence:</strong> How does dp[i][j] depend on neighboring cells?</li>
-    <li><strong>Fill base cases:</strong> First row, first column, or empty-string cases.</li>
-    <li><strong>Fill the table</strong> row by row (or column by column).</li>
-    <li>Read the answer from <strong>dp[m][n]</strong> (or relevant cell).</li>
-  </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
@@ -2217,46 +2911,110 @@ function lcs(text1: string, text2: string): number {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Generate all subsets, permutations, or combinations</li>
-    <li>Constraint satisfaction (N-Queens, Sudoku)</li>
-    <li>Find all paths in a graph satisfying a condition</li>
-    <li>Word search on a grid</li>
-    <li>Key signal: "find all possible..." or "generate all..."</li>
+    <li><strong>Generate all subsets or combinations</strong>
+      <div class="w-desc">Enumerate every subset of a given set, with no element repeated in a single subset.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "return all possible subsets", "power set", "choose k elements from n"</div>
+      <div class="w-ex">e.g. Subsets</div>
+    </li>
+    <li><strong>Generate all permutations</strong>
+      <div class="w-desc">Arrange all elements of an array into every possible ordering, using each element exactly once per arrangement.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "return all permutations", "all possible orderings / arrangements"</div>
+      <div class="w-ex">e.g. Permutations</div>
+    </li>
+    <li><strong>Constraint satisfaction (placement problems)</strong>
+      <div class="w-desc">Place items on a board or in slots one at a time, checking validity after each placement and undoing when a conflict is detected.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "place n queens so no two attack each other", "fill a Sudoku board", "valid placement on a grid"</div>
+      <div class="w-ex">e.g. N-Queens</div>
+    </li>
+    <li><strong>Word search on a grid</strong>
+      <div class="w-desc">Walk a 2-D grid character by character, marking cells visited as you go and restoring them when a path fails to complete the word.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "find the word in the board", "path of adjacent cells spelling a string"</div>
+      <div class="w-ex">e.g. Word Search</div>
+    </li>
+    <li><strong>Combinations summing to a target</strong>
+      <div class="w-desc">Collect numbers into a path, pruning the branch early once the running sum overshoots the target.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "find all combinations that sum to target", "return all unique combinations", "unlimited reuse allowed"</div>
+      <div class="w-ex">e.g. Combination Sum</div>
+    </li>
+    <li><strong>Partition into valid substrings</strong>
+      <div class="w-desc">Split a string into parts at every valid cut point, exploring all partitionings and recording those where every part satisfies a property.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "partition the string such that every substring is a palindrome"</div>
+      <div class="w-ex">e.g. Palindrome Partitioning</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Subsets of [1, 2, 3] decision tree</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    Root["[ ]"]:::root
-    Root -->|"add 1"| A["[1]"]:::branch
-    Root -->|"add 2"| B["[2]"]:::branch
-    Root -->|"add 3"| C["[3]"]:::branch
-    A -->|"add 2"| D["[1,2]"]:::branch2
-    A -->|"add 3"| E["[1,3]"]:::branch2
-    B -->|"add 3"| F["[2,3]"]:::branch2
-    D -->|"add 3"| G["[1,2,3]"]:::leaf
-    classDef root fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef branch fill:#f97316,stroke:#ea580c,color:#000
-    classDef branch2 fill:#a855f7,stroke:#9333ea,color:#fff
-    classDef leaf fill:#22c55e,stroke:#16a34a,color:#000
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">At each node: CHOOSE (add element) → RECURSE → UNCHOOSE (remove element)
-All 8 subsets: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]
+  <h3>How it works — Subsets of [1,2,3] (the universal template)</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Universal backtracking skeleton
+─────────────────────────────────────────
 
-Pruning: skip invalid choices early to avoid dead branches.
-  Example (Combination Sum): if remaining &lt; 0, return immediately.</div>
-  </div>
+  function bt(start, path):
+      record path            ← base case: every prefix is a valid subset
+      for i from start to end:
+          path.push(nums[i]) ← CHOOSE
+          bt(i + 1, path)    ← RECURSE  (i+1 enforces forward-only, no repeats)
+          path.pop()         ← UNCHOOSE (restore state for next sibling)
+          // PRUNE: return immediately at entry to bt if the constraint is already violated
 
-  <h3>How it works — The universal template</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Base case:</strong> When is the current path a valid complete solution? Add to results.</li>
-    <li><strong>Loop over choices:</strong> For each valid choice at the current step...</li>
-    <li><strong>Choose:</strong> Add the choice to the current path.</li>
-    <li><strong>Recurse:</strong> Call backtrack with updated state.</li>
-    <li><strong>Unchoose:</strong> Remove the choice (restore state for the next iteration).</li>
-    <li><strong>Prune early:</strong> Skip choices that cannot lead to a valid solution (e.g., sum &gt; target).</li>
-  </ol></div>
+Input:  nums = [1, 2, 3]
+Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]  (8 = 2^3 subsets)</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  root []              ← record [] immediately (empty subset)
+    |
+    +-- choose 1 → [1]   ← CHOOSE: path.push(1), now path = [1]</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> The algorithm starts at the root
+    with an empty path. Before the loop even runs, the current path is recorded
+    as a valid subset ([] itself is a subset). Then the loop begins at index 0.
+    The first iteration CHOOSEs element 1 by pushing it onto the path, making
+    path = [1]. We are now on the "add 1" branch of the decision tree.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  [1]                  ← record [1]
+    |
+    +-- choose 2 → [1,2]  ← record [1,2]
+          |
+          +-- choose 3 → [1,2,3]  ← record [1,2,3] (leaf)</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> After choosing 1 the algorithm
+    RECURSEs with start = 1. It records [1] immediately, then continues deeper:
+    choose 2 → record [1,2] → recurse with start = 2 → choose 3 → record
+    [1,2,3]. [1,2,3] is a leaf — no elements remain to add — so the recursive
+    call returns without entering the loop. Every node on this branch is recorded
+    the moment it is visited (before the inner loop), capturing all prefixes as
+    valid subsets.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  [1,2,3]  ← leaf; return to parent [1,2]
+    path.pop() → [1,2]   ← UNCHOOSE 3
+  [1,2]    ← no more choices; return to parent [1]
+    path.pop() → [1]     ← UNCHOOSE 2
+  [1]      ← next sibling: choose 3 → [1,3]  ← UNCHOOSE later</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Once the leaf [1,2,3] is
+    recorded the function returns. The parent frame (at [1,2]) calls path.pop(),
+    UNCHOOSing 3 and restoring path = [1,2]. The loop in that frame has no more
+    elements to try (start was 2, length is 3), so it returns too. The grandparent
+    frame (at [1]) then calls path.pop(), UNCHOOSing 2 and restoring path = [1].
+    Its loop still has i = 2 (element 3) to try, so it CHOOSes 3, RECURSEs to
+    produce [1,3], then UNCHOOSes. State is always fully restored before the next
+    sibling branch is explored — that is the core backtracking invariant.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+  Example: Combination Sum  (target = 5, candidates = [2, 3, 6])
+
+  [3, 3]  remaining = 5 - 3 - 3 = -1
+    if remaining &lt; 0: return   ← PRUNE — overshoot, skip entire subtree
+
+  (Without pruning the algorithm would recurse needlessly deeper.)</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> PRUNING cuts a branch before
+    any child is explored. In Combination Sum, if the running sum already exceeds
+    the target (remaining &lt; 0) the recursive call returns immediately — no
+    path.push, no deeper recursion, no path.pop needed. For the Subsets template
+    above no pruning is required because every prefix is valid; pruning becomes
+    essential when a constraint can be violated (sum &gt; target, row conflict in
+    N-Queens, cell already visited in Word Search). The full result for [1,2,3]
+    subsets with no pruning is: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3],
+    [3] — all 8 subsets of a 3-element set.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
