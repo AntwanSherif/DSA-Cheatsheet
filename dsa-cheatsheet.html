@@ -1361,7 +1361,7 @@ function dfsIterative(root: TreeNode | null): number[] {
     <li><strong>Any "closest" or "nearest" question on a tree</strong>
       <div class="w-desc">BFS guarantees that the first time you encounter a target (e.g. a leaf, a node with a specific value), you have reached it in the fewest edges.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "closest node", "fewest edges", "nearest ancestor/descendant with property X"</div>
-      <div class="w-ex">e.g. Minimum Depth of Binary Tree</div>
+      <div class="w-ex">e.g. Find Bottom Left Tree Value</div>
     </li>
   </ul></div>
 
@@ -1656,7 +1656,7 @@ function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNod
     </li>
     <li><strong>Level-by-level graph exploration</strong>
       <div class="w-desc">Process all nodes at distance d before any node at distance d+1; useful when you need to track which "generation" or "wave" a node belongs to.</div>
-      <div class="w-sig"><span class="w-sig-label">Signal:</span> "group by distance from source", "all nodes reachable in k steps", "frontier expansion"</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "group by distance from source", "all nodes reachable in k steps", "process level by level"</div>
       <div class="w-ex">e.g. Pattern — BFS on Adjacency List</div>
     </li>
     <li><strong>Multi-source simultaneous spread</strong>
@@ -1706,7 +1706,8 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
    Neighbors of B: A (visited, skip)
                    D (unvisited) → mark, enqueue dist=2
                    E (unvisited) → mark, enqueue dist=2
-   queue = [C, D, E]   visited = {A, B, C, D, E}</div></div>
+   queue = [C, D, E]   visited = {A, B, C, D, E}
+   dist = {A:0, B:1, C:1, D:2, E:2}</div></div>
   <div class="wm-note"><span class="wm-num">③</span> Dequeue B. Neighbor A is already
     visited — skip it to avoid revisiting. Neighbors D and E are unvisited —
     mark each, record dist=2, and enqueue. This is the neighbor-skipping
@@ -1716,7 +1717,8 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
    Dequeue C (dist=1)
    Neighbors of C: A (visited, skip)
                    F (unvisited) → mark, enqueue dist=2
-   queue = [D, E, F]   visited = {A, B, C, D, E, F}</div></div>
+   queue = [D, E, F]   visited = {A, B, C, D, E, F}
+   dist = {A:0, B:1, C:1, D:2, E:2, F:2}</div></div>
   <div class="wm-note"><span class="wm-num">④</span> Dequeue C. Neighbor A is visited —
     skip. Neighbor F is unvisited — mark it, set dist[F]=2, enqueue. F is
     the target node; because we enqueue at the moment of discovery, dist[F]=2
@@ -1725,14 +1727,25 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
   <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
    Dequeue D (dist=2): neighbors = [B] all visited, skip
    Dequeue E (dist=2): neighbors = [B] all visited, skip
-   Dequeue F (dist=2): F == target → return dist[F] = 2  ✓
-   queue = []</div></div>
+   queue = [F]   visited = {A, B, C, D, E, F}
+   dist = {A:0, B:1, C:1, D:2, E:2, F:2}</div></div>
   <div class="wm-note"><span class="wm-num">⑤</span> Dequeue D: its only neighbor B is
-    visited — nothing enqueued. Dequeue E: its only neighbor B is visited —
-    nothing enqueued. Dequeue F: F is the target — return dist[F] = 2, the
-    shortest path length. The queue is now empty; if no target had been found
-    the while-loop would exit here and we would return -1 (or infinity) to
-    signal unreachable.</div>
+    already visited — nothing is enqueued. Dequeue E: its only neighbor B is
+    already visited — nothing is enqueued. Both are "dead-end" dequeues at
+    level 2; they consume queue slots without expanding the frontier. F remains
+    in the queue.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
+   Dequeue F (dist=2): F == target → return dist[F] = 2  ✓
+   queue = []
+   dist = {A:0, B:1, C:1, D:2, E:2, F:2}</div></div>
+  <div class="wm-note"><span class="wm-num">⑥</span> Dequeue F. F is the target node —
+    return dist[F] = 2, the shortest path length from A to F. Because we
+    marked F visited and recorded its distance at enqueue time (block ④), the
+    value is already correct and final. If no target had been found, the
+    while-loop would exhaust the queue and exit; the caller returns -1 (or
+    signals "unreachable") to indicate there is no path from the source to the
+    target.</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
