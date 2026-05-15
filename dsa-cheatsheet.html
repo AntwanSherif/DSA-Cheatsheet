@@ -324,30 +324,44 @@ Rule: sum &lt; target → L++  (need a bigger number on the left)
   </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">function twoSumSorted(nums: number[], target: number): number[] {
+
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Two Sum II – Input Array Is Sorted</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given a 1-indexed sorted array, return the 1-indexed positions of two numbers that add up to <code>target</code>. Exactly one solution exists.</div>
+    <pre><code class="language-typescript">function twoSumSorted(nums: number[], target: number): number[] {
   let left = 0, right = nums.length - 1;
 
   while (left &lt; right) {
     const sum = nums[left] + nums[right];
-    if (sum === target) return [left, right];
-    else if (sum &lt; target) left++;
-    else right--;
+    if (sum === target) return [left + 1, right + 1]; // 1-indexed
+    else if (sum &lt; target) left++;   // need larger sum → move left pointer right
+    else right--;                     // need smaller sum → move right pointer left (sorted array guarantees this works)
   }
 
-  return []; // no pair found
-}
+  return [];
+}</code></pre>
+  </div>
 
-// Same-direction variant: remove duplicates in-place
-function removeDuplicates(nums: number[]): number {
-  let slow = 0;
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Remove Duplicates from Sorted Array</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Modify the array in-place so each unique value appears once. Return the number of unique elements. Relative order must be preserved.</div>
+    <pre><code class="language-typescript">function removeDuplicates(nums: number[]): number {
+  let slow = 0; // slow: boundary of the unique-values region
   for (let fast = 1; fast &lt; nums.length; fast++) {
     if (nums[fast] !== nums[slow]) {
-      slow++;
-      nums[slow] = nums[fast];
+      slow++;             // expand unique region
+      nums[slow] = nums[fast]; // write next unique value
     }
   }
-  return slow + 1;
-}</code></pre></div>
+  return slow + 1; // count of unique elements
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
@@ -407,36 +421,49 @@ Variable window (e.g. longest substring):
   </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
-  <div class="code-block"><pre><code class="language-typescript">// Variable window — longest substring without repeating characters
-function lengthOfLongestSubstring(s: string): number {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Longest Substring Without Repeating Characters</span>
+      <span class="diff diff-medium">Medium</span>
+    </div>
+    <div class="code-problem">Given a string, find the length of the longest substring that contains no repeating characters.</div>
+    <pre><code class="language-typescript">function lengthOfLongestSubstring(s: string): number {
   const lastSeen = new Map&lt;string, number&gt;(); // char → last index seen
   let left = 0, maxLen = 0;
 
   for (let right = 0; right &lt; s.length; right++) {
     const ch = s[right];
-    // If char was seen inside current window, shrink from left
-    if (lastSeen.has(ch) && lastSeen.get(ch)! &gt;= left) {
-      left = lastSeen.get(ch)! + 1;
+    // `lastSeen.get(ch)! >= left` guards against chars seen before the current window:
+    // the char may be in the map but to the left of `left`, so it's not a duplicate in the window.
+    if (lastSeen.has(ch) &amp;&amp; lastSeen.get(ch)! &gt;= left) {
+      left = lastSeen.get(ch)! + 1; // shrink window: jump left past the duplicate
     }
     lastSeen.set(ch, right);
-    maxLen = Math.max(maxLen, right - left + 1);
+    maxLen = Math.max(maxLen, right - left + 1); // window invariant: no duplicates in [left, right]
   }
 
   return maxLen;
-}
+}</code></pre>
+  </div>
 
-// Fixed window — max sum subarray of size k
-function maxSumFixed(nums: number[], k: number): number {
+  <div class="code-block">
+    <div class="code-label">
+      <span class="code-title">Maximum Average Subarray I</span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given an integer array and integer <code>k</code>, find the contiguous subarray of length <code>k</code> with the maximum average value.</div>
+    <pre><code class="language-typescript">function maxSumFixed(nums: number[], k: number): number {
   let windowSum = nums.slice(0, k).reduce((a, b) =&gt; a + b, 0);
   let max = windowSum;
 
   for (let i = k; i &lt; nums.length; i++) {
-    windowSum += nums[i] - nums[i - k]; // slide: add new, remove old
+    windowSum += nums[i] - nums[i - k]; // slide: add element entering window, subtract element leaving
     max = Math.max(max, windowSum);
   }
 
-  return max;
-}</code></pre></div>
+  return max; // divide by k for average
+}</code></pre>
+  </div>
 
   <h3>Practice Problems</h3>
   <div class="problems">
