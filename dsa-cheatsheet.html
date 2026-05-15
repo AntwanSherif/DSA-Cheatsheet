@@ -1493,35 +1493,69 @@ function minDepth(root: TreeNode | null): number {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Validate that a binary tree is a valid BST</li>
-    <li>Find kth smallest/largest element</li>
-    <li>Search, insert, or delete in O(log n) average</li>
-    <li>Find lowest common ancestor of two BST nodes</li>
-    <li>Convert sorted array → BST or BST → sorted array</li>
+    <li><strong>Validate a BST</strong>
+      <div class="w-desc">Confirm that every node obeys the global BST invariant — not just its direct children but all descendants in its subtree.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "is a valid BST", "verify BST property", "check that left subtree &lt; node &lt; right subtree globally"</div>
+      <div class="w-ex">e.g. Validate Binary Search Tree</div>
+    </li>
+    <li><strong>Find kth smallest/largest element</strong>
+      <div class="w-desc">An inorder traversal of a BST yields nodes in sorted order; stop at the kth node without fully traversing the tree.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "kth smallest", "kth largest", "inorder traversal", "ranked element in a BST"</div>
+      <div class="w-ex">e.g. Kth Smallest Element in a BST</div>
+    </li>
+    <li><strong>Search, insert, or delete in O(log n) average</strong>
+      <div class="w-desc">At each node compare the target to the node value and recurse left or right, halving the search space each step.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "search in a BST", "insert a value maintaining BST order", "delete while preserving BST property"</div>
+      <div class="w-ex">e.g. Search in a Binary Search Tree</div>
+    </li>
+    <li><strong>Find lowest common ancestor of two BST nodes</strong>
+      <div class="w-desc">If both target nodes are less than the current node go left; if both are greater go right; otherwise the current node is the split point and is the LCA.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "lowest common ancestor", "deepest shared ancestor", "LCA in a BST"</div>
+      <div class="w-ex">e.g. Lowest Common Ancestor of a BST</div>
+    </li>
+    <li><strong>Convert between sorted array and BST</strong>
+      <div class="w-desc">A sorted array maps to a height-balanced BST by repeatedly picking the midpoint as root; the reverse (BST to sorted array) uses inorder traversal.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "convert sorted array to BST", "height-balanced BST", "BST to sorted array"</div>
+      <div class="w-ex">e.g. Convert Sorted Array to Binary Search Tree</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — BST search path</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A((8)):::visited --> B((3)):::visited
-    A --> C((10)):::unvisited
-    B --> D((1)):::unvisited
-    B --> E((6)):::target
-    E --> F((4)):::unvisited
-    E --> G((7)):::unvisited
-    classDef visited fill:#eab308,stroke:#ca8a04,color:#000
-    classDef target fill:#22c55e,stroke:#16a34a,color:#000
-    classDef unvisited fill:#475569,stroke:#64748b,color:#e2e8f0
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">Searching for 6:
-  root=8: 6 &lt; 8  → go left
-  node=3: 6 &gt; 3  → go right
-  node=6: 6 == 6 → found ✓
+  <h3>How it works — BST search</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Tree (searching for target = 6):
 
-BST Invariant: for every node N,
-  ALL nodes in left subtree  &lt; N.val
-  ALL nodes in right subtree &gt; N.val</div>
+        8          ← root
+       / \
+      3   10
+     / \
+    1   6          ← target node
+       / \
+      4   7
+
+BST invariant: all nodes in left subtree &lt; node.val &lt; all nodes in right subtree.
+Rule: target &lt; node.val → go left; target &gt; node.val → go right; equal → found.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   curr = node(8)
+   target 6 &lt; 8  → go left</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Start at the root (value 8). Compare
+    target 6 to 8: 6 &lt; 8, so the target must be in the left subtree — move
+    curr to node(3).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   curr = node(3)
+   target 6 &gt; 3  → go right</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Compare target 6 to 3: 6 &gt; 3, so
+    the target must be in the right subtree — move curr to node(6).</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   curr = node(6)
+   target 6 == 6  → return node(6)  ✓</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> curr.val equals the target — return
+    curr. This is the found case. If instead curr became null before a match
+    (e.g. searching for 9 in this tree: 9 &gt; 8 → right to node(10), 9 &lt; 10
+    → left, but node(10) has no left child → curr = null → return null),
+    the function returns null signalling not-found.</div>
   </div>
 
   <h3>Code Template (TypeScript)</h3>
