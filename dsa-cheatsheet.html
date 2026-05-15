@@ -1343,44 +1343,76 @@ function dfsIterative(root: TreeNode | null): number[] {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>Level-order traversal (process nodes level by level)</li>
-    <li>Minimum depth of a binary tree</li>
-    <li>Connect nodes at the same level</li>
-    <li>Zigzag level order traversal</li>
-    <li>Any "closest" or "nearest" question on a tree</li>
+    <li><strong>Level-order traversal</strong>
+      <div class="w-desc">Visit all nodes at depth d before any node at depth d+1; collect or process them grouped by level.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "level order", "level by level", "return an array of arrays grouped by depth"</div>
+      <div class="w-ex">e.g. Binary Tree Level Order Traversal</div>
+    </li>
+    <li><strong>Minimum depth / nearest leaf</strong>
+      <div class="w-desc">BFS finds the shallowest leaf first because it never advances past the current depth until all nodes at that depth are exhausted.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum depth", "nearest leaf", "shortest path from root to a leaf"</div>
+      <div class="w-ex">e.g. Minimum Depth of Binary Tree</div>
+    </li>
+    <li><strong>Connect or group nodes at the same depth</strong>
+      <div class="w-desc">Each BFS level corresponds exactly to one depth, so you can wire next-pointers or alternate direction while inside the level loop.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "populate next right pointer", "zigzag level order", "nodes at the same level"</div>
+      <div class="w-ex">e.g. Binary Tree Zigzag Level Order Traversal</div>
+    </li>
+    <li><strong>Any "closest" or "nearest" question on a tree</strong>
+      <div class="w-desc">BFS guarantees that the first time you encounter a target (e.g. a leaf, a node with a specific value), you have reached it in the fewest edges.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "closest node", "fewest edges", "nearest ancestor/descendant with property X"</div>
+      <div class="w-ex">e.g. Minimum Depth of Binary Tree</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — Level-by-level traversal</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
-graph TD
-    A((1)):::l0 --> B((2)):::l1
-    A --> C((3)):::l1
-    B --> D((4)):::l2
-    B --> E((5)):::l2
-    C --> F((6)):::l2
-    C --> G((7)):::l2
-    classDef l0 fill:#3b82f6,stroke:#2563eb,color:#fff
-    classDef l1 fill:#22c55e,stroke:#16a34a,color:#000
-    classDef l2 fill:#f97316,stroke:#ea580c,color:#000
-  </div>
-  <div class="ascii-diagram" style="margin-top:12px">Queue evolution:
-Start:     [1]
-Process 1: enqueue children → [2, 3]
-Process 2: enqueue children → [3, 4, 5]
-Process 3: enqueue children → [4, 5, 6, 7]
-...
+  <h3>How it works — Level-order BFS</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">Tree:          1          (level 0)
+              /   \
+             2     3         (level 1)
+           /  \   /  \
+          4    5 6    7      (level 2)
 
-Result by level: [[1], [2,3], [4,5,6,7]]</div>
-  </div>
+result = []   queue = []
+Rule: snapshot queue.length BEFORE the inner loop so newly-enqueued
+      children don't inflate the count for the current level.</div>
 
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Enqueue root.</strong></li>
-    <li>While queue is not empty: <strong>snapshot queue length</strong> — that's the current level size.</li>
-    <li>Dequeue exactly that many nodes, process each, <strong>enqueue their children.</strong></li>
-    <li>After processing all nodes at this level, move to the next.</li>
-  </ol></div>
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+   Seed: enqueue root
+   queue = [1]   result = []</div></div>
+  <div class="wm-note"><span class="wm-num">①</span> Before the while-loop, push the root
+    into the queue. The queue is non-empty, so the loop begins.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+   levelSize = 1   (snapshot queue.length)
+   Dequeue 1 → level = [1]
+   Enqueue children 2, 3
+   queue = [2, 3]   result = [[1]]</div></div>
+  <div class="wm-note"><span class="wm-num">②</span> Snapshot levelSize = 1. Dequeue node 1,
+    record its value. Node 1 has children 2 and 3 — enqueue both. The inner
+    for-loop is done (i reached levelSize). Push level [1] into result.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+   levelSize = 2   (snapshot queue.length)
+   Dequeue 2 → level = [2]; enqueue 4, 5
+   Dequeue 3 → level = [2, 3]; enqueue 6, 7
+   queue = [4, 5, 6, 7]   result = [[1], [2, 3]]</div></div>
+  <div class="wm-note"><span class="wm-num">③</span> Snapshot levelSize = 2. First iteration:
+    dequeue node 2, enqueue its children 4 and 5. Second iteration: dequeue
+    node 3, enqueue its children 6 and 7. Inner loop ends. Push level [2, 3]
+    into result.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+   levelSize = 4   (snapshot queue.length)
+   Dequeue 4, 5, 6, 7 → level = [4, 5, 6, 7]
+   None have children → nothing enqueued
+   queue = []   result = [[1], [2, 3], [4, 5, 6, 7]]</div></div>
+  <div class="wm-note"><span class="wm-num">④</span> Snapshot levelSize = 4. All four leaf
+    nodes are dequeued and recorded; none have children so nothing is enqueued.
+    Push level [4, 5, 6, 7] into result. queue is now empty — the while-loop
+    condition fails and BFS terminates. Return result. If root were null the
+    early-return guard fires before we ever reach the loop.</div>
+  </div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
