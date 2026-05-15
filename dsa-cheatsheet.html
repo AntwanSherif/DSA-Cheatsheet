@@ -2595,16 +2595,44 @@ function nextGreaterElement(nums: number[]): number[] {
 
   <h3>When to use</h3>
   <div class="when-box"><ul>
-    <li>"How many ways to reach X?"</li>
-    <li>"Maximum/minimum value you can achieve"</li>
-    <li>"Can you reach the end / make the target?"</li>
-    <li>Decisions at each step affect future options (overlapping subproblems)</li>
-    <li>Key signal: brute-force recursion has repeated subproblems</li>
+    <li><strong>Count distinct ways to reach a target</strong>
+      <div class="w-desc">The problem asks for the number of different sequences of steps or choices that arrive at a goal state.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many ways", "how many distinct paths", "how many combinations to reach X"</div>
+      <div class="w-ex">e.g. Climbing Stairs</div>
+    </li>
+    <li><strong>Maximize or minimize a value over a sequence</strong>
+      <div class="w-desc">At each position you make a greedy-seeming choice, but the best local move is not always globally optimal — past decisions constrain future ones.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "maximum amount you can rob / collect", "minimum cost", "best you can achieve"</div>
+      <div class="w-ex">e.g. House Robber</div>
+    </li>
+    <li><strong>Reachability / feasibility check</strong>
+      <div class="w-desc">Determine whether a goal state can be reached at all given the allowed moves or coin denominations.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "can you reach the end", "is it possible to make the target", "return true/false"</div>
+      <div class="w-ex">e.g. Jump Game</div>
+    </li>
+    <li><strong>Overlapping subproblems from step-by-step decisions</strong>
+      <div class="w-desc">Each decision at index i (use this coin / skip this house) affects which subproblems you need next, and the same sub-state recurs in multiple decision branches.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> decisions at each step constrain future options; brute-force recursion revisits the same arguments</div>
+      <div class="w-ex">e.g. Coin Change</div>
+    </li>
+    <li><strong>Optimal segmentation or partition</strong>
+      <div class="w-desc">Decide where to cut or split a string / array so that every piece satisfies a condition and the overall cost is minimised.</div>
+      <div class="w-sig"><span class="w-sig-label">Signal:</span> "partition the string", "can be segmented", "word break", "minimum cuts"</div>
+      <div class="w-ex">e.g. Word Break</div>
+    </li>
   </ul></div>
 
-  <h3>Diagram — House Robber recurrence + dp table</h3>
-  <div class="diagram-box">
-  <div class="mermaid">
+  <h3>How it works — House Robber</h3>
+  <div class="walkthrough-merged">
+  <div class="wm-setup">nums = [2, 7, 9, 3, 1]   (house values, 0-indexed)
+
+Subproblem:  dp[i] = maximum money robbing any subset of houses 0..i
+Recurrence:  dp[i] = max(dp[i-1],          &lt;-- skip house i (keep best so far)
+                         dp[i-2] + nums[i]) &lt;-- rob house i (must skip i-1)
+Base cases:  dp[0] = nums[0] = 2
+             dp[1] = max(nums[0], nums[1]) = max(2, 7) = 7</div>
+
+  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────  recurrence</div><div class="mermaid">
 graph TD
     R["rob(nums):\nmax money without adjacent"]:::root
     R --> F["Recurrence:\ndp[i] = max(dp[i-1], dp[i-2] + nums[i])"]:::formula
@@ -2614,27 +2642,19 @@ graph TD
     classDef formula fill:#a855f7,stroke:#9333ea,color:#fff
     classDef choice1 fill:#475569,stroke:#64748b,color:#e2e8f0
     classDef choice2 fill:#22c55e,stroke:#16a34a,color:#000
-  </div>
-  <div style="margin-top:16px;overflow-x:auto">
-  <table class="dp-table">
+  </div></div>
+  <div class="wm-note"><span class="wm-num">①</span> At every house i there are exactly two choices: skip it (inherit dp[i-1], the best result ignoring house i) or rob it (add nums[i] to dp[i-2], because the immediately preceding house i-1 must then be skipped). The recurrence takes the max of these two branches.</div>
+
+  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────  fill the dp table</div><table class="dp-table">
     <tr><th>index i</th><th>nums[i]</th><th>dp[i]</th><th>decision</th></tr>
     <tr><td class="dp-base">0</td><td class="dp-base">2</td><td class="dp-base">2</td><td>base case</td></tr>
     <tr><td class="dp-base">1</td><td class="dp-base">7</td><td class="dp-base">7</td><td>max(2, 7) = 7</td></tr>
     <tr><td class="dp-computed">2</td><td class="dp-computed">9</td><td class="dp-computed">11</td><td>max(7, 2+9) = 11</td></tr>
     <tr><td class="dp-computed">3</td><td class="dp-computed">3</td><td class="dp-computed">11</td><td>max(11, 7+3) = 11</td></tr>
     <tr><td class="dp-answer">4</td><td class="dp-answer">1</td><td class="dp-answer">12</td><td>max(11, 11+1) = 12 ✓</td></tr>
-  </table>
+  </table></div>
+  <div class="wm-note"><span class="wm-num">②</span> Base cases: dp[0] = 2 (only one house, take it); dp[1] = 7 (max of first two houses). i=2: rob house 2 (dp[0]+9=11) beats skipping (dp[1]=7) → 11. i=3: rob house 3 would give dp[1]+3=10, less than skipping (dp[2]=11) → stay at 11. i=4: rob house 4 gives dp[2]+1=12, beats skipping (dp[3]=11) → 12. Answer is dp[4] = 12. Space optimisation: since dp[i] only references dp[i-1] and dp[i-2], replace the array with two rolling variables (prev2, prev1).</div>
   </div>
-  </div>
-
-  <h3>How it works</h3>
-  <div class="walkthrough"><ol>
-    <li><strong>Define the subproblem:</strong> What does dp[i] represent? (e.g., "max money robbing houses 0..i")</li>
-    <li><strong>Write the recurrence:</strong> How does dp[i] depend on previous values?</li>
-    <li><strong>Identify base cases:</strong> dp[0], dp[1], etc.</li>
-    <li><strong>Build bottom-up:</strong> Fill dp array from index 0 upward.</li>
-    <li><strong>Space optimization:</strong> If dp[i] only needs dp[i-1] and dp[i-2], use two variables instead of an array.</li>
-  </ol></div>
 
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
