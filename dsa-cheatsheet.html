@@ -2762,7 +2762,9 @@ Output: 10   (bars 5 and 6 → height 5 × width 2)</div>
 
   <h3>How it works — House Robber</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">nums = [2, 7, 9, 3, 1]   (house values, 0-indexed)
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Choose houses to rob for the maximum total, without ever robbing two adjacent houses.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>At each house you either skip it (keep the best total so far) or rob it (its value plus the best total up to two houses back). The optimum for the first i houses depends only on the previous two answers, so a left-to-right pass keeping just two running values solves it in O(n) time, O(1) space.</div>
+<div class="wm-setup">nums = [2, 7, 9, 3, 1]   (house values, 0-indexed)
 
 Subproblem:  dp[i] = maximum money robbing any subset of houses 0..i
 Recurrence:  dp[i] = max(dp[i-1],          &lt;-- skip house i (keep best so far)
