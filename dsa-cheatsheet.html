@@ -1116,7 +1116,9 @@ function isHappy(n: number): boolean {
 
   <h3>How it works — Reverse a linked list</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">Input list:  1→2→3→null   (head = node 1)
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Reverse a singly linked list in place and return the new head.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>Walk the list once, flipping each node’s next pointer to point backward. Three pointers suffice: prev (the already-reversed portion), curr (the node being flipped), and a saved next so the remainder isn’t lost when the link is overwritten. O(n) time, O(1) space.</div>
+<div class="wm-setup">Input list:  1→2→3→null   (head = node 1)
 Three variables track state each iteration:
   prev  — the already-reversed portion's new head (starts null)
   curr  — the node being processed this step
