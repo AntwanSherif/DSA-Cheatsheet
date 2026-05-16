@@ -2362,7 +2362,9 @@ Output: 4</div>
 
   <h3>How it works — Merge sort</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">arr = [ 5, 3, 8, 1 ]
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Sort an array using divide-and-conquer.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>Recursively split the array in half until each piece holds a single element (already sorted), then merge sorted halves back by repeatedly taking the smaller front element. Splitting is log n deep and each merge level touches all n elements → O(n log n) time, O(n) auxiliary space.</div>
+<div class="wm-setup">arr = [ 5, 3, 8, 1 ]
 
 Merge sort is recursive: split the array in half until every sub-array has
 length 1 (base case), then merge sorted halves back together bottom-up.
