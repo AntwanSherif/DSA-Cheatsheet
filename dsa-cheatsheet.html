@@ -323,27 +323,27 @@
     <li><strong>Pair summing to a target (sorted)</strong>
       <div class="w-desc">Given a sorted array, find two elements that add up to a target value.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> a "sorted array" together with "find two numbers / a pair that sum to / add up to"</div>
-      <div class="w-ex">e.g. Two Sum II — Input Array Is Sorted</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" target="_blank" rel="noopener">Two Sum II — Input Array Is Sorted</a></div>
     </li>
     <li><strong>Palindrome check</strong>
       <div class="w-desc">Verify a string or array reads the same forward and backward.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "is a palindrome", "reads the same backward", "ignoring non-alphanumeric"</div>
-      <div class="w-ex">e.g. Valid Palindrome</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/valid-palindrome/" target="_blank" rel="noopener">Valid Palindrome</a></div>
     </li>
     <li><strong>Merge / compare two sorted sequences in place</strong>
       <div class="w-desc">Advance one pointer per sorted array; when merging in place (e.g. LC 88), fill from the back of the destination so unread values are never overwritten.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "two sorted arrays", "merge in-place", "without using extra space"</div>
-      <div class="w-ex">e.g. Merge Sorted Array</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/merge-sorted-array/" target="_blank" rel="noopener">Merge Sorted Array</a></div>
     </li>
     <li><strong>In-place array rewrite (fast / slow pointer)</strong>
       <div class="w-desc">Overwrite an array in one pass so kept elements move to the front; a slow pointer marks the write boundary while a fast pointer scans.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "in-place", "remove duplicates", "move zeroes", "return the new length"</div>
-      <div class="w-ex">e.g. Remove Duplicates from Sorted Array</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/remove-duplicates-from-sorted-array/" target="_blank" rel="noopener">Remove Duplicates from Sorted Array</a></div>
     </li>
     <li><strong>Maximize over a shrinking range</strong>
       <div class="w-desc">Pointers start at both ends; move the limiting one inward to optimize an area or quantity.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "maximize an area / quantity bounded by two ends", opposite-end pointers where you move the limiting side inward</div>
-      <div class="w-ex">e.g. Container With Most Water</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/container-with-most-water/" target="_blank" rel="noopener">Container With Most Water</a></div>
     </li>
   </ul></div>
 
@@ -452,22 +452,22 @@ Rule:  sum &lt; target  → L++   (left value too small — move L right)
     <li><strong>Longest/shortest subarray or substring satisfying a condition</strong>
       <div class="w-desc">Given an array or string, find the longest (or shortest) contiguous subarray/substring that obeys a constraint such as "at most k distinct characters" or "sum at most S".</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "longest subarray", "shortest subarray", "contiguous", "satisfying a condition", "at most k"</div>
-      <div class="w-ex">e.g. Minimum Size Subarray Sum</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/minimum-size-subarray-sum/" target="_blank" rel="noopener">Minimum Size Subarray Sum</a></div>
     </li>
     <li><strong>Maximum sum of a fixed-size window</strong>
       <div class="w-desc">Slide a window of exactly k elements across the array; add the entering element and subtract the leaving element each step instead of recomputing the whole sum.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "subarray of length k", "fixed window", "maximum average subarray"</div>
-      <div class="w-ex">e.g. Maximum Average Subarray I</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/maximum-average-subarray-i/" target="_blank" rel="noopener">Maximum Average Subarray I</a></div>
     </li>
     <li><strong>Minimum window containing all required characters</strong>
       <div class="w-desc">Expand the right pointer until the window contains every required element, then shrink the left pointer to minimise the window size while maintaining coverage.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum window", "contains all characters", "smallest substring that includes"</div>
-      <div class="w-ex">e.g. Minimum Window Substring</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/minimum-window-substring/" target="_blank" rel="noopener">Minimum Window Substring</a></div>
     </li>
     <li><strong>Substring without repeating characters</strong>
       <div class="w-desc">Maintain a window where no character appears twice; when a duplicate is encountered, advance the left pointer past the previous occurrence.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "no repeating characters", "all unique characters", "longest substring without"</div>
-      <div class="w-ex">e.g. Longest Substring Without Repeating Characters</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank" rel="noopener">Longest Substring Without Repeating Characters</a></div>
     </li>
   </ul></div>
 
@@ -581,22 +581,22 @@ Rule: expand R each step; when duplicate detected → advance L past last occurr
     <li><strong>Range sum queries on a static array</strong>
       <div class="w-desc">Precompute a prefix array once so that any sum over a contiguous subarray can be answered in O(1) by subtracting two prefix values.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "sum of elements from i to j", "range sum query", "multiple queries on static array"</div>
-      <div class="w-ex">e.g. Range Sum Query – Immutable</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/range-sum-query-immutable/" target="_blank" rel="noopener">Range Sum Query – Immutable</a></div>
     </li>
     <li><strong>Count subarrays whose sum equals k</strong>
       <div class="w-desc">Track a running prefix sum in a hashmap; if (currentSum − k) has been seen before, those past prefixes form subarrays ending here that sum exactly to k.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "number of subarrays", "sum equals k", "count continuous subarrays"</div>
-      <div class="w-ex">e.g. Subarray Sum Equals K</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/subarray-sum-equals-k/" target="_blank" rel="noopener">Subarray Sum Equals K</a></div>
     </li>
     <li><strong>Find if a subarray with a given property exists</strong>
       <div class="w-desc">Store prefix sums (or parity/mod values) in a set; a matching value found later confirms the desired subarray exists between the two positions.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "subarray sum equals k", "count subarrays divisible by k", a cumulative-sum remainder seen before</div>
-      <div class="w-ex">e.g. Continuous Subarray Sum</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/continuous-subarray-sum/" target="_blank" rel="noopener">Continuous Subarray Sum</a></div>
     </li>
     <li><strong>2D matrix region sum queries</strong>
       <div class="w-desc">Extend the prefix idea to two dimensions: prefix2D[r][c] stores the sum of the rectangle from (0,0) to (r-1,c-1), enabling any rectangular region sum in O(1).</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "sum of rectangle", "region sum", "matrix subregion", "2D range query"</div>
-      <div class="w-ex">e.g. Range Sum Query 2D – Immutable</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/range-sum-query-2d-immutable/" target="_blank" rel="noopener">Range Sum Query 2D – Immutable</a></div>
     </li>
   </ul></div>
 
@@ -727,27 +727,27 @@ function rangeSum(prefix: number[], i: number, j: number): number {
     <li><strong>Count element frequencies</strong>
       <div class="w-desc">Iterate once, incrementing each element's count in a map; then query the map for majority elements, anagram comparisons, or character distributions.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "frequency", "count occurrences", "most common", "anagram", "character count"</div>
-      <div class="w-ex">e.g. Valid Anagram</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/valid-anagram/" target="_blank" rel="noopener">Valid Anagram</a></div>
     </li>
     <li><strong>"Have I seen this before?" — existence check in O(1)</strong>
       <div class="w-desc">Add elements to a Set as you go; a hit on <code>has()</code> means the element appeared earlier, turning an O(n²) scan into a single pass.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "contains duplicate", "already visited", "seen before", "detect duplicate"</div>
-      <div class="w-ex">e.g. Contains Duplicate</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/contains-duplicate/" target="_blank" rel="noopener">Contains Duplicate</a></div>
     </li>
     <li><strong>Find complement: target − current (Two Sum)</strong>
       <div class="w-desc">Store each value with its index as you iterate; before inserting, look up whether the complement (target − current) already exists in the map.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "two numbers that add up to", "find indices such that", "complement", "pair summing to target"</div>
-      <div class="w-ex">e.g. Two Sum</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/two-sum/" target="_blank" rel="noopener">Two Sum</a></div>
     </li>
     <li><strong>Group elements by a computed key (anagrams)</strong>
       <div class="w-desc">Derive a canonical key for each element (e.g. sort its characters) and accumulate into a map of key → list; elements that share a key are in the same group.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "group anagrams", "group by", "cluster", "canonical form", "sort characters"</div>
-      <div class="w-ex">e.g. Group Anagrams</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/group-anagrams/" target="_blank" rel="noopener">Group Anagrams</a></div>
     </li>
     <li><strong>Deduplicate or track unique elements</strong>
       <div class="w-desc">Load all elements into a Set; membership checks then run in O(1), enabling algorithms like finding the start of a consecutive sequence without repeated inner loops.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "unique", "deduplicate", "no repeats", "longest consecutive sequence"</div>
-      <div class="w-ex">e.g. Longest Consecutive Sequence</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/longest-consecutive-sequence/" target="_blank" rel="noopener">Longest Consecutive Sequence</a></div>
     </li>
   </ul></div>
 
@@ -875,22 +875,22 @@ for (const n of nums) {
     <li><strong>Cycle detection in a linked list</strong>
       <div class="w-desc">Determine whether a linked list contains a loop — a node whose next pointer points back to an earlier node rather than null.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "linked list", "cycle", "loop", "detect if a list is circular"</div>
-      <div class="w-ex">e.g. Linked List Cycle</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/linked-list-cycle/" target="_blank" rel="noopener">Linked List Cycle</a></div>
     </li>
     <li><strong>Find the middle of a linked list</strong>
       <div class="w-desc">Locate the midpoint in one pass without knowing the length — useful as a sub-step when reversing a half or merging.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "middle node", "split the list in half", "find the median node"</div>
-      <div class="w-ex">e.g. Middle of the Linked List</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/middle-of-the-linked-list/" target="_blank" rel="noopener">Middle of the Linked List</a></div>
     </li>
     <li><strong>Find the start of a cycle</strong>
       <div class="w-desc">After detecting a cycle, locate the exact node where it begins using a second phase of Floyd's algorithm.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "return the node where the cycle begins", "find cycle entrance", "detect and locate cycle"</div>
-      <div class="w-ex">e.g. Linked List Cycle II</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank" rel="noopener">Linked List Cycle II</a></div>
     </li>
     <li><strong>Abstract cycle detection (Happy Number)</strong>
       <div class="w-desc">Any sequence defined by a "next" function that may loop can be treated as an implicit linked list — apply fast/slow to detect if the sequence cycles.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "repeatedly apply a transformation", "will it ever reach X", "does it loop forever"</div>
-      <div class="w-ex">e.g. Happy Number</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/happy-number/" target="_blank" rel="noopener">Happy Number</a></div>
     </li>
   </ul></div>
 
@@ -1022,22 +1022,22 @@ function isHappy(n: number): boolean {
     <li><strong>Reverse an entire linked list</strong>
       <div class="w-desc">Re-point every node's next pointer so the list reads in the opposite direction, returning the former tail as the new head.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "reverse a linked list", "return the new head", "in-place reversal"</div>
-      <div class="w-ex">e.g. Reverse Linked List</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/reverse-linked-list/" target="_blank" rel="noopener">Reverse Linked List</a></div>
     </li>
     <li><strong>Reverse a sublist (positions m to n)</strong>
       <div class="w-desc">Walk to the sublist boundary, reverse only that portion, then reconnect the modified section to the untouched parts.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "reverse between positions", "reverse from left to right", "reverse a portion of the list"</div>
-      <div class="w-ex">e.g. Reverse Linked List II</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/reverse-linked-list-ii/" target="_blank" rel="noopener">Reverse Linked List II</a></div>
     </li>
     <li><strong>Check if a linked list is a palindrome</strong>
       <div class="w-desc">Find the middle with fast/slow pointers, reverse the second half in-place, then compare it to the first half node by node.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "palindrome linked list", "is the list the same forwards and backwards"</div>
-      <div class="w-ex">e.g. Palindrome Linked List</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/palindrome-linked-list/" target="_blank" rel="noopener">Palindrome Linked List</a></div>
     </li>
     <li><strong>Reorder list (interleave halves)</strong>
       <div class="w-desc">Split the list at the middle, reverse the second half, then merge the two halves by alternating nodes from each.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "reorder to L0→Ln→L1→Ln-1…", "interleave first and last nodes"</div>
-      <div class="w-ex">e.g. Reorder List</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/reorder-list/" target="_blank" rel="noopener">Reorder List</a></div>
     </li>
   </ul></div>
 
@@ -1156,27 +1156,27 @@ Loop invariant: at start of each iteration, nodes before curr are fully reversed
     <li><strong>Compute height / depth of a tree</strong>
       <div class="w-desc">Recursively measure the longest path from root to leaf — the answer depends on both subtrees, so it's computed postorder (children first).</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "maximum depth", "height of the tree", "number of levels", "longest root-to-leaf path"</div>
-      <div class="w-ex">e.g. Maximum Depth of Binary Tree</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">Maximum Depth of Binary Tree</a></div>
     </li>
     <li><strong>Path sum problems (root-to-leaf)</strong>
       <div class="w-desc">Carry a running total down the tree; at each leaf check if the accumulated sum equals the target. Preorder is natural since you need the parent's value before descending.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "root-to-leaf path", "sum of a path", "does any path equal target"</div>
-      <div class="w-ex">e.g. Path Sum</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/path-sum/" target="_blank" rel="noopener">Path Sum</a></div>
     </li>
     <li><strong>Inorder traversal (sorted output for BST)</strong>
       <div class="w-desc">Visit left subtree, then the node, then right subtree — for a valid BST this produces values in ascending order.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "BST in sorted order", "kth smallest in BST", "validate BST", "in-order successor"</div>
-      <div class="w-ex">e.g. Kth Smallest Element in a BST</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/" target="_blank" rel="noopener">Kth Smallest Element in a BST</a></div>
     </li>
     <li><strong>Validate BST, invert or serialize a tree</strong>
       <div class="w-desc">Structural transformations (invert, serialize/deserialize) and validity checks recurse on both subtrees, combining child results before or after visiting the current node.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "validate BST", "invert binary tree", "serialize / deserialize", "mirror the tree"</div>
-      <div class="w-ex">e.g. Invert Binary Tree</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/invert-binary-tree/" target="_blank" rel="noopener">Invert Binary Tree</a></div>
     </li>
     <li><strong>Any problem asking about subtree properties</strong>
       <div class="w-desc">If the answer at a node depends on answers from both children (diameter, lowest common ancestor, subtree sum), process children first (postorder) and combine their results at the parent.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "diameter", "subtree sum", "lowest common ancestor", "is this subtree balanced"</div>
-      <div class="w-ex">e.g. Diameter of Binary Tree</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/diameter-of-binary-tree/" target="_blank" rel="noopener">Diameter of Binary Tree</a></div>
     </li>
   </ul></div>
 
@@ -1347,22 +1347,22 @@ function dfsIterative(root: TreeNode | null): number[] {
     <li><strong>Level-order traversal</strong>
       <div class="w-desc">Visit all nodes at depth d before any node at depth d+1; collect or process them grouped by level.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "level order", "level by level", "return an array of arrays grouped by depth"</div>
-      <div class="w-ex">e.g. Binary Tree Level Order Traversal</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/binary-tree-level-order-traversal/" target="_blank" rel="noopener">Binary Tree Level Order Traversal</a></div>
     </li>
     <li><strong>Minimum depth / nearest leaf</strong>
       <div class="w-desc">BFS finds the shallowest leaf first because it never advances past the current depth until all nodes at that depth are exhausted.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum depth", "nearest leaf", "shortest path from root to a leaf"</div>
-      <div class="w-ex">e.g. Minimum Depth of Binary Tree</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/minimum-depth-of-binary-tree/" target="_blank" rel="noopener">Minimum Depth of Binary Tree</a></div>
     </li>
     <li><strong>Connect or group nodes at the same depth</strong>
       <div class="w-desc">Each BFS level corresponds exactly to one depth, so you can wire next-pointers or alternate direction while inside the level loop.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "populate next right pointer", "zigzag level order", "nodes at the same level"</div>
-      <div class="w-ex">e.g. Binary Tree Zigzag Level Order Traversal</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/" target="_blank" rel="noopener">Binary Tree Zigzag Level Order Traversal</a></div>
     </li>
     <li><strong>Any "closest" or "nearest" question on a tree</strong>
       <div class="w-desc">BFS guarantees that the first time you encounter a target (e.g. a leaf, a node with a specific value), you have reached it in the fewest edges.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "closest node", "fewest edges", "nearest ancestor/descendant with property X"</div>
-      <div class="w-ex">e.g. Find Bottom Left Tree Value</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/find-bottom-left-tree-value/" target="_blank" rel="noopener">Find Bottom Left Tree Value</a></div>
     </li>
   </ul></div>
 
@@ -1497,27 +1497,27 @@ function minDepth(root: TreeNode | null): number {
     <li><strong>Validate a BST</strong>
       <div class="w-desc">Confirm that every node obeys the global BST invariant — not just its direct children but all descendants in its subtree.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "is a valid BST", "verify BST property", "check that left subtree &lt; node &lt; right subtree globally"</div>
-      <div class="w-ex">e.g. Validate Binary Search Tree</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/validate-binary-search-tree/" target="_blank" rel="noopener">Validate Binary Search Tree</a></div>
     </li>
     <li><strong>Find kth smallest/largest element</strong>
       <div class="w-desc">An inorder traversal of a BST yields nodes in sorted order; stop at the kth node without fully traversing the tree.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "kth smallest", "kth largest", "inorder traversal", "ranked element in a BST"</div>
-      <div class="w-ex">e.g. Kth Smallest Element in a BST</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/" target="_blank" rel="noopener">Kth Smallest Element in a BST</a></div>
     </li>
     <li><strong>Search, insert, or delete in O(log n) average</strong>
       <div class="w-desc">At each node compare the target to the node value and recurse left or right, halving the search space each step.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "search in a BST", "insert a value maintaining BST order", "delete while preserving BST property"</div>
-      <div class="w-ex">e.g. Search in a Binary Search Tree</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/search-in-a-binary-search-tree/" target="_blank" rel="noopener">Search in a Binary Search Tree</a></div>
     </li>
     <li><strong>Find lowest common ancestor of two BST nodes</strong>
       <div class="w-desc">If both target nodes are less than the current node go left; if both are greater go right; otherwise the current node is the split point and is the LCA.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "lowest common ancestor", "deepest shared ancestor", "LCA in a BST"</div>
-      <div class="w-ex">e.g. Lowest Common Ancestor of a BST</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/" target="_blank" rel="noopener">Lowest Common Ancestor of a BST</a></div>
     </li>
     <li><strong>Convert between sorted array and BST</strong>
       <div class="w-desc">A sorted array maps to a height-balanced BST by repeatedly picking the midpoint as root; the reverse (BST to sorted array) uses inorder traversal.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "convert sorted array to BST", "height-balanced BST", "BST to sorted array"</div>
-      <div class="w-ex">e.g. Convert Sorted Array to Binary Search Tree</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/" target="_blank" rel="noopener">Convert Sorted Array to Binary Search Tree</a></div>
     </li>
   </ul></div>
 
@@ -1653,22 +1653,22 @@ function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNod
     <li><strong>Shortest path / minimum steps in an unweighted graph or grid</strong>
       <div class="w-desc">BFS explores nodes in order of increasing distance from the source, so the first time it reaches any node that distance is guaranteed minimal.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum steps", "shortest path", "fewest moves", unweighted edges (or uniform cost)</div>
-      <div class="w-ex">e.g. Word Ladder</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/word-ladder/" target="_blank" rel="noopener">Word Ladder</a></div>
     </li>
     <li><strong>Level-by-level graph exploration</strong>
       <div class="w-desc">Process all nodes at distance d before any node at distance d+1; useful when you need to track which "generation" or "wave" a node belongs to.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "group by distance from source", "all nodes reachable in k steps", "process level by level"</div>
-      <div class="w-ex">e.g. Pattern — BFS on Adjacency List</div>
+      <div class="w-ex">Example problems: Pattern — BFS on Adjacency List</div>
     </li>
     <li><strong>Multi-source simultaneous spread</strong>
       <div class="w-desc">Seed the queue with all source nodes at step 0; BFS naturally propagates outward from every source in parallel, so each cell is reached at its true minimum distance to any source.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "multiple starting points spread simultaneously", "time to infect / rot all cells", "01-Matrix distance to nearest 0"</div>
-      <div class="w-ex">e.g. Rotting Oranges</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/rotting-oranges/" target="_blank" rel="noopener">Rotting Oranges</a></div>
     </li>
     <li><strong>Word transformation / state-space search</strong>
       <div class="w-desc">Model each state as a node and each valid one-step transformation as an edge; BFS finds the minimum number of transformations to reach the goal state.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "transform X to Y one step at a time", "minimum operations to reach state", "shortest sequence of moves"</div>
-      <div class="w-ex">e.g. Word Ladder</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/word-ladder/" target="_blank" rel="noopener">Word Ladder</a></div>
     </li>
   </ul></div>
 
@@ -1836,27 +1836,27 @@ function bfsGrid(grid: number[][], startR: number, startC: number): number {
     <li><strong>Count connected components</strong>
       <div class="w-desc">Find how many separate groups of nodes exist in a graph where no edges cross between groups.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many connected components", "how many groups are there"</div>
-      <div class="w-ex">e.g. Number of Connected Components in Undirected Graph</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/" target="_blank" rel="noopener">Number of Connected Components in Undirected Graph</a></div>
     </li>
     <li><strong>Detect cycles in a directed or undirected graph</strong>
       <div class="w-desc">Determine whether following edges from any node can bring you back to a node already on the current path.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "detect a cycle", "can all courses be finished", "is the graph a DAG"</div>
-      <div class="w-ex">e.g. Course Schedule</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/course-schedule/" target="_blank" rel="noopener">Course Schedule</a></div>
     </li>
     <li><strong>Topological sort (dependency ordering)</strong>
       <div class="w-desc">Order nodes so that every directed edge points from an earlier node to a later one; only possible when no cycle exists.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "order of tasks", "prerequisites", "build order", "find a valid ordering"</div>
-      <div class="w-ex">e.g. Course Schedule II</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/course-schedule-ii/" target="_blank" rel="noopener">Course Schedule II</a></div>
     </li>
     <li><strong>Find all paths from source to destination</strong>
       <div class="w-desc">Enumerate every route through a graph from a start node to an end node, exploring each branch fully before backtracking.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "all paths", "every possible route", "list all ways to reach"</div>
-      <div class="w-ex">e.g. All Paths From Source to Target</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/all-paths-from-source-to-target/" target="_blank" rel="noopener">All Paths From Source to Target</a></div>
     </li>
     <li><strong>Flood fill / island problems</strong>
       <div class="w-desc">Spread out from a starting cell in a grid, visiting all connected cells that share a property, marking them so they are not revisited.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "grid of 0s and 1s", "connected land cells", "flood fill", "number of islands"</div>
-      <div class="w-ex">e.g. Number of Islands</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/number-of-islands/" target="_blank" rel="noopener">Number of Islands</a></div>
     </li>
   </ul></div>
 
@@ -2054,22 +2054,22 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
     <li><strong>Find a target in a sorted array</strong>
       <div class="w-desc">Given a sorted array and a value, return the index where that value lives, or report it is absent.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "sorted array" + "find the index of / return position of / search for a target value"</div>
-      <div class="w-ex">e.g. Binary Search</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/binary-search/" target="_blank" rel="noopener">Binary Search</a></div>
     </li>
     <li><strong>Find leftmost or rightmost occurrence of a value</strong>
       <div class="w-desc">Locate the first or last index where a value appears, or where a sorted transition (false → true) happens.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "first occurrence", "insert position", "lower bound", "leftmost index where condition holds"</div>
-      <div class="w-ex">e.g. Search Insert Position</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/search-insert-position/" target="_blank" rel="noopener">Search Insert Position</a></div>
     </li>
     <li><strong>Search in a rotated sorted array</strong>
       <div class="w-desc">The array was once sorted but then cyclically shifted; one of the two halves around mid is always fully sorted, which lets you decide which half to keep.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "rotated sorted array", "unknown pivot", "search in O(log n)"</div>
-      <div class="w-ex">e.g. Search in Rotated Sorted Array</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener">Search in Rotated Sorted Array</a></div>
     </li>
     <li><strong>Binary search on the answer</strong>
       <div class="w-desc">When a problem asks for the minimum value satisfying some condition, and you can write a feasibility check that flips false → true monotonically, binary search over the answer space directly.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "minimum speed / capacity / days such that …", "find the smallest X where condition holds"</div>
-      <div class="w-ex">e.g. Koko Eating Bananas</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/koko-eating-bananas/" target="_blank" rel="noopener">Koko Eating Bananas</a></div>
     </li>
   </ul></div>
 
@@ -2218,22 +2218,22 @@ function minFeasible(lo: number, hi: number, feasible: (k: number) =&gt; boolean
     <li><strong>Sort before applying two pointers or binary search</strong>
       <div class="w-desc">Many problems become straightforward once the input is ordered; sort first, then apply a linear or logarithmic technique.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "find a pair / triplet that sums to", "find if target exists", combined with an unsorted input</div>
-      <div class="w-ex">e.g. 3Sum</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/3sum/" target="_blank" rel="noopener">3Sum</a></div>
     </li>
     <li><strong>Merge overlapping intervals</strong>
       <div class="w-desc">Sort intervals by start time so that any overlap with the current interval is always with the immediately preceding one, enabling a single linear pass.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "list of intervals", "merge overlapping", "insert interval and merge"</div>
-      <div class="w-ex">e.g. Merge Intervals</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/merge-intervals/" target="_blank" rel="noopener">Merge Intervals</a></div>
     </li>
     <li><strong>Custom sort comparator</strong>
       <div class="w-desc">Reorder elements by a derived key (frequency, second field, largest-number concatenation) that the default sort cannot produce.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "sort by frequency", "arrange to form the largest number", "sort by second element"</div>
-      <div class="w-ex">e.g. Top K Frequent Elements</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank" rel="noopener">Top K Frequent Elements</a></div>
     </li>
     <li><strong>Three-way partition (Dutch National Flag)</strong>
       <div class="w-desc">Partition an array with three distinct values into three contiguous regions in a single pass using lo, mid, hi pointers.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "sort array of 0s, 1s, 2s in-place", "one pass", "without using library sort"</div>
-      <div class="w-ex">e.g. Sort Colors</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/sort-colors/" target="_blank" rel="noopener">Sort Colors</a></div>
     </li>
   </ul></div>
 
@@ -2393,22 +2393,22 @@ function sortColors(nums: number[]): void {
     <li><strong>Next greater element to the right</strong>
       <div class="w-desc">For each element in an array, find the first element to its right that is strictly larger; return -1 if none exists.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "next greater value", "first larger element to the right", "for each element find the nearest value that is bigger"</div>
-      <div class="w-ex">e.g. Next Greater Element I</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/next-greater-element-i/" target="_blank" rel="noopener">Next Greater Element I</a></div>
     </li>
     <li><strong>Days until a condition is met (waiting game)</strong>
       <div class="w-desc">Given a sequence of daily measurements, find how many steps forward you must travel before a value exceeds the current one; return 0 if it never does.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many days until warmer", "how many steps until a larger value appears", "wait time for the next increase"</div>
-      <div class="w-ex">e.g. Daily Temperatures</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/daily-temperatures/" target="_blank" rel="noopener">Daily Temperatures</a></div>
     </li>
     <li><strong>Largest rectangle / area under a histogram</strong>
       <div class="w-desc">Given bar heights, compute the maximum area of a rectangle that can be formed by one or more contiguous bars without exceeding their heights.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "maximum area rectangle fitting within bar heights", "maximum area of bars", "widest block fitting under the heights"</div>
-      <div class="w-ex">e.g. Largest Rectangle in Histogram</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank" rel="noopener">Largest Rectangle in Histogram</a></div>
     </li>
     <li><strong>Previous smaller / nearest boundary</strong>
       <div class="w-desc">For each position, find the closest prior position whose value is strictly smaller, used to compute left-boundary spans for area or range problems.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "previous smaller element", "left boundary of a bar", "nearest value to the left that is less than current"</div>
-      <div class="w-ex">e.g. Trapping Rain Water</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/trapping-rain-water/" target="_blank" rel="noopener">Trapping Rain Water</a></div>
     </li>
   </ul></div>
 
@@ -2599,27 +2599,27 @@ function nextGreaterElement(nums: number[]): number[] {
     <li><strong>Count distinct ways to reach a target</strong>
       <div class="w-desc">The problem asks for the number of different sequences of steps or choices that arrive at a goal state.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "how many ways", "how many distinct paths", "how many combinations to reach X"</div>
-      <div class="w-ex">e.g. Climbing Stairs</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/climbing-stairs/" target="_blank" rel="noopener">Climbing Stairs</a></div>
     </li>
     <li><strong>Maximize or minimize a value over a sequence</strong>
       <div class="w-desc">At each position you make a greedy-seeming choice, but the best local move is not always globally optimal — past decisions constrain future ones.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "maximum amount you can rob / collect", "minimum cost", "best you can achieve"</div>
-      <div class="w-ex">e.g. House Robber</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">House Robber</a></div>
     </li>
     <li><strong>Reachability / feasibility check</strong>
       <div class="w-desc">Determine whether a goal state can be reached at all given the allowed moves or coin denominations.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "can you reach the end", "is it possible to make the target", "return true/false"</div>
-      <div class="w-ex">e.g. Jump Game</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/jump-game/" target="_blank" rel="noopener">Jump Game</a></div>
     </li>
     <li><strong>Overlapping subproblems from step-by-step decisions</strong>
       <div class="w-desc">Each decision at index i (use this coin / skip this house) affects which subproblems you need next, and the same sub-state recurs in multiple decision branches.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> decisions at each step constrain future options; brute-force recursion revisits the same arguments</div>
-      <div class="w-ex">e.g. Coin Change</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/coin-change/" target="_blank" rel="noopener">Coin Change</a></div>
     </li>
     <li><strong>Optimal segmentation or partition</strong>
       <div class="w-desc">Decide where to cut or split a string / array so that every piece satisfies a condition and the overall cost is minimised.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "partition the string", "can be segmented", "word break", "minimum cuts"</div>
-      <div class="w-ex">e.g. Word Break</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/word-break/" target="_blank" rel="noopener">Word Break</a></div>
     </li>
   </ul></div>
 
@@ -2755,22 +2755,22 @@ function coinChange(coins: number[], amount: number): number {
     <li><strong>Grid path counting or min-cost traversal</strong>
       <div class="w-desc">A robot or agent moves through a 2D grid with constrained directions; count paths or minimise accumulated cost to reach the destination.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "m × n grid", "move only right or down", "unique paths", "minimum path sum"</div>
-      <div class="w-ex">e.g. Unique Paths</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/unique-paths/" target="_blank" rel="noopener">Unique Paths</a></div>
     </li>
     <li><strong>Two-sequence alignment (LCS / edit distance)</strong>
       <div class="w-desc">The state requires knowing a prefix of each string simultaneously; the table rows correspond to one string and the columns to the other.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "two strings", "longest common subsequence", "minimum edit operations", "insert / delete / replace"</div>
-      <div class="w-ex">e.g. Longest Common Subsequence</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/longest-common-subsequence/" target="_blank" rel="noopener">Longest Common Subsequence</a></div>
     </li>
     <li><strong>String matching with flexible rules</strong>
       <div class="w-desc">Matching with wildcards or patterns means the DP state must track position in both the text and the pattern simultaneously.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "wildcard matching", "regular expression", "pattern with '?' or '*'"</div>
-      <div class="w-ex">e.g. Wildcard Matching</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/wildcard-matching/" target="_blank" rel="noopener">Wildcard Matching</a></div>
     </li>
     <li><strong>Knapsack-style capacity and item selection</strong>
       <div class="w-desc">One dimension indexes items; the other indexes available capacity. dp[i][w] answers the best value using the first i items with capacity w.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "items with weights and values", "capacity constraint", "0/1 knapsack", "subset sum with limit"</div>
-      <div class="w-ex">e.g. 0/1 Knapsack (Partition Equal Subset Sum)</div>
+      <div class="w-ex">Example problems: 0/1 Knapsack (Partition Equal Subset Sum)</div>
     </li>
   </ul></div>
 
@@ -2927,32 +2927,32 @@ function lcs(text1: string, text2: string): number {
     <li><strong>Generate all subsets or combinations</strong>
       <div class="w-desc">Enumerate every subset of a given set, with no element repeated in a single subset.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "return all possible subsets", "power set", "choose k elements from n"</div>
-      <div class="w-ex">e.g. Subsets</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/subsets/" target="_blank" rel="noopener">Subsets</a></div>
     </li>
     <li><strong>Generate all permutations</strong>
       <div class="w-desc">Arrange all elements of an array into every possible ordering, using each element exactly once per arrangement.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "return all permutations", "all possible orderings / arrangements"</div>
-      <div class="w-ex">e.g. Permutations</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/permutations/" target="_blank" rel="noopener">Permutations</a></div>
     </li>
     <li><strong>Constraint satisfaction (placement problems)</strong>
       <div class="w-desc">Place items on a board or in slots one at a time, checking validity after each placement and undoing when a conflict is detected.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "place n queens so no two attack each other", "fill a Sudoku board", "valid placement on a grid"</div>
-      <div class="w-ex">e.g. N-Queens</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/n-queens/" target="_blank" rel="noopener">N-Queens</a></div>
     </li>
     <li><strong>Word search on a grid</strong>
       <div class="w-desc">Walk a 2-D grid character by character, marking cells visited as you go and restoring them when a path fails to complete the word.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "find the word in the board", "path of adjacent cells spelling a string"</div>
-      <div class="w-ex">e.g. Word Search</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/word-search/" target="_blank" rel="noopener">Word Search</a></div>
     </li>
     <li><strong>Combinations summing to a target</strong>
       <div class="w-desc">Collect numbers into a path, pruning the branch early once the running sum overshoots the target.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "find all combinations that sum to target", "return all unique combinations", "unlimited reuse allowed"</div>
-      <div class="w-ex">e.g. Combination Sum</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/combination-sum/" target="_blank" rel="noopener">Combination Sum</a></div>
     </li>
     <li><strong>Partition into valid substrings</strong>
       <div class="w-desc">Split a string into parts at every valid cut point, exploring all partitionings and recording those where every part satisfies a property.</div>
       <div class="w-sig"><span class="w-sig-label">Signal:</span> "partition the string such that every substring is a palindrome"</div>
-      <div class="w-ex">e.g. Palindrome Partitioning</div>
+      <div class="w-ex">Example problems: <a class="lc-link" href="https://leetcode.com/problems/palindrome-partitioning/" target="_blank" rel="noopener">Palindrome Partitioning</a></div>
     </li>
   </ul></div>
 
