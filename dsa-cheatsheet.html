@@ -961,7 +961,9 @@ for (const n of nums) {
 
   <h3>How it works — Cycle detection (Floyd's)</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">List A (no cycle):  1→2→3→4→5→null
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Determine whether a linked list contains a cycle (and, by extension, where the cycle begins).</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>Advance one pointer by one step and another by two steps each iteration. If the fast pointer reaches the end, there is no cycle. If a cycle exists, the fast pointer laps the slow one and they are guaranteed to meet inside the loop — all in O(1) extra space, no visited set needed.</div>
+<div class="wm-setup">List A (no cycle):  1→2→3→4→5→null
 List B (cycle):     1→2→3→4→5→6→3  (node 6 points back to node 3)
 
 slow moves 1 step per iteration; fast moves 2 steps.
