@@ -206,6 +206,8 @@
   .diff-hard { background: #450a0a; color: var(--red); }
   .problem-name { font-weight: 600; color: var(--text); }
   .problem-insight { color: var(--text-muted); font-size: 13px; margin-top: 3px; }
+  .lc-link { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--text-muted); }
+  .lc-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
 
   /* DP table */
   .dp-table { border-collapse: collapse; font-family: monospace; font-size: 13px; }
@@ -381,7 +383,7 @@ Rule:  sum &lt; target  → L++   (left value too small — move L right)
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Two Sum II – Input Array Is Sorted</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" target="_blank" rel="noopener">Two Sum II – Input Array Is Sorted</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given a 1-indexed sorted array, return the 1-indexed positions of two numbers that add up to <code>target</code>. Exactly one solution exists.</div>
@@ -401,7 +403,7 @@ Rule:  sum &lt; target  → L++   (left value too small — move L right)
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Remove Duplicates from Sorted Array</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/remove-duplicates-from-sorted-array/" target="_blank" rel="noopener">Remove Duplicates from Sorted Array</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Modify the array in-place so each unique value appears once. Return the number of unique elements. Relative order must be preserved.</div>
@@ -421,22 +423,22 @@ Rule:  sum &lt; target  → L++   (left value too small — move L right)
   <div class="problems">
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Valid Palindrome</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/valid-palindrome/" target="_blank" rel="noopener">Valid Palindrome</a></div>
       <div class="problem-insight">L and R move inward comparing chars; skip non-alphanumeric.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Two Sum II – Input Array Is Sorted</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" target="_blank" rel="noopener">Two Sum II – Input Array Is Sorted</a></div>
       <div class="problem-insight">Classic two-pointer on sorted array — the template above verbatim.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Container With Most Water</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/container-with-most-water/" target="_blank" rel="noopener">Container With Most Water</a></div>
       <div class="problem-insight">Move the pointer with the shorter height; max area = min(h[L],h[R]) × (R−L).</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">3Sum</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/3sum/" target="_blank" rel="noopener">3Sum</a></div>
       <div class="problem-insight">Fix one element with an outer loop; run two-pointer on the rest. Skip duplicates.</div></div>
     </div>
   </div>
@@ -509,7 +511,7 @@ Rule: expand R each step; when duplicate detected → advance L past last occurr
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Longest Substring Without Repeating Characters</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank" rel="noopener">Longest Substring Without Repeating Characters</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given a string, find the length of the longest substring that contains no repeating characters.</div>
@@ -534,7 +536,7 @@ Rule: expand R each step; when duplicate detected → advance L past last occurr
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Maximum Average Subarray I</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/maximum-average-subarray-i/" target="_blank" rel="noopener">Maximum Average Subarray I</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given an integer array and integer <code>k</code>, find the contiguous subarray of length <code>k</code> with the maximum average value.</div>
@@ -555,17 +557,17 @@ Rule: expand R each step; when duplicate detected → advance L past last occurr
   <div class="problems">
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Maximum Average Subarray I</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/maximum-average-subarray-i/" target="_blank" rel="noopener">Maximum Average Subarray I</a></div>
       <div class="problem-insight">Fixed window of size k — use the fixed-window template above.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Longest Substring Without Repeating Characters</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank" rel="noopener">Longest Substring Without Repeating Characters</a></div>
       <div class="problem-insight">Variable window — shrink when duplicate enters; track last-seen index per char.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Minimum Window Substring</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/minimum-window-substring/" target="_blank" rel="noopener">Minimum Window Substring</a></div>
       <div class="problem-insight">Expand until all required chars covered; shrink to minimize; track counts with a map.</div></div>
     </div>
   </div>
@@ -654,7 +656,7 @@ Subarray-sum-k rule:  for each index, if (currentSum - k) is in the map → add
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Range Sum Query – Immutable</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/range-sum-query-immutable/" target="_blank" rel="noopener">Range Sum Query – Immutable</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given an integer array, handle multiple queries <code>sumRange(i, j)</code> — return the sum of elements between indices <code>i</code> and <code>j</code> inclusive. Preprocess once for O(1) queries.</div>
@@ -675,7 +677,7 @@ function rangeSum(prefix: number[], i: number, j: number): number {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Subarray Sum Equals K</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/subarray-sum-equals-k/" target="_blank" rel="noopener">Subarray Sum Equals K</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an array of integers (can be negative) and an integer <code>k</code>, return the total number of subarrays whose elements sum to <code>k</code>.</div>
@@ -701,17 +703,17 @@ function rangeSum(prefix: number[], i: number, j: number): number {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Range Sum Query – Immutable</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/range-sum-query-immutable/" target="_blank" rel="noopener">Range Sum Query – Immutable</a></div>
       <div class="problem-insight">Direct application — build prefix once, answer queries in O(1).</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Subarray Sum Equals K</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/subarray-sum-equals-k/" target="_blank" rel="noopener">Subarray Sum Equals K</a></div>
       <div class="problem-insight">prefix + hashmap pattern: count how many times (currentSum − k) appeared before.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Product of Array Except Self</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/product-of-array-except-self/" target="_blank" rel="noopener">Product of Array Except Self</a></div>
       <div class="problem-insight">Build prefix product left-to-right, then suffix product right-to-left; multiply at each index.</div></div>
     </div>
   </div>
@@ -799,7 +801,7 @@ for (const ch of s) {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Two Sum</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/two-sum/" target="_blank" rel="noopener">Two Sum</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given an array of integers and a target, return the indices of the two numbers that add up to the target. Each input has exactly one solution.</div>
@@ -817,7 +819,7 @@ for (const ch of s) {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Group Anagrams</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/group-anagrams/" target="_blank" rel="noopener">Group Anagrams</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an array of strings, group the anagrams together and return the groups in any order.</div>
@@ -844,22 +846,22 @@ for (const n of nums) {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Two Sum</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/two-sum/" target="_blank" rel="noopener">Two Sum</a></div>
       <div class="problem-insight">Complement lookup — store value→index in map as you iterate.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Contains Duplicate</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/contains-duplicate/" target="_blank" rel="noopener">Contains Duplicate</a></div>
       <div class="problem-insight">Add to Set; return true the moment you try to add a value already present.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Group Anagrams</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/group-anagrams/" target="_blank" rel="noopener">Group Anagrams</a></div>
       <div class="problem-insight">Sort each word to get a canonical key; group by key using a Map.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Longest Consecutive Sequence</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/longest-consecutive-sequence/" target="_blank" rel="noopener">Longest Consecutive Sequence</a></div>
       <div class="problem-insight">Put all nums in a Set; for each num that is a sequence start (num−1 not in set), walk forward counting.</div></div>
     </div>
   </div>
@@ -930,7 +932,7 @@ Rule: if fast or fast.next reaches null → no cycle → return false.
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Linked List Cycle</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/linked-list-cycle/" target="_blank" rel="noopener">Linked List Cycle</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the head of a linked list, determine if the list contains a cycle.</div>
@@ -956,7 +958,7 @@ function hasCycle(head: ListNode | null): boolean {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Middle of the Linked List</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/middle-of-the-linked-list/" target="_blank" rel="noopener">Middle of the Linked List</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the head of a singly linked list, return the middle node. If two middle nodes exist, return the second one.</div>
@@ -974,7 +976,7 @@ function hasCycle(head: ListNode | null): boolean {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Happy Number</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/happy-number/" target="_blank" rel="noopener">Happy Number</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Starting from <code>n</code>, repeatedly replace the number with the sum of squares of its digits. Return true if the process eventually reaches 1; false if it loops forever.</div>
@@ -996,17 +998,17 @@ function isHappy(n: number): boolean {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Linked List Cycle</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/linked-list-cycle/" target="_blank" rel="noopener">Linked List Cycle</a></div>
       <div class="problem-insight">Return true if slow === fast at any point; false if fast hits null.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Middle of the Linked List</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/middle-of-the-linked-list/" target="_blank" rel="noopener">Middle of the Linked List</a></div>
       <div class="problem-insight">Return slow when fast.next or fast.next.next is null.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Happy Number</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/happy-number/" target="_blank" rel="noopener">Happy Number</a></div>
       <div class="problem-insight">Cycle in digit-square-sum sequence → not happy. Slow/fast on the abstract "next" function.</div></div>
     </div>
   </div>
@@ -1080,7 +1082,7 @@ Loop invariant: at start of each iteration, nodes before curr are fully reversed
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Reverse Linked List</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/reverse-linked-list/" target="_blank" rel="noopener">Reverse Linked List</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the head of a singly linked list, reverse the list in-place and return the new head.</div>
@@ -1101,7 +1103,7 @@ Loop invariant: at start of each iteration, nodes before curr are fully reversed
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Reverse Linked List II</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/reverse-linked-list-ii/" target="_blank" rel="noopener">Reverse Linked List II</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given the head of a singly linked list and two integers <code>left</code> and <code>right</code>, reverse the nodes from position <code>left</code> to <code>right</code> (1-indexed) and return the modified list.</div>
@@ -1130,17 +1132,17 @@ Loop invariant: at start of each iteration, nodes before curr are fully reversed
   <div class="problems">
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Reverse Linked List</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/reverse-linked-list/" target="_blank" rel="noopener">Reverse Linked List</a></div>
       <div class="problem-insight">Direct application of the iterative template — prev/curr/next loop.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Reverse Linked List II</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/reverse-linked-list-ii/" target="_blank" rel="noopener">Reverse Linked List II</a></div>
       <div class="problem-insight">Walk to the sublist start, then reverse only that portion using the in-place technique.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Palindrome Linked List</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/palindrome-linked-list/" target="_blank" rel="noopener">Palindrome Linked List</a></div>
       <div class="problem-insight">Find middle (fast/slow), reverse second half, compare both halves.</div></div>
     </div>
   </div>
@@ -1272,7 +1274,7 @@ function inorder(root: TreeNode | null): number[] {  // left → node → right 
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Maximum Depth of Binary Tree</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">Maximum Depth of Binary Tree</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the root of a binary tree, return its maximum depth — the number of nodes along the longest path from root to the farthest leaf.</div>
@@ -1285,7 +1287,7 @@ function inorder(root: TreeNode | null): number[] {  // left → node → right 
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Path Sum</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/path-sum/" target="_blank" rel="noopener">Path Sum</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the root of a binary tree and integer <code>targetSum</code>, return true if the tree has a root-to-leaf path whose node values sum to <code>targetSum</code>.</div>
@@ -1316,22 +1318,22 @@ function dfsIterative(root: TreeNode | null): number[] {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Maximum Depth of Binary Tree</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">Maximum Depth of Binary Tree</a></div>
       <div class="problem-insight">1 + max(depth(left), depth(right)) — classic DFS recursion.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Invert Binary Tree</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/invert-binary-tree/" target="_blank" rel="noopener">Invert Binary Tree</a></div>
       <div class="problem-insight">Swap left and right children at every node recursively.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Path Sum</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/path-sum/" target="_blank" rel="noopener">Path Sum</a></div>
       <div class="problem-insight">Subtract node value as you recurse; return true at a leaf when remainder = 0.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Binary Tree Right Side View</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/binary-tree-right-side-view/" target="_blank" rel="noopener">Binary Tree Right Side View</a></div>
       <div class="problem-insight">DFS tracking depth; the last node visited at each depth is visible from the right.</div></div>
     </div>
   </div>
@@ -1416,7 +1418,7 @@ Rule: snapshot queue.length BEFORE the inner loop so newly-enqueued
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Binary Tree Level Order Traversal</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/binary-tree-level-order-traversal/" target="_blank" rel="noopener">Binary Tree Level Order Traversal</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given the root of a binary tree, return the node values level by level (left to right) as an array of arrays.</div>
@@ -1446,7 +1448,7 @@ Rule: snapshot queue.length BEFORE the inner loop so newly-enqueued
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Minimum Depth of Binary Tree</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/minimum-depth-of-binary-tree/" target="_blank" rel="noopener">Minimum Depth of Binary Tree</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the root of a binary tree, return the minimum depth — the number of nodes along the shortest path from root to the nearest leaf.</div>
@@ -1471,17 +1473,17 @@ function minDepth(root: TreeNode | null): number {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Binary Tree Level Order Traversal</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/binary-tree-level-order-traversal/" target="_blank" rel="noopener">Binary Tree Level Order Traversal</a></div>
       <div class="problem-insight">Direct template application — snapshot queue length per level.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Minimum Depth of Binary Tree</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/minimum-depth-of-binary-tree/" target="_blank" rel="noopener">Minimum Depth of Binary Tree</a></div>
       <div class="problem-insight">BFS ensures the first leaf you hit is the shallowest one.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Binary Tree Zigzag Level Order Traversal</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/" target="_blank" rel="noopener">Binary Tree Zigzag Level Order Traversal</a></div>
       <div class="problem-insight">Same BFS; alternate push direction (left-to-right vs right-to-left) per level using a flag.</div></div>
     </div>
   </div>
@@ -1560,7 +1562,7 @@ Rule: target &lt; node.val → go left; target &gt; node.val → go right; equal
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Validate Binary Search Tree</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/validate-binary-search-tree/" target="_blank" rel="noopener">Validate Binary Search Tree</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given the root of a binary tree, determine if it is a valid BST. A valid BST requires ALL left descendants &lt; node &lt; ALL right descendants — not just direct children.</div>
@@ -1585,7 +1587,7 @@ function isValidBST(
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Kth Smallest Element in a BST</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/" target="_blank" rel="noopener">Kth Smallest Element in a BST</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given the root of a BST and an integer <code>k</code>, return the kth smallest value (1-indexed) among all node values.</div>
@@ -1608,7 +1610,7 @@ function kthSmallest(root: TreeNode, k: number): number {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Lowest Common Ancestor of a BST</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/" target="_blank" rel="noopener">Lowest Common Ancestor of a BST</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given a BST and two nodes <code>p</code> and <code>q</code>, find their lowest common ancestor — the deepest node that has both as descendants (a node is a descendant of itself).</div>
@@ -1627,17 +1629,17 @@ function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNod
   <div class="problems">
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Validate Binary Search Tree</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/validate-binary-search-tree/" target="_blank" rel="noopener">Validate Binary Search Tree</a></div>
       <div class="problem-insight">Pass min/max bounds down; a node is invalid if it falls outside its permitted range.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Kth Smallest Element in a BST</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/" target="_blank" rel="noopener">Kth Smallest Element in a BST</a></div>
       <div class="problem-insight">Iterative inorder (use a stack); the kth node popped is the answer.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Lowest Common Ancestor of a BST</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/" target="_blank" rel="noopener">Lowest Common Ancestor of a BST</a></div>
       <div class="problem-insight">If both nodes are on same side, recurse that way. Otherwise current node is LCA.</div></div>
     </div>
   </div>
@@ -1774,7 +1776,7 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Rotting Oranges</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/rotting-oranges/" target="_blank" rel="noopener">Rotting Oranges</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">A grid has fresh oranges (1), rotten oranges (2), and empty cells (0). Every minute, rotten oranges infect adjacent fresh ones. Return the minimum minutes to rot all fresh oranges, or -1 if impossible.</div>
@@ -1810,17 +1812,17 @@ function bfsGrid(grid: number[][], startR: number, startC: number): number {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Rotting Oranges</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/rotting-oranges/" target="_blank" rel="noopener">Rotting Oranges</a></div>
       <div class="problem-insight">Multi-source BFS — enqueue all rotten oranges at step 0; spread outward each step.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Number of Islands</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/number-of-islands/" target="_blank" rel="noopener">Number of Islands</a></div>
       <div class="problem-insight">BFS/DFS from each unvisited '1'; mark visited cells. Count how many times you start a traversal.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Word Ladder</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/word-ladder/" target="_blank" rel="noopener">Word Ladder</a></div>
       <div class="problem-insight">BFS where each node is a word; neighbors = words differing by 1 char. First time reaching target = min steps.</div></div>
     </div>
   </div>
@@ -1942,7 +1944,7 @@ Neighbors are processed left-to-right.</div>
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Number of Islands</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/number-of-islands/" target="_blank" rel="noopener">Number of Islands</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an <code>m × n</code> grid of '1's (land) and '0's (water), return the number of islands. An island is formed by connecting adjacent land cells horizontally or vertically.</div>
@@ -1961,7 +1963,7 @@ function dfsGrid(grid: string[][], r: number, c: number): void {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Number of Connected Components in Undirected Graph</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/" target="_blank" rel="noopener">Number of Connected Components in Undirected Graph</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given <code>n</code> nodes (0 to n-1) and a list of undirected edges, return the number of connected components in the graph.</div>
@@ -1995,7 +1997,7 @@ function dfsGrid(grid: string[][], r: number, c: number): void {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Course Schedule</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/course-schedule/" target="_blank" rel="noopener">Course Schedule</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given <code>numCourses</code> courses and prerequisites <code>[a, b]</code> (must take b before a), determine if you can finish all courses — i.e., the directed graph has no cycle.</div>
@@ -2028,17 +2030,17 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Number of Islands</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/number-of-islands/" target="_blank" rel="noopener">Number of Islands</a></div>
       <div class="problem-insight">DFS from each '1'; sink visited land to '0'. Count traversal starts.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Course Schedule</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/course-schedule/" target="_blank" rel="noopener">Course Schedule</a></div>
       <div class="problem-insight">Cycle detection in directed graph: 3-color DFS (unvisited=0 / visiting=1 / done=2).</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Clone Graph</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/clone-graph/" target="_blank" rel="noopener">Clone Graph</a></div>
       <div class="problem-insight">DFS with a visited map (original node → cloned node) to handle cycles.</div></div>
     </div>
   </div>
@@ -2116,7 +2118,7 @@ Rules:
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Binary Search</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/binary-search/" target="_blank" rel="noopener">Binary Search</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given a sorted array and a target, return the target's index or -1 if not present.</div>
@@ -2134,7 +2136,7 @@ Rules:
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Search in Rotated Sorted Array</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener">Search in Rotated Sorted Array</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">A sorted array was rotated at an unknown pivot. Given the rotated array and a target, return the target's index or -1.</div>
@@ -2187,22 +2189,22 @@ function minFeasible(lo: number, hi: number, feasible: (k: number) =&gt; boolean
   <div class="problems">
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Binary Search</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/binary-search/" target="_blank" rel="noopener">Binary Search</a></div>
       <div class="problem-insight">Direct template — lo/hi/mid loop, return mid on match.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Search in Rotated Sorted Array</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener">Search in Rotated Sorted Array</a></div>
       <div class="problem-insight">Determine which half is sorted; check if target falls in that range.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Find Minimum in Rotated Sorted Array</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/" target="_blank" rel="noopener">Find Minimum in Rotated Sorted Array</a></div>
       <div class="problem-insight">If nums[mid] &gt; nums[hi], minimum is in the right half; otherwise left half.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Koko Eating Bananas</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/koko-eating-bananas/" target="_blank" rel="noopener">Koko Eating Bananas</a></div>
       <div class="problem-insight">Binary search on answer (speed k). feasible(k) = can all piles be eaten in h hours at speed k?</div></div>
     </div>
   </div>
@@ -2342,7 +2344,7 @@ function merge(left: number[], right: number[]): number[] {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Sort Colors</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/sort-colors/" target="_blank" rel="noopener">Sort Colors</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given an array with values 0, 1, and 2 (red, white, blue), sort it in-place in a single pass without using the library sort.</div>
@@ -2367,17 +2369,17 @@ function sortColors(nums: number[]): void {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Merge Intervals</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/merge-intervals/" target="_blank" rel="noopener">Merge Intervals</a></div>
       <div class="problem-insight">Sort by start time; merge overlapping intervals greedily.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Sort Colors</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/sort-colors/" target="_blank" rel="noopener">Sort Colors</a></div>
       <div class="problem-insight">Dutch National Flag: three pointers (lo, mid, hi) partition array into 0s, 1s, 2s in one pass.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Top K Frequent Elements</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank" rel="noopener">Top K Frequent Elements</a></div>
       <div class="problem-insight">Count frequencies with a map, then sort by frequency (or use a min-heap of size k).</div></div>
     </div>
   </div>
@@ -2498,7 +2500,7 @@ Rule: walk left-to-right; stack holds INDICES of elements still waiting for thei
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Next Greater Element I</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/next-greater-element-i/" target="_blank" rel="noopener">Next Greater Element I</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given two arrays <code>nums1</code> (subset of <code>nums2</code>), for each element in nums1 find the first greater element to its right in nums2. Return -1 if none exists.</div>
@@ -2522,7 +2524,7 @@ function nextGreaterElement(nums: number[]): number[] {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Daily Temperatures</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/daily-temperatures/" target="_blank" rel="noopener">Daily Temperatures</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an array of daily temperatures, return an array where <code>answer[i]</code> is the number of days you'd have to wait for a warmer temperature. Return 0 if no future day is warmer.</div>
@@ -2544,7 +2546,7 @@ function nextGreaterElement(nums: number[]): number[] {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Largest Rectangle in Histogram</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank" rel="noopener">Largest Rectangle in Histogram</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an array of bar heights, find the area of the largest rectangle that can be formed within the histogram.</div>
@@ -2573,17 +2575,17 @@ function nextGreaterElement(nums: number[]): number[] {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Daily Temperatures</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/daily-temperatures/" target="_blank" rel="noopener">Daily Temperatures</a></div>
       <div class="problem-insight">Monotonic decreasing stack of indices; when warmer day found, pop and record difference.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Next Greater Element I</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/next-greater-element-i/" target="_blank" rel="noopener">Next Greater Element I</a></div>
       <div class="problem-insight">Build next-greater map for nums2 using the monotonic stack; then look up each element of nums1.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Largest Rectangle in Histogram</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank" rel="noopener">Largest Rectangle in Histogram</a></div>
       <div class="problem-insight">Monotonic increasing stack; pop when a shorter bar found — popped bar's height × computed width = candidate area.</div></div>
     </div>
   </div>
@@ -2658,7 +2660,7 @@ graph TD
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">House Robber</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">House Robber</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">You cannot rob two adjacent houses. Given an array of amounts, return the maximum you can rob without triggering alarms.</div>
@@ -2681,7 +2683,7 @@ function rob(nums: number[]): number {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Climbing Stairs</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/climbing-stairs/" target="_blank" rel="noopener">Climbing Stairs</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">You can climb 1 or 2 steps at a time. How many distinct ways can you reach the top of an <code>n</code>-step staircase?</div>
@@ -2698,7 +2700,7 @@ function climbStairs(n: number): number {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Coin Change</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/coin-change/" target="_blank" rel="noopener">Coin Change</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given coin denominations and an amount, return the fewest number of coins needed to make up the amount. Return -1 if not possible.</div>
@@ -2724,22 +2726,22 @@ function coinChange(coins: number[], amount: number): number {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-easy">Easy</span>
-      <div><div class="problem-name">Climbing Stairs</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/climbing-stairs/" target="_blank" rel="noopener">Climbing Stairs</a></div>
       <div class="problem-insight">dp[i] = dp[i-1] + dp[i-2]. Fibonacci. Base: dp[1]=1, dp[2]=2.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">House Robber</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">House Robber</a></div>
       <div class="problem-insight">At each house: rob (skip previous) vs skip (keep previous best). Space-optimize to two variables.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Coin Change</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/coin-change/" target="_blank" rel="noopener">Coin Change</a></div>
       <div class="problem-insight">dp[amount] = min coins. Inner loop over all coins; dp[i] = min(dp[i], dp[i-coin]+1).</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Word Break</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/word-break/" target="_blank" rel="noopener">Word Break</a></div>
       <div class="problem-insight">dp[i] = true if s[0..i] can be segmented. For each i, try all words ending at i.</div></div>
     </div>
   </div>
@@ -2821,7 +2823,7 @@ graph LR
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Unique Paths</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/unique-paths/" target="_blank" rel="noopener">Unique Paths</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">A robot at the top-left of an <code>m × n</code> grid can only move right or down. How many unique paths are there to the bottom-right corner?</div>
@@ -2841,7 +2843,7 @@ graph LR
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Longest Common Subsequence</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/longest-common-subsequence/" target="_blank" rel="noopener">Longest Common Subsequence</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given two strings, return the length of their longest common subsequence. A subsequence does not need to be contiguous.</div>
@@ -2867,7 +2869,7 @@ function lcs(text1: string, text2: string): number {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Edit Distance</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/edit-distance/" target="_blank" rel="noopener">Edit Distance</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given two strings, return the minimum number of operations (insert, delete, replace a character) to convert <code>word1</code> to <code>word2</code>.</div>
@@ -2901,17 +2903,17 @@ function lcs(text1: string, text2: string): number {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Unique Paths</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/unique-paths/" target="_blank" rel="noopener">Unique Paths</a></div>
       <div class="problem-insight">dp[i][j] = paths from above + paths from left. Base: entire top row and left column = 1.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Longest Common Subsequence</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/longest-common-subsequence/" target="_blank" rel="noopener">Longest Common Subsequence</a></div>
       <div class="problem-insight">If chars match: dp[i][j]=dp[i-1][j-1]+1. Else: max of skipping either char.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Edit Distance</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/edit-distance/" target="_blank" rel="noopener">Edit Distance</a></div>
       <div class="problem-insight">3 operations (insert/delete/replace) map to 3 neighboring cells in the DP table.</div></div>
     </div>
   </div>
@@ -3030,7 +3032,7 @@ Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]  (8 = 2^3 subsets)</div>
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Subsets</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/subsets/" target="_blank" rel="noopener">Subsets</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an integer array of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets.</div>
@@ -3056,7 +3058,7 @@ Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]  (8 = 2^3 subsets)</div>
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Permutations</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/permutations/" target="_blank" rel="noopener">Permutations</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an array of distinct integers, return all possible permutations in any order.</div>
@@ -3086,7 +3088,7 @@ function permute(nums: number[]): number[][] {
 
   <div class="code-block">
     <div class="code-label">
-      <span class="code-title">Combination Sum</span>
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/combination-sum/" target="_blank" rel="noopener">Combination Sum</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given distinct candidates and a target, return all unique combinations that sum to target. The same number may be chosen unlimited times.</div>
@@ -3113,22 +3115,22 @@ function permute(nums: number[]): number[][] {
   <div class="problems">
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Subsets</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/subsets/" target="_blank" rel="noopener">Subsets</a></div>
       <div class="problem-insight">Add path to results at every call (before looping). Use start index to avoid duplicates.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Permutations</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/permutations/" target="_blank" rel="noopener">Permutations</a></div>
       <div class="problem-insight">No start index — use a used[] boolean array so each element is picked once per path.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Combination Sum</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/combination-sum/" target="_blank" rel="noopener">Combination Sum</a></div>
       <div class="problem-insight">Same element can be reused — pass i (not i+1). Prune when remaining &lt; 0.</div></div>
     </div>
     <div class="problem">
       <span class="diff diff-medium">Medium</span>
-      <div><div class="problem-name">Word Search</div>
+      <div><div class="problem-name"><a class="lc-link" href="https://leetcode.com/problems/word-search/" target="_blank" rel="noopener">Word Search</a></div>
       <div class="problem-insight">DFS/backtrack on grid — mark cell visited (e.g., replace with '#'), recurse 4 directions, restore on return.</div></div>
     </div>
   </div>
