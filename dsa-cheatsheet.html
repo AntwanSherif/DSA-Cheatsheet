@@ -1616,7 +1616,9 @@ Output: [[3],[9,20],[15,7]]</div>
 
   <h3>How it works — BST search</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">Tree (searching for target = 6):
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Find a target value in a binary search tree, or confirm that it is absent.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>The BST invariant — every value in the left subtree &lt; node &lt; every value in the right subtree — means each comparison discards an entire subtree. Go left when the target is smaller, right when larger, and stop when equal. Work is proportional to the tree height: O(h), which is O(log n) when balanced.</div>
+<div class="wm-setup">Tree (searching for target = 6):
 
         8          ← root
        / \
