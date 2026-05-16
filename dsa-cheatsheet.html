@@ -535,6 +535,27 @@ Rule: expand R each step; when duplicate detected → advance L past last occurr
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/maximum-average-subarray-i/" target="_blank" rel="noopener">Maximum Average Subarray I</a></span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given an integer array and integer <code>k</code>, find the contiguous subarray of length <code>k</code> with the maximum average value.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [1,12,-5,-6,50,3], k = 4
+Output: 12.75   (window [12,-5,-6,50])</div>
+    <pre><code class="language-typescript">function maxSumFixed(nums: number[], k: number): number {
+  let windowSum = nums.slice(0, k).reduce((a, b) =&gt; a + b, 0);
+  let max = windowSum;
+
+  for (let i = k; i &lt; nums.length; i++) {
+    windowSum += nums[i] - nums[i - k]; // slide: add element entering window, subtract element leaving
+    max = Math.max(max, windowSum);
+  }
+
+  return max; // divide by k for average
+}</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">
       <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank" rel="noopener">Longest Substring Without Repeating Characters</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
@@ -557,27 +578,6 @@ Output: 3   (the substring &quot;abc&quot;)</div>
   }
 
   return maxLen;
-}</code></pre>
-  </div>
-
-  <div class="code-block">
-    <div class="code-label">
-      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/maximum-average-subarray-i/" target="_blank" rel="noopener">Maximum Average Subarray I</a></span>
-      <span class="diff diff-easy">Easy</span>
-    </div>
-    <div class="code-problem">Given an integer array and integer <code>k</code>, find the contiguous subarray of length <code>k</code> with the maximum average value.</div>
-    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [1,12,-5,-6,50,3], k = 4
-Output: 12.75   (window [12,-5,-6,50])</div>
-    <pre><code class="language-typescript">function maxSumFixed(nums: number[], k: number): number {
-  let windowSum = nums.slice(0, k).reduce((a, b) =&gt; a + b, 0);
-  let max = windowSum;
-
-  for (let i = k; i &lt; nums.length; i++) {
-    windowSum += nums[i] - nums[i - k]; // slide: add element entering window, subtract element leaving
-    max = Math.max(max, windowSum);
-  }
-
-  return max; // divide by k for average
 }</code></pre>
   </div>
 
@@ -1472,6 +1472,31 @@ Rule: snapshot queue.length BEFORE the inner loop so newly-enqueued
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/minimum-depth-of-binary-tree/" target="_blank" rel="noopener">Minimum Depth of Binary Tree</a></span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given the root of a binary tree, return the minimum depth — the number of nodes along the shortest path from root to the nearest leaf.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: root = [3,9,20,null,null,15,7]
+Output: 2   (root → 9)</div>
+    <pre><code class="language-typescript">// BFS naturally finds the minimum depth: the first leaf we dequeue is the shallowest.
+// DFS would need to explore all paths before knowing the minimum.
+function minDepth(root: TreeNode | null): number {
+  if (!root) return 0;
+  const queue: [TreeNode, number][] = [[root, 1]];
+
+  while (queue.length) {
+    const [node, depth] = queue.shift()!;
+    if (!node.left &amp;&amp; !node.right) return depth; // first leaf = minimum depth
+    if (node.left) queue.push([node.left, depth + 1]);
+    if (node.right) queue.push([node.right, depth + 1]);
+  }
+
+  return 0;
+}</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">
       <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/binary-tree-level-order-traversal/" target="_blank" rel="noopener">Binary Tree Level Order Traversal</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
@@ -1499,31 +1524,6 @@ Output: [[3],[9,20],[15,7]]</div>
   }
 
   return result;
-}</code></pre>
-  </div>
-
-  <div class="code-block">
-    <div class="code-label">
-      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/minimum-depth-of-binary-tree/" target="_blank" rel="noopener">Minimum Depth of Binary Tree</a></span>
-      <span class="diff diff-easy">Easy</span>
-    </div>
-    <div class="code-problem">Given the root of a binary tree, return the minimum depth — the number of nodes along the shortest path from root to the nearest leaf.</div>
-    <div class="code-example"><span class="ex-label">Example</span>Input: root = [3,9,20,null,null,15,7]
-Output: 2   (root → 9)</div>
-    <pre><code class="language-typescript">// BFS naturally finds the minimum depth: the first leaf we dequeue is the shallowest.
-// DFS would need to explore all paths before knowing the minimum.
-function minDepth(root: TreeNode | null): number {
-  if (!root) return 0;
-  const queue: [TreeNode, number][] = [[root, 1]];
-
-  while (queue.length) {
-    const [node, depth] = queue.shift()!;
-    if (!node.left &amp;&amp; !node.right) return depth; // first leaf = minimum depth
-    if (node.left) queue.push([node.left, depth + 1]);
-    if (node.right) queue.push([node.right, depth + 1]);
-  }
-
-  return 0;
 }</code></pre>
   </div>
 
@@ -1620,6 +1620,25 @@ Rule: target &lt; node.val → go left; target &gt; node.val → go right; equal
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/" target="_blank" rel="noopener">Lowest Common Ancestor of a BST</a></span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">Given a BST and two nodes <code>p</code> and <code>q</code>, find their lowest common ancestor — the deepest node that has both as descendants (a node is a descendant of itself).</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: root = [6,2,8,0,4,7,9], p = 2, q = 8
+Output: 6</div>
+    <pre><code class="language-typescript">// Three cases — BST properties make this O(h) with no extra space:
+// 1. Both p and q are in the left subtree  → recurse left
+// 2. Both p and q are in the right subtree → recurse right
+// 3. They diverge here (one on each side, or current node equals p or q) → current node is LCA
+function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNode {
+  if (p.val &lt; root.val &amp;&amp; q.val &lt; root.val) return lowestCommonAncestor(root.left!, p, q);
+  if (p.val &gt; root.val &amp;&amp; q.val &gt; root.val) return lowestCommonAncestor(root.right!, p, q);
+  return root;
+}</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">
       <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/validate-binary-search-tree/" target="_blank" rel="noopener">Validate Binary Search Tree</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
@@ -1667,25 +1686,6 @@ function kthSmallest(root: TreeNode, k: number): number {
   }
 
   return -1;
-}</code></pre>
-  </div>
-
-  <div class="code-block">
-    <div class="code-label">
-      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/" target="_blank" rel="noopener">Lowest Common Ancestor of a BST</a></span>
-      <span class="diff diff-easy">Easy</span>
-    </div>
-    <div class="code-problem">Given a BST and two nodes <code>p</code> and <code>q</code>, find their lowest common ancestor — the deepest node that has both as descendants (a node is a descendant of itself).</div>
-    <div class="code-example"><span class="ex-label">Example</span>Input: root = [6,2,8,0,4,7,9], p = 2, q = 8
-Output: 6</div>
-    <pre><code class="language-typescript">// Three cases — BST properties make this O(h) with no extra space:
-// 1. Both p and q are in the left subtree  → recurse left
-// 2. Both p and q are in the right subtree → recurse right
-// 3. They diverge here (one on each side, or current node equals p or q) → current node is LCA
-function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNode {
-  if (p.val &lt; root.val &amp;&amp; q.val &lt; root.val) return lowestCommonAncestor(root.left!, p, q);
-  if (p.val &gt; root.val &amp;&amp; q.val &gt; root.val) return lowestCommonAncestor(root.right!, p, q);
-  return root;
 }</code></pre>
   </div>
 
@@ -2192,6 +2192,35 @@ Rules:
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
+      <span class="code-title">Pattern — Binary Search on the Answer</span>
+    </div>
+    <div class="code-problem">When you can write a monotonic boolean function <code>feasible(k)</code> that transitions false→true, binary search finds the minimum k. Classic examples: Koko Eating Bananas, Capacity to Ship Packages.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: piles = [3,6,7,11], h = 8   (Koko Eating Bananas)
+Output: 4   (smallest eating speed that fits in h hours)</div>
+    <pre><code class="language-typescript">// Lower bound: find leftmost position where nums[i] >= target
+function lowerBound(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length;
+  while (lo &lt; hi) { // lo < hi (not lo <= hi) — loop ends when lo === hi
+    const mid = lo + Math.floor((hi - lo) / 2);
+    if (nums[mid] &lt; target) lo = mid + 1;
+    else hi = mid; // hi = mid (not mid-1) — mid might be the leftmost answer, don't discard it
+  }
+  return lo; // first index where nums[lo] &gt;= target
+}
+
+// "Find minimum k such that feasible(k) is true"
+function minFeasible(lo: number, hi: number, feasible: (k: number) =&gt; boolean): number {
+  while (lo &lt; hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    if (feasible(mid)) hi = mid; // mid works → try smaller
+    else lo = mid + 1;           // mid doesn't work → need bigger
+  }
+  return lo;
+}</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">
       <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/binary-search/" target="_blank" rel="noopener">Binary Search</a></span>
       <span class="diff diff-easy">Easy</span>
     </div>
@@ -2233,35 +2262,6 @@ Output: 4</div>
     }
   }
   return -1;
-}</code></pre>
-  </div>
-
-  <div class="code-block">
-    <div class="code-label">
-      <span class="code-title">Pattern — Binary Search on the Answer</span>
-    </div>
-    <div class="code-problem">When you can write a monotonic boolean function <code>feasible(k)</code> that transitions false→true, binary search finds the minimum k. Classic examples: Koko Eating Bananas, Capacity to Ship Packages.</div>
-    <div class="code-example"><span class="ex-label">Example</span>Input: piles = [3,6,7,11], h = 8   (Koko Eating Bananas)
-Output: 4   (smallest eating speed that fits in h hours)</div>
-    <pre><code class="language-typescript">// Lower bound: find leftmost position where nums[i] >= target
-function lowerBound(nums: number[], target: number): number {
-  let lo = 0, hi = nums.length;
-  while (lo &lt; hi) { // lo < hi (not lo <= hi) — loop ends when lo === hi
-    const mid = lo + Math.floor((hi - lo) / 2);
-    if (nums[mid] &lt; target) lo = mid + 1;
-    else hi = mid; // hi = mid (not mid-1) — mid might be the leftmost answer, don't discard it
-  }
-  return lo; // first index where nums[lo] &gt;= target
-}
-
-// "Find minimum k such that feasible(k) is true"
-function minFeasible(lo: number, hi: number, feasible: (k: number) =&gt; boolean): number {
-  while (lo &lt; hi) {
-    const mid = lo + Math.floor((hi - lo) / 2);
-    if (feasible(mid)) hi = mid; // mid works → try smaller
-    else lo = mid + 1;           // mid doesn't work → need bigger
-  }
-  return lo;
 }</code></pre>
   </div>
 
@@ -2750,6 +2750,25 @@ graph TD
   <h3>Code Template (TypeScript)</h3>
   <div class="code-block">
     <div class="code-label">
+      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/climbing-stairs/" target="_blank" rel="noopener">Climbing Stairs</a></span>
+      <span class="diff diff-easy">Easy</span>
+    </div>
+    <div class="code-problem">You can climb 1 or 2 steps at a time. How many distinct ways can you reach the top of an <code>n</code>-step staircase?</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: n = 4
+Output: 5   (1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2)</div>
+    <pre><code class="language-typescript">// This is Fibonacci: f(n) = f(n-1) + f(n-2).
+// f(n-1): took 1 step to get here. f(n-2): took 2 steps.
+function climbStairs(n: number): number {
+  if (n &lt;= 2) return n;
+  let a = 1, b = 2;
+  // Destructuring assignment swaps simultaneously: no temp variable needed.
+  for (let i = 3; i &lt;= n; i++) [a, b] = [b, a + b];
+  return b;
+}</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">
       <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">House Robber</a></span>
       <span class="diff diff-medium">Medium</span>
     </div>
@@ -2770,25 +2789,6 @@ function rob(nums: number[]): number {
   }
 
   return prev1;
-}</code></pre>
-  </div>
-
-  <div class="code-block">
-    <div class="code-label">
-      <span class="code-title"><a class="lc-link" href="https://leetcode.com/problems/climbing-stairs/" target="_blank" rel="noopener">Climbing Stairs</a></span>
-      <span class="diff diff-easy">Easy</span>
-    </div>
-    <div class="code-problem">You can climb 1 or 2 steps at a time. How many distinct ways can you reach the top of an <code>n</code>-step staircase?</div>
-    <div class="code-example"><span class="ex-label">Example</span>Input: n = 4
-Output: 5   (1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2)</div>
-    <pre><code class="language-typescript">// This is Fibonacci: f(n) = f(n-1) + f(n-2).
-// f(n-1): took 1 step to get here. f(n-2): took 2 steps.
-function climbStairs(n: number): number {
-  if (n &lt;= 2) return n;
-  let a = 1, b = 2;
-  // Destructuring assignment swaps simultaneously: no temp variable needed.
-  for (let i = 3; i &lt;= n; i++) [a, b] = [b, a + b];
-  return b;
 }</code></pre>
   </div>
 
