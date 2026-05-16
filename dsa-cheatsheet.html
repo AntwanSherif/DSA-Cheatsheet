@@ -653,7 +653,9 @@ Output: 3   (the substring &quot;abc&quot;)</div>
 
   <h3>How it works — Subarray Sum / range query</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">arr      = [ 1,  2,  3,  4,  5 ]      n = 5 elements
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Answer many range-sum queries in O(1) each, and count how many subarrays sum to a target k.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>Precompute prefix[k] = sum of the first k elements once in O(n); any range sum is then a single subtraction of two prefixes. The same idea runs online for “subarrays summing to k”: if some earlier prefix equals currentSum − k, the slice between them sums to k, so a hash map of prefix counts answers it in one pass.</div>
+<div class="wm-setup">arr      = [ 1,  2,  3,  4,  5 ]      n = 5 elements
 index    =   0   1   2   3   4
 
 Key idea: prefix[k] = sum of the first k elements (everything BEFORE index k).
