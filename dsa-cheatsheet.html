@@ -1261,7 +1261,9 @@ Output: 1 → 4 → 3 → 2 → 5</div>
 
   <h3>How it works — Tree DFS — pre / in / post order</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">Tree used in all three blocks:
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Visit every node of a binary tree in the three depth-first orders: preorder, inorder, and postorder.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>All three traversals are the same recursion — recurse left, recurse right, with a null check as the base case. The only difference is when the current node’s value is recorded relative to those two calls: before them (preorder), between them (inorder — sorted for a BST), or after them (postorder — children finished first).</div>
+<div class="wm-setup">Tree used in all three blocks:
         4          ← root
        / \
       2   6
