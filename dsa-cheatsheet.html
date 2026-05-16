@@ -2921,7 +2921,9 @@ function coinChange(coins: number[], amount: number): number {
 
   <h3>How it works — Unique Paths &amp; LCS</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">Two independent 2-D DP problems share the same grid-filling pattern.
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Two grid DP problems: count distinct top-left to bottom-right paths moving only right or down, and find the longest common subsequence of two strings.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>Fill a 2-D table where each cell answers a subproblem using already-computed neighbors. Unique Paths sums the cell above and the cell to the left; LCS extends the diagonal on a character match, otherwise takes the better of dropping one character from either string. Filling the table once is O(m·n).</div>
+<div class="wm-setup">Two independent 2-D DP problems share the same grid-filling pattern.
 
 ── Unique Paths ────────────────────────────────────────
 Subproblem:  dp[i][j] = number of distinct paths from (0,0) to (i,j)
