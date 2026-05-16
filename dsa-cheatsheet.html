@@ -251,6 +251,26 @@
     line-height: 1.55;
   }
   .code-block + .code-block { margin-top: 14px; }
+  .code-example {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 14px;
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  .code-example .ex-label {
+    display: block;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
 </style>
 </head>
 <body>
@@ -387,6 +407,8 @@ Rule:  sum &lt; target  → L++   (left value too small — move L right)
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given a 1-indexed sorted array, return the 1-indexed positions of two numbers that add up to <code>target</code>. Exactly one solution exists.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: numbers = [2,7,11,15], target = 9
+Output: [1,2]   (1-indexed: 2 + 7 = 9)</div>
     <pre><code class="language-typescript">function twoSumSorted(nums: number[], target: number): number[] {
   let left = 0, right = nums.length - 1;
 
@@ -407,6 +429,8 @@ Rule:  sum &lt; target  → L++   (left value too small — move L right)
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Modify the array in-place so each unique value appears once. Return the number of unique elements. Relative order must be preserved.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [0,0,1,1,1,2,2]
+Output: 3   (nums starts with [0,1,2,...])</div>
     <pre><code class="language-typescript">function removeDuplicates(nums: number[]): number {
   let slow = 0; // slow: boundary of the unique-values region
   for (let fast = 1; fast &lt; nums.length; fast++) {
@@ -515,6 +539,8 @@ Rule: expand R each step; when duplicate detected → advance L past last occurr
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given a string, find the length of the longest substring that contains no repeating characters.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: s = &quot;abcabcbb&quot;
+Output: 3   (the substring &quot;abc&quot;)</div>
     <pre><code class="language-typescript">function lengthOfLongestSubstring(s: string): number {
   const lastSeen = new Map&lt;string, number&gt;(); // char → last index seen
   let left = 0, maxLen = 0;
@@ -540,6 +566,8 @@ Rule: expand R each step; when duplicate detected → advance L past last occurr
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given an integer array and integer <code>k</code>, find the contiguous subarray of length <code>k</code> with the maximum average value.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [1,12,-5,-6,50,3], k = 4
+Output: 12.75   (window [12,-5,-6,50])</div>
     <pre><code class="language-typescript">function maxSumFixed(nums: number[], k: number): number {
   let windowSum = nums.slice(0, k).reduce((a, b) =&gt; a + b, 0);
   let max = windowSum;
@@ -660,6 +688,8 @@ Subarray-sum-k rule:  for each index, if (currentSum - k) is in the map → add
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given an integer array, handle multiple queries <code>sumRange(i, j)</code> — return the sum of elements between indices <code>i</code> and <code>j</code> inclusive. Preprocess once for O(1) queries.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [-2,0,3,-5,2,-1]
+sumRange(0,2) → 1     sumRange(2,5) → -1</div>
     <pre><code class="language-typescript">// Build once: prefix[i] = sum of all elements before index i
 function buildPrefix(nums: number[]): number[] {
   const prefix = [0]; // prefix[0] = 0 (empty prefix)
@@ -681,6 +711,8 @@ function rangeSum(prefix: number[], i: number, j: number): number {
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an array of integers (can be negative) and an integer <code>k</code>, return the total number of subarrays whose elements sum to <code>k</code>.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [1,2,3], k = 3
+Output: 2   (subarrays [1,2] and [3])</div>
     <pre><code class="language-typescript">function subarraySum(nums: number[], k: number): number {
   // Seed with {0: 1}: the empty prefix has sum 0, and it "exists" once.
   // This handles subarrays starting from index 0.
@@ -793,6 +825,8 @@ PATTERN 3 — Grouping by key (Group Anagrams):  words=["eat","tea","tan","ate",
       <span class="code-title">Pattern — Frequency Count</span>
     </div>
     <div class="code-problem">Count how many times each element appears — used to detect anagrams, find majority elements, or compare character distributions.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: s = &quot;aabbc&quot;
+Result: Map { a→2, b→2, c→1 }</div>
     <pre><code class="language-typescript">const freq = new Map&lt;string, number&gt;();
 for (const ch of s) {
   freq.set(ch, (freq.get(ch) ?? 0) + 1); // ?? 0 handles the "first time seen" case
@@ -805,6 +839,8 @@ for (const ch of s) {
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given an array of integers and a target, return the indices of the two numbers that add up to the target. Each input has exactly one solution.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [2,7,11,15], target = 9
+Output: [0,1]   (nums[0] + nums[1] = 9)</div>
     <pre><code class="language-typescript">function twoSum(nums: number[], target: number): number[] {
   const seen = new Map&lt;number, number&gt;(); // value → index
   for (let i = 0; i &lt; nums.length; i++) {
@@ -823,6 +859,8 @@ for (const ch of s) {
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an array of strings, group the anagrams together and return the groups in any order.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: strs = [&quot;eat&quot;,&quot;tea&quot;,&quot;tan&quot;,&quot;ate&quot;,&quot;nat&quot;,&quot;bat&quot;]
+Output: [[&quot;eat&quot;,&quot;tea&quot;,&quot;ate&quot;],[&quot;tan&quot;,&quot;nat&quot;],[&quot;bat&quot;]]</div>
     <pre><code class="language-typescript">function groupAnagrams(strs: string[]): string[][] {
   const groups = new Map&lt;string, string[]&gt;();
   for (const word of strs) {
@@ -936,6 +974,8 @@ Rule: if fast or fast.next reaches null → no cycle → return false.
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the head of a linked list, determine if the list contains a cycle.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: 3 → 2 → 0 → -4, with the tail linking back to node 2
+Output: true</div>
     <pre><code class="language-typescript">class ListNode {
   val: number;
   next: ListNode | null = null;
@@ -962,6 +1002,8 @@ function hasCycle(head: ListNode | null): boolean {
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the head of a singly linked list, return the middle node. If two middle nodes exist, return the second one.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: 1 → 2 → 3 → 4 → 5
+Output: node 3   (even length 1→…→6 returns node 4)</div>
     <pre><code class="language-typescript">function middleNode(head: ListNode): ListNode {
   let slow: ListNode = head, fast: ListNode = head;
   // Terminate when fast.next or fast.next.next is null.
@@ -980,6 +1022,8 @@ function hasCycle(head: ListNode | null): boolean {
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Starting from <code>n</code>, repeatedly replace the number with the sum of squares of its digits. Return true if the process eventually reaches 1; false if it loops forever.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: n = 19
+Output: true   (1²+9² = 82 → 68 → 100 → 1)</div>
     <pre><code class="language-typescript">// Unhappy numbers always enter a cycle — this is a cycle-detection problem.
 // Apply Floyd's algorithm on the abstract "next" function (digit-square-sum).
 function isHappy(n: number): boolean {
@@ -1086,6 +1130,8 @@ Loop invariant: at start of each iteration, nodes before curr are fully reversed
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the head of a singly linked list, reverse the list in-place and return the new head.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: 1 → 2 → 3 → 4 → 5
+Output: 5 → 4 → 3 → 2 → 1</div>
     <pre><code class="language-typescript">function reverseList(head: ListNode | null): ListNode | null {
   let prev: ListNode | null = null;
   let curr = head;
@@ -1107,6 +1153,8 @@ Loop invariant: at start of each iteration, nodes before curr are fully reversed
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given the head of a singly linked list and two integers <code>left</code> and <code>right</code>, reverse the nodes from position <code>left</code> to <code>right</code> (1-indexed) and return the modified list.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: head = 1→2→3→4→5, left = 2, right = 4
+Output: 1 → 4 → 3 → 2 → 5</div>
     <pre><code class="language-typescript">function reverseBetween(head: ListNode | null, left: number, right: number): ListNode | null {
   // Dummy node lets us handle the edge case where left=1 without special-casing the head.
   const dummy = new ListNode(0);
@@ -1257,6 +1305,8 @@ relative to the left and right recursive calls.</div>
       <span class="code-title">Pattern — Traversal Orders (Inorder / Preorder / Postorder)</span>
     </div>
     <div class="code-problem">The order you visit a node relative to its children defines what you can compute. Inorder gives sorted output for BSTs; postorder lets you compute results from children first before the parent.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: tree = root 1, left 2, right 3
+Inorder [2,1,3]   Preorder [1,2,3]   Postorder [2,3,1]</div>
     <pre><code class="language-typescript">class TreeNode {
   val: number;
   left: TreeNode | null = null;
@@ -1278,6 +1328,8 @@ function inorder(root: TreeNode | null): number[] {  // left → node → right 
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the root of a binary tree, return its maximum depth — the number of nodes along the longest path from root to the farthest leaf.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: root = [3,9,20,null,null,15,7]
+Output: 3</div>
     <pre><code class="language-typescript">function maxDepth(root: TreeNode | null): number {
   if (!root) return 0;
   // +1 accounts for the current node itself; recurse on both subtrees (postorder).
@@ -1291,6 +1343,8 @@ function inorder(root: TreeNode | null): number[] {  // left → node → right 
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the root of a binary tree and integer <code>targetSum</code>, return true if the tree has a root-to-leaf path whose node values sum to <code>targetSum</code>.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: root = [5,4,8,11,null,13,4,7,2], targetSum = 22
+Output: true   (path 5 → 4 → 11 → 2)</div>
     <pre><code class="language-typescript">function hasPathSum(root: TreeNode | null, target: number): boolean {
   if (!root) return false;
   // Base case: leaf node — check if this node's value equals the remaining target.
@@ -1422,6 +1476,8 @@ Rule: snapshot queue.length BEFORE the inner loop so newly-enqueued
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given the root of a binary tree, return the node values level by level (left to right) as an array of arrays.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: root = [3,9,20,null,null,15,7]
+Output: [[3],[9,20],[15,7]]</div>
     <pre><code class="language-typescript">function levelOrder(root: TreeNode | null): number[][] {
   if (!root) return [];
   const result: number[][] = [];
@@ -1452,6 +1508,8 @@ Rule: snapshot queue.length BEFORE the inner loop so newly-enqueued
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given the root of a binary tree, return the minimum depth — the number of nodes along the shortest path from root to the nearest leaf.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: root = [3,9,20,null,null,15,7]
+Output: 2   (root → 9)</div>
     <pre><code class="language-typescript">// BFS naturally finds the minimum depth: the first leaf we dequeue is the shallowest.
 // DFS would need to explore all paths before knowing the minimum.
 function minDepth(root: TreeNode | null): number {
@@ -1566,6 +1624,8 @@ Rule: target &lt; node.val → go left; target &gt; node.val → go right; equal
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given the root of a binary tree, determine if it is a valid BST. A valid BST requires ALL left descendants &lt; node &lt; ALL right descendants — not just direct children.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: root = [5,1,4,null,null,3,6]
+Output: false   (node 3 in 5&#x27;s right subtree is &lt; 5)</div>
     <pre><code class="language-typescript">function searchBST(root: TreeNode | null, val: number): TreeNode | null {
   if (!root || root.val === val) return root;
   return val &lt; root.val ? searchBST(root.left, val) : searchBST(root.right, val);
@@ -1591,6 +1651,8 @@ function isValidBST(
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given the root of a BST and an integer <code>k</code>, return the kth smallest value (1-indexed) among all node values.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: root = [3,1,4,null,2], k = 1
+Output: 1</div>
     <pre><code class="language-typescript">// Iterative inorder: stops as soon as the kth element is found (no need to traverse all).
 // Walk left as far as possible, then pop, then go right (classic inorder stack traversal).
 function kthSmallest(root: TreeNode, k: number): number {
@@ -1614,6 +1676,8 @@ function kthSmallest(root: TreeNode, k: number): number {
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given a BST and two nodes <code>p</code> and <code>q</code>, find their lowest common ancestor — the deepest node that has both as descendants (a node is a descendant of itself).</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: root = [6,2,8,0,4,7,9], p = 2, q = 8
+Output: 6</div>
     <pre><code class="language-typescript">// Three cases — BST properties make this O(h) with no extra space:
 // 1. Both p and q are in the left subtree  → recurse left
 // 2. Both p and q are in the right subtree → recurse right
@@ -1755,6 +1819,8 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
       <span class="code-title">Pattern — BFS on Adjacency List</span>
     </div>
     <div class="code-problem">Use when you need the shortest distances from a source node in an unweighted graph. Returns a map of node → minimum distance.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: graph { A:[B,C], B:[D], C:[D], D:[] }, start = A
+Result: Map { A→0, B→1, C→1, D→2 }</div>
     <pre><code class="language-typescript">function bfs(graph: Map&lt;string, string[]&gt;, start: string): Map&lt;string, number&gt; {
   const dist = new Map&lt;string, number&gt;([[start, 0]]);
   const queue: string[] = [start];
@@ -1780,6 +1846,8 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">A grid has fresh oranges (1), rotten oranges (2), and empty cells (0). Every minute, rotten oranges infect adjacent fresh ones. Return the minimum minutes to rot all fresh oranges, or -1 if impossible.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
+Output: 4   (minutes until no fresh orange remains)</div>
     <pre><code class="language-typescript">// Multi-source BFS: enqueue ALL initially rotten oranges at minute 0.
 // This ensures rotten oranges spread simultaneously from all sources (not sequentially).
 function bfsGrid(grid: number[][], startR: number, startC: number): number {
@@ -1948,6 +2016,8 @@ Neighbors are processed left-to-right.</div>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an <code>m × n</code> grid of '1's (land) and '0's (water), return the number of islands. An island is formed by connecting adjacent land cells horizontally or vertically.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: grid = [[&quot;1&quot;,&quot;1&quot;,&quot;0&quot;],[&quot;0&quot;,&quot;1&quot;,&quot;0&quot;],[&quot;0&quot;,&quot;0&quot;,&quot;1&quot;]]
+Output: 2</div>
     <pre><code class="language-typescript">// Mutation trick: sink '1' → '0' to mark a cell visited without a separate visited set.
 // 4-directional recursion visits all connected land cells in one call.
 function dfsGrid(grid: string[][], r: number, c: number): void {
@@ -1967,6 +2037,8 @@ function dfsGrid(grid: string[][], r: number, c: number): void {
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given <code>n</code> nodes (0 to n-1) and a list of undirected edges, return the number of connected components in the graph.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: n = 5, edges = [[0,1],[1,2],[3,4]]
+Output: 2   ({0,1,2}, {3,4})</div>
     <pre><code class="language-typescript">function countComponents(n: number, edges: number[][]): number {
   // Build adjacency list first (undirected: add both directions).
   const adj = new Map&lt;number, number[]&gt;();
@@ -2001,6 +2073,8 @@ function dfsGrid(grid: string[][], r: number, c: number): void {
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given <code>numCourses</code> courses and prerequisites <code>[a, b]</code> (must take b before a), determine if you can finish all courses — i.e., the directed graph has no cycle.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: numCourses = 2, prerequisites = [[1,0]]
+Output: true   ([[1,0],[0,1]] → false, it&#x27;s a cycle)</div>
     <pre><code class="language-typescript">// 3-color DFS: 0 = unvisited, 1 = in current DFS path (cycle risk), 2 = fully processed (safe).
 // State 1 on re-entry means we found a back edge → cycle exists.
 function canFinish(numCourses: number, prerequisites: number[][]): boolean {
@@ -2122,6 +2196,8 @@ Rules:
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given a sorted array and a target, return the target's index or -1 if not present.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [-1,0,3,5,9,12], target = 9
+Output: 4</div>
     <pre><code class="language-typescript">function binarySearch(nums: number[], target: number): number {
   let lo = 0, hi = nums.length - 1;
   while (lo &lt;= hi) {
@@ -2140,6 +2216,8 @@ Rules:
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">A sorted array was rotated at an unknown pivot. Given the rotated array and a target, return the target's index or -1.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4</div>
     <pre><code class="language-typescript">function searchRotated(nums: number[], target: number): number {
   let lo = 0, hi = nums.length - 1;
   while (lo &lt;= hi) {
@@ -2163,6 +2241,8 @@ Rules:
       <span class="code-title">Pattern — Binary Search on the Answer</span>
     </div>
     <div class="code-problem">When you can write a monotonic boolean function <code>feasible(k)</code> that transitions false→true, binary search finds the minimum k. Classic examples: Koko Eating Bananas, Capacity to Ship Packages.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: piles = [3,6,7,11], h = 8   (Koko Eating Bananas)
+Output: 4   (smallest eating speed that fits in h hours)</div>
     <pre><code class="language-typescript">// Lower bound: find leftmost position where nums[i] >= target
 function lowerBound(nums: number[], target: number): number {
   let lo = 0, hi = nums.length;
@@ -2313,6 +2393,8 @@ Complexity: O(n log n) time, O(n) auxiliary space (temporary merge buffer).</div
       <span class="code-title">Pattern — Built-in Sort &amp; Custom Comparator</span>
     </div>
     <div class="code-problem">JavaScript's <code>Array.sort()</code> is stable (TimSort). The comparator <code>(a, b) =&gt; a - b</code> returns negative if <code>a</code> should come first. Always use an explicit comparator — the default is lexicographic.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [10, 9, 2]
+nums.sort((a,b) =&gt; a - b) → [2, 9, 10]   (default sort → [10, 2, 9])</div>
     <pre><code class="language-typescript">const nums = [3, 1, 4, 1, 5];
 nums.sort((a, b) =&gt; a - b); // ascending
 nums.sort((a, b) =&gt; b - a); // descending
@@ -2348,6 +2430,8 @@ function merge(left: number[], right: number[]): number[] {
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given an array with values 0, 1, and 2 (red, white, blue), sort it in-place in a single pass without using the library sort.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]   (sorted in-place, one pass)</div>
     <pre><code class="language-typescript">// Dutch National Flag: three regions — [0..lo-1]=0s, [lo..mid-1]=1s, [hi+1..end]=2s
 function sortColors(nums: number[]): void {
   let lo = 0, mid = 0, hi = nums.length - 1;
@@ -2504,6 +2588,8 @@ Rule: walk left-to-right; stack holds INDICES of elements still waiting for thei
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">Given two arrays <code>nums1</code> (subset of <code>nums2</code>), for each element in nums1 find the first greater element to its right in nums2. Return -1 if none exists.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums1 = [4,1,2], nums2 = [1,3,4,2]
+Output: [-1,3,-1]</div>
     <pre><code class="language-typescript">// Stack stores INDICES (not values) so we can write results at the correct position.
 // While current element > stack top's value: that element found its "next greater" → pop and record.
 function nextGreaterElement(nums: number[]): number[] {
@@ -2528,6 +2614,8 @@ function nextGreaterElement(nums: number[]): number[] {
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an array of daily temperatures, return an array where <code>answer[i]</code> is the number of days you'd have to wait for a warmer temperature. Return 0 if no future day is warmer.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: temps = [73,74,75,71,69,72,76,73]
+Output: [1,1,4,2,1,1,0,0]</div>
     <pre><code class="language-typescript">function dailyTemperatures(temps: number[]): number[] {
   const result = new Array(temps.length).fill(0);
   const stack: number[] = []; // stack of indices (not temperatures)
@@ -2550,6 +2638,8 @@ function nextGreaterElement(nums: number[]): number[] {
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an array of bar heights, find the area of the largest rectangle that can be formed within the histogram.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: heights = [2,1,5,6,2,3]
+Output: 10   (bars 5 and 6 → height 5 × width 2)</div>
     <pre><code class="language-typescript">function largestRectangle(heights: number[]): number {
   const stack: number[] = [];
   let maxArea = 0;
@@ -2664,6 +2754,8 @@ graph TD
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">You cannot rob two adjacent houses. Given an array of amounts, return the maximum you can rob without triggering alarms.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [2,7,9,3,1]
+Output: 12   (rob houses 0, 2, 4 → 2 + 9 + 1)</div>
     <pre><code class="language-typescript">// dp[i] = max(skip house i → prev1, rob house i → prev2 + nums[i])
 // Space-optimize: only need the last two values, not the full dp array.
 function rob(nums: number[]): number {
@@ -2687,6 +2779,8 @@ function rob(nums: number[]): number {
       <span class="diff diff-easy">Easy</span>
     </div>
     <div class="code-problem">You can climb 1 or 2 steps at a time. How many distinct ways can you reach the top of an <code>n</code>-step staircase?</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: n = 4
+Output: 5   (1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2)</div>
     <pre><code class="language-typescript">// This is Fibonacci: f(n) = f(n-1) + f(n-2).
 // f(n-1): took 1 step to get here. f(n-2): took 2 steps.
 function climbStairs(n: number): number {
@@ -2704,6 +2798,8 @@ function climbStairs(n: number): number {
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given coin denominations and an amount, return the fewest number of coins needed to make up the amount. Return -1 if not possible.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: coins = [1,2,5], amount = 11
+Output: 3   (5 + 5 + 1)</div>
     <pre><code class="language-typescript">// dp[i] = minimum coins to make amount i (Infinity = not yet reachable)
 function coinChange(coins: number[], amount: number): number {
   const dp = new Array(amount + 1).fill(Infinity);
@@ -2827,6 +2923,8 @@ graph LR
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">A robot at the top-left of an <code>m × n</code> grid can only move right or down. How many unique paths are there to the bottom-right corner?</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: m = 3, n = 7
+Output: 28</div>
     <pre><code class="language-typescript">function uniquePaths(m: number, n: number): number {
   // Initializing the entire array to 1 correctly sets both base cases:
   // - First row: only 1 way to reach any cell (move all the way right)
@@ -2847,6 +2945,8 @@ graph LR
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given two strings, return the length of their longest common subsequence. A subsequence does not need to be contiguous.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: text1 = &quot;abcde&quot;, text2 = &quot;ace&quot;
+Output: 3   (the subsequence &quot;ace&quot;)</div>
     <pre><code class="language-typescript">// dp[i][j] answers: "LCS of text1[0..i-1] and text2[0..j-1]"
 // Indices shifted by 1 so dp[0][*] and dp[*][0] are naturally 0 (empty string base cases).
 function lcs(text1: string, text2: string): number {
@@ -2873,6 +2973,8 @@ function lcs(text1: string, text2: string): number {
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given two strings, return the minimum number of operations (insert, delete, replace a character) to convert <code>word1</code> to <code>word2</code>.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: word1 = &quot;horse&quot;, word2 = &quot;ros&quot;
+Output: 3   (replace h→r, delete r, delete e)</div>
     <pre><code class="language-typescript">function minDistance(word1: string, word2: string): number {
   const m = word1.length, n = word2.length;
   // Base cases: converting to/from empty string requires inserting/deleting all characters.
@@ -3036,6 +3138,8 @@ Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]  (8 = 2^3 subsets)</div>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an integer array of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [1,2,3]
+Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]</div>
     <pre><code class="language-typescript">function subsets(nums: number[]): number[][] {
   const results: number[][] = [];
 
@@ -3062,6 +3166,8 @@ Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]  (8 = 2^3 subsets)</div>
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given an array of distinct integers, return all possible permutations in any order.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: nums = [1,2,3]
+Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]</div>
     <pre><code class="language-typescript">// Unlike subsets, permutations can use any remaining element — not just elements after the current index.
 // That's why we use a `used[]` boolean array instead of a `start` index.
 function permute(nums: number[]): number[][] {
@@ -3092,6 +3198,8 @@ function permute(nums: number[]): number[][] {
       <span class="diff diff-medium">Medium</span>
     </div>
     <div class="code-problem">Given distinct candidates and a target, return all unique combinations that sum to target. The same number may be chosen unlimited times.</div>
+    <div class="code-example"><span class="ex-label">Example</span>Input: candidates = [2,3,6,7], target = 7
+Output: [[2,2,3],[7]]</div>
     <pre><code class="language-typescript">function combinationSum(candidates: number[], target: number): number[][] {
   const results: number[][] = [];
 
