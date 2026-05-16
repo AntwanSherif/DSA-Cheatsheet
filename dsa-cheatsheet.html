@@ -388,7 +388,9 @@
 
   <h3>How it works — Two Sum II</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">arr     = [ 1,  3,  5,  7, 11 ]   target = 10
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Given a sorted array and a target, return the 1-indexed positions of the two numbers that add up to the target. Exactly one solution exists.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>Because the array is sorted, the sum of the two ends tells you which way to move: too small and the only way to grow it is a larger left value; too big and you need a smaller right value. Each comparison rules out one element, so two pointers converging from both ends solve it in one O(n) pass instead of an O(n²) double loop.</div>
+<div class="wm-setup">arr     = [ 1,  3,  5,  7, 11 ]   target = 10
 indices =   0   1   2   3   4
 
 Rule:  sum &lt; target  → L++   (left value too small — move L right)
