@@ -810,7 +810,9 @@ Output: 2   (subarrays [1,2] and [3])</div>
 
   <h3>How it works — Three core hash-map patterns</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">Three independent patterns; each is a self-contained trace.
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Three staple hash-map tasks: count element frequencies, find two values that add to a target (Two Sum), and group anagrams together.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>A hash map turns “have I seen X / how many of X” from an O(n) scan into an O(1) lookup. Frequency counting tallies occurrences; complement lookup stores each value as you go and checks for target − value; grouping maps a canonical key (such as the sorted word) to all its members. Each is a single O(n) pass.</div>
+<div class="wm-setup">Three independent patterns; each is a self-contained trace.
 
 PATTERN 1 — Frequency count:  s = "aabbc"
 PATTERN 2 — Complement lookup (Two Sum):  nums=[2,7,11,15]  target=9
