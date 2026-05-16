@@ -1969,7 +1969,9 @@ function bfsGrid(grid: number[][], startR: number, startC: number): number {
 
   <h3>How it works — Graph DFS (recursive)</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">Graph (adjacency list):
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Traverse every node reachable from a start node — the basis for connectivity, components, and cycle detection.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>Recurse into each unvisited neighbor, marking nodes visited as you enter so cycles don’t cause infinite loops or rework. DFS dives as deep as possible before backtracking, touching every vertex and edge once → O(V + E).</div>
+<div class="wm-setup">Graph (adjacency list):
   A → [B, C]
   B → [D, E]
   D → [F]
