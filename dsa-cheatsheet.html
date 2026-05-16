@@ -1455,7 +1455,9 @@ function dfsIterative(root: TreeNode | null): number[] {
 
   <h3>How it works — Level-order BFS</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">Tree:          1          (level 0)
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Return a binary tree’s values level by level, top to bottom and left to right.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>Process the tree with a queue. The key trick is to snapshot the queue’s length at the start of each level so you handle exactly the nodes on that level while enqueueing their children for the next round. This produces one array per level in O(n).</div>
+<div class="wm-setup">Tree:          1          (level 0)
               /   \
              2     3         (level 1)
            /  \   /  \
