@@ -2190,7 +2190,9 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
 
   <h3>How it works — Binary search</h3>
   <div class="walkthrough-merged">
-  <div class="wm-setup">arr    = [  1,  3,  5,  7,  9, 11, 13, 15 ]   target = 9
+    <div class="wm-problem"><span class="wm-tag">Problem</span>Find a target’s index in a sorted array, or report that it is absent.</div>
+  <div class="wm-summary"><span class="wm-tag">Approach</span>Compare the target to the middle element and discard the half that cannot contain it. Each step halves the search space, so n elements are resolved in O(log n). The lo ≤ hi loop with mid = lo + (hi − lo)/2 avoids overflow and terminates exactly when the range becomes empty.</div>
+<div class="wm-setup">arr    = [  1,  3,  5,  7,  9, 11, 13, 15 ]   target = 9
 indices =   0   1   2   3   4   5   6   7
 
 Loop runs while lo &le; hi.
