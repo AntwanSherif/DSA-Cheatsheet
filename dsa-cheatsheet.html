@@ -401,20 +401,20 @@ Rule:  sum &lt; target  → L++   (left value too small — move L right)
     = 1 + 11 = 12. 12 is greater than the target, so the right value is too big
     — move R left by one. (The loop runs while L &lt; R.)</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    [L=0]                        [R=4]
    sum = 1 + 11 = 12   &gt; 10  → R--</div></div>
   <div class="wm-note"><span class="wm-num">②</span> The new R gives sum = 1 + 7
     = 8, now below the target, so the left value is too small — move L right by
     one.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    [L=0]                  [R=3]
    sum = 1 + 7 = 8     &lt; 10  → L++</div></div>
   <div class="wm-note"><span class="wm-num">③</span> sum = 3 + 7 = 10 equals the
     target. The pointers are at 0-indexed [1, 3]; this problem returns 1-indexed
     positions, so return [2, 4]. If no pair ever matches, the loop ends once
-    L &ge; R and returns [].</div><div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+    L &ge; R and returns [].</div><div class="wm-block"><div class="ascii-diagram">
    [L=1]                  [R=3]
    sum = 3 + 7 = 10    == 10  ✓</div></div>
   
@@ -530,26 +530,26 @@ Rule: expand R each step; when duplicate detected → advance L past last occurr
 
   <div class="wm-note"><span class="wm-num">①</span> Seed the first window by summing arr[0..k-1] = 2+1+5 = 8. This is the starting max.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    FIXED: [L=0 → R=2]  window=[2,1,5]  sum=8   max=8</div></div>
   <div class="wm-note"><span class="wm-num">②</span> Each slide: windowSum += arr[R] - arr[R-k]. At R=3 the sum is 8 + arr[3] − arr[0] = 8 + 1 − 2 = 7, max stays 8. At R=4 the sum rises to 9 — new max. At R=5 sum drops to 6, max stays 9. Return 9.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    FIXED: [L=1 → R=3]  window=[1,5,1]  sum=7   max=8
    FIXED: [L=2 → R=4]  window=[5,1,3]  sum=9   max=9  ← updated
    FIXED: [L=3 → R=5]  window=[1,3,2]  sum=6   max=9  ← final</div></div>
   <div class="wm-note"><span class="wm-num">③</span> Variable window: expand R one character at a time. While no duplicate exists in the window, update maxLen = R - L + 1. After "abc", maxLen = 3.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    VARIABLE: [L=0, R=0]  window="a"   seen={a:0}  len=1
              [L=0, R=1]  window="ab"  seen={a:0,b:1}  len=2
              [L=0, R=2]  window="abc" seen={a:0,b:1,c:2}  len=3  ← max</div></div>
   <div class="wm-note"><span class="wm-num">④</span> At R=3 the character 'b' was already seen at index 1, which is inside the current window (index 1 &ge; L=0). Shrink: jump L to lastSeen['b']+1 = 2. Window is now "cb"; maxLen stays 3.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    VARIABLE: R=3, ch='b' — duplicate! lastSeen[b]=1 &ge; L=0 → L = 1+1 = 2
              [L=2, R=3]  window="cb"  seen={...,b:3}  len=2</div></div>
-  <div class="wm-note"><span class="wm-num">⑤</span> At R=4 'a' is in the map but its last index (0) is to the left of L (2) — it is not inside the current window — so no shrink. Window "cba" has length 3. Loop ends; return maxLen = 3. If the string were empty, the loop never runs and 0 is returned.</div><div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+  <div class="wm-note"><span class="wm-num">⑤</span> At R=4 'a' is in the map but its last index (0) is to the left of L (2) — it is not inside the current window — so no shrink. Window "cba" has length 3. Loop ends; return maxLen = 3. If the string were empty, the loop never runs and 0 is returned.</div><div class="wm-block"><div class="ascii-diagram">
    VARIABLE: R=4, ch='a' — lastSeen[a]=0 &lt; L=2 → no shrink (outside window)
              [L=2, R=4]  window="cba"  len=3   maxLen=3 (unchanged)</div></div>
   
@@ -678,7 +678,7 @@ Subarray-sum-k rule:  for each index, if (currentSum - k) is in the map → add
 
   <div class="wm-note"><span class="wm-num">①</span> The array has n=5 elements but prefix has n+1=6 slots — one per <em>boundary</em> between/around elements, where prefix[k] is the sum of everything to the left of boundary k. Initialise prefix[0] = 0 (nothing is left of the first boundary — the "empty prefix"). Then iterate: prefix[i+1] = prefix[i] + arr[i], giving [0, 1, 3, 6, 10, 15]. That leading 0 is not padding: it lets a range that starts at index 0 use the very same subtraction formula instead of needing a special prefix[-1] case. This O(n) build is done once.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    Build prefix:
    prefix[0]=0
    prefix[1]=0+1=1
@@ -688,12 +688,12 @@ Subarray-sum-k rule:  for each index, if (currentSum - k) is in the map → add
    prefix[5]=10+5=15</div></div>
   <div class="wm-note"><span class="wm-num">②</span> To sum elements from index i=1 to j=3 inclusive, take the region left of boundary j+1=4 (prefix[4]=10, covering arr[0..3]) and remove the region left of boundary i=1 (prefix[1]=1, covering arr[0]). The difference is exactly arr[1..3]. We use j+1 because boundary j+1 sits <em>after</em> element j, so the element at j is included. The operation is O(1) regardless of how many queries follow.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    Range query: rangeSum(i=1, j=3)
    = prefix[j+1] - prefix[i]
    = prefix[4]   - prefix[1]
    = 10 - 1 = 9  ✓   (arr[1]+arr[2]+arr[3] = 2+3+4 = 9)</div></div>
-  <div class="wm-note"><span class="wm-num">③</span> Seed the hashmap with {0:1} so subarrays starting at index 0 are handled. At each element add it to currentSum, then check whether (currentSum - k) was a previous prefix sum. At i=2 (currentSum=6), need = 6-5 = 1 which exists in the map — the subarray arr[1..2] = [2, 3] sums to 5. At i=4 (currentSum=15), need = 15-5 = 10 which exists — the subarray arr[4] = [5] sums to 5. Total count = 2. If the array is empty no iterations run and 0 is returned. The {0:1} seed is critical: it lets a prefix sum that itself equals k match immediately (currentSum - k = 0 is found on the very first hit), covering subarrays that start at index 0.</div><div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-note"><span class="wm-num">③</span> Seed the hashmap with {0:1} so subarrays starting at index 0 are handled. At each element add it to currentSum, then check whether (currentSum - k) was a previous prefix sum. At i=2 (currentSum=6), need = 6-5 = 1 which exists in the map — the subarray arr[1..2] = [2, 3] sums to 5. At i=4 (currentSum=15), need = 15-5 = 10 which exists — the subarray arr[4] = [5] sums to 5. Total count = 2. If the array is empty no iterations run and 0 is returned. The {0:1} seed is critical: it lets a prefix sum that itself equals k match immediately (currentSum - k = 0 is found on the very first hit), covering subarrays that start at index 0.</div><div class="wm-block"><div class="ascii-diagram">
    Subarray sum = k (k=5), arr=[1,2,3,4,5]
    Seed map = { 0:1 }    currentSum=0
 
@@ -820,7 +820,7 @@ PATTERN 3 — Grouping by key (Group Anagrams):  words=["eat","tea","tan","ate",
 
   <div class="wm-note"><span class="wm-num">①</span> Scan the string once. For each character, increment its count in the map (default 0 if unseen: <code>freq.get(ch) ?? 0</code>). After the loop the map holds every character's frequency. Use this to check anagrams (compare two frequency maps), find the majority element, or compare character distributions — all in O(n) time and O(k) space where k is the alphabet size.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    PATTERN 1 — Frequency count
    ch='a': freq={a:1}
    ch='a': freq={a:2}
@@ -829,12 +829,12 @@ PATTERN 3 — Grouping by key (Group Anagrams):  words=["eat","tea","tan","ate",
    ch='c': freq={a:2,b:2,c:1}</div></div>
   <div class="wm-note"><span class="wm-num">②</span> Check the complement BEFORE inserting the current value. If we inserted first we could accidentally match an element with itself. At i=1, need = 9-7 = 2 was stored at index 0, so return [0, 1]. If no pair exists the loop finishes without a match. This pattern generalises to any "find two things that satisfy a relationship" problem.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    PATTERN 2 — Complement lookup
    seen = {}
    i=0: nums[0]=2  need=9-2=7   not in seen → seen={2:0}
    i=1: nums[1]=7  need=9-7=2   found seen[2]=0 → return [0,1] ✓</div></div>
-  <div class="wm-note"><span class="wm-num">③</span> Derive a canonical key that is identical for all equivalent elements — here, sorting a word's characters. Use the key to look up (or create) the group list in the map, then append the original word. Any element-to-key mapping works: character-frequency tuples, mod values, sorted digits, etc. Return all map values at the end. If the input array is empty the map stays empty and an empty list is returned.</div><div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-note"><span class="wm-num">③</span> Derive a canonical key that is identical for all equivalent elements — here, sorting a word's characters. Use the key to look up (or create) the group list in the map, then append the original word. Any element-to-key mapping works: character-frequency tuples, mod values, sorted digits, etc. Return all map values at the end. If the input array is empty the map stays empty and an empty list is returned.</div><div class="wm-block"><div class="ascii-diagram">
    PATTERN 3 — Grouping by key
    "eat" → sort → "aet" : groups={"aet":["eat"]}
    "tea" → sort → "aet" : groups={"aet":["eat","tea"]}
@@ -972,7 +972,7 @@ Rule: if fast or fast.next reaches null → no cycle → return false.
 
   <div class="wm-note"><span class="wm-num">①</span> When there is no cycle fast eventually reaches the end of the list. After step 2 fast is at node 5; fast.next is null, so the while-condition <code>fast !== null &amp;&amp; fast.next !== null</code> fails and the loop exits. We return false — no meeting point was ever found.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    NO-CYCLE BRANCH  (List A: 1→2→3→4→5→null)
    start:  slow=1, fast=1
    step 1: slow=2, fast=3
@@ -980,14 +980,14 @@ Rule: if fast or fast.next reaches null → no cycle → return false.
    step 3 check: fast.next is null → while-condition fails → exit (slow stays put, no advance)</div></div>
   <div class="wm-note"><span class="wm-num">②</span> Inside a cycle fast "laps" slow: fast moves two nodes per step while slow moves one, so within the cycle, fast closes the gap on slow by one node per iteration (fast moves 2, slow moves 1), so they are guaranteed to meet. They must eventually land on the same node. Here they meet at node 5 after step 4. The moment slow === fast we return true. The meeting point is somewhere inside the cycle — not necessarily the cycle entrance.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    CYCLE BRANCH  (List B: 1→2→3→4→5→6→3)
    start:  slow=1, fast=1
    step 1: slow=2, fast=3
    step 2: slow=3, fast=5
    step 3: slow=4, fast=3  (fast wrapped: 5→6→3)
    step 4: slow=5, fast=5  ← slow === fast → cycle!</div></div>
-  <div class="wm-note"><span class="wm-num">③</span> A second application: to find the middle in one pass, stop when fast.next or fast.next.next is null. Because fast travels at 2× speed, when fast reaches the last node slow is exactly at the midpoint. For an even-length list (e.g. 1→2→3→4) this condition fires when fast=3, leaving slow at node 2 — the second of the two middle nodes, which is what LC 876 requires.</div><div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-note"><span class="wm-num">③</span> A second application: to find the middle in one pass, stop when fast.next or fast.next.next is null. Because fast travels at 2× speed, when fast reaches the last node slow is exactly at the midpoint. For an even-length list (e.g. 1→2→3→4) this condition fires when fast=3, leaving slow at node 2 — the second of the two middle nodes, which is what LC 876 requires.</div><div class="wm-block"><div class="ascii-diagram">
    FIND-MIDDLE BONUS  (List A: 1→2→3→4→5)
    start:  slow=1, fast=1
    step 1: slow=2, fast=3
@@ -1128,7 +1128,7 @@ Loop invariant: at start of each iteration, nodes before curr are fully reversed
 
   <div class="wm-note"><span class="wm-num">①</span> Save curr.next before overwriting it (otherwise we lose the rest of the list). Flip curr.next to point at prev — node 1 now points to null, reversing its link. Advance prev to the current node (prev = 1) and curr to the saved next (curr = 2). The left portion null←1 is fully reversed; the right portion 2→3→null is untouched.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    Before: prev=null  curr=1  (1→2→3→null)
    next = curr.next       → next=2
    curr.next = prev       → 1→null
@@ -1137,14 +1137,14 @@ Loop invariant: at start of each iteration, nodes before curr are fully reversed
    After:  null←1  |  curr=2→3→null</div></div>
   <div class="wm-note"><span class="wm-num">②</span> The same four operations apply: save next, flip the pointer, advance prev, advance curr. Node 2 now points back to node 1, extending the reversed portion. The reversed chain so far is null←1←2; one node (3) remains to be processed.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    Before: prev=1  curr=2  (2→3→null)
    next = curr.next       → next=3
    curr.next = prev       → 2→1→null
    prev = curr            → prev=2
    curr = next            → curr=3
    After:  null←1←2  |  curr=3→null</div></div>
-  <div class="wm-note"><span class="wm-num">③</span> Node 3's original next was already null, so saving it is harmless. After flipping, 3→2→1→null completes the reversal. curr becomes null, so the while-condition fails and the loop exits. prev points to node 3, which is the new head — return prev. If the input list is empty (head = null), curr starts as null, the loop never runs, and prev = null is returned correctly.</div><div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-note"><span class="wm-num">③</span> Node 3's original next was already null, so saving it is harmless. After flipping, 3→2→1→null completes the reversal. curr becomes null, so the while-condition fails and the loop exits. prev points to node 3, which is the new head — return prev. If the input list is empty (head = null), curr starts as null, the loop never runs, and prev = null is returned correctly.</div><div class="wm-block"><div class="ascii-diagram">
    Before: prev=2  curr=3  (3→null)
    next = curr.next       → next=null
    curr.next = prev       → 3→2→1→null
@@ -1276,7 +1276,7 @@ relative to the left and right recursive calls.</div>
 
   <div class="wm-note"><span class="wm-num">①</span> In preorder the current node is recorded BEFORE recursing into either child. The recursive rule is: visit node → recurse left → recurse right. This visits the root first, then explores the entire left subtree, then the entire right subtree. Preorder output (4,2,1,3,6,5,7) reconstructs the tree unambiguously — useful for serialization and copying.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    PREORDER  (Root → Left → Right)
    visit(4) → recurse left
      visit(2) → recurse left
@@ -1291,7 +1291,7 @@ relative to the left and right recursive calls.</div>
    Result: 4, 2, 1, 3, 6, 5, 7</div></div>
   <div class="wm-note"><span class="wm-num">②</span> In inorder the current node is recorded BETWEEN the two recursive calls: recurse left → visit node → recurse right. For any valid BST this ordering always produces the values in ascending sorted order (1,2,3,4,5,6,7 here). Use inorder to find the kth smallest element, validate a BST, or extract a sorted sequence without sorting.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    INORDER  (Left → Root → Right)
    recurse left of 4
      recurse left of 2
@@ -1313,7 +1313,7 @@ relative to the left and right recursive calls.</div>
        visit(7)
        recurse right of 7 → null → return
    Result: 1, 2, 3, 4, 5, 6, 7</div></div>
-  <div class="wm-note"><span class="wm-num">③</span> In postorder the current node is recorded AFTER both children have been fully processed: recurse left → recurse right → visit node. Children are always handled before their parent, which makes postorder ideal when a parent's answer depends on its children — computing height (leaf heights bubble up), deleting a tree (delete children before parent), or aggregating subtree sums. A null node returns the identity value (0, false, [] etc.) before any work is done — this is the base case shared by all three orders.</div><div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-note"><span class="wm-num">③</span> In postorder the current node is recorded AFTER both children have been fully processed: recurse left → recurse right → visit node. Children are always handled before their parent, which makes postorder ideal when a parent's answer depends on its children — computing height (leaf heights bubble up), deleting a tree (delete children before parent), or aggregating subtree sums. A null node returns the identity value (0, false, [] etc.) before any work is done — this is the base case shared by all three orders.</div><div class="wm-block"><div class="ascii-diagram">
    POSTORDER  (Left → Right → Root)
    recurse left of 4
      recurse left of 2
@@ -1470,14 +1470,14 @@ Rule: snapshot queue.length BEFORE the inner loop so newly-enqueued
   <div class="wm-note"><span class="wm-num">①</span> Before the while-loop, push the root
     into the queue. The queue is non-empty, so the loop begins.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    Seed: enqueue root
    queue = [1]   result = []</div></div>
   <div class="wm-note"><span class="wm-num">②</span> Snapshot levelSize = 1. Dequeue node 1,
     record its value. Node 1 has children 2 and 3 — enqueue both. The inner
     for-loop is done (i reached levelSize). Push level [1] into result.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    levelSize = 1   (snapshot queue.length)
    Dequeue 1 → level = [1]
    Enqueue children 2, 3
@@ -1487,7 +1487,7 @@ Rule: snapshot queue.length BEFORE the inner loop so newly-enqueued
     node 3, enqueue its children 6 and 7. Inner loop ends. Push level [2, 3]
     into result.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    levelSize = 2   (snapshot queue.length)
    Dequeue 2 → level = [2]; enqueue 4, 5
    Dequeue 3 → level = [2, 3]; enqueue 6, 7
@@ -1496,7 +1496,7 @@ Rule: snapshot queue.length BEFORE the inner loop so newly-enqueued
     nodes are dequeued and recorded; none have children so nothing is enqueued.
     Push level [4, 5, 6, 7] into result. queue is now empty — the while-loop
     condition fails and BFS terminates. Return result. If root were null the
-    early-return guard fires before we ever reach the loop.</div><div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+    early-return guard fires before we ever reach the loop.</div><div class="wm-block"><div class="ascii-diagram">
    levelSize = 4   (snapshot queue.length)
    Dequeue 4, 5, 6, 7 → level = [4, 5, 6, 7]
    None have children → nothing enqueued
@@ -1635,20 +1635,20 @@ Rule: target &lt; node.val → go left; target &gt; node.val → go right; equal
     target 6 to 8: 6 &lt; 8, so the target must be in the left subtree — move
     curr to node(3).</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    curr = node(8)
    target 6 &lt; 8  → go left</div></div>
   <div class="wm-note"><span class="wm-num">②</span> Compare target 6 to 3: 6 &gt; 3, so
     the target must be in the right subtree — move curr to node(6).</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    curr = node(3)
    target 6 &gt; 3  → go right</div></div>
   <div class="wm-note"><span class="wm-num">③</span> curr.val equals the target — return
     curr. This is the found case. If instead curr became null before a match
     (e.g. searching for 9 in this tree: 9 &gt; 8 → right to node(10), 9 &lt; 10
     → left, but node(10) has no left child → curr = null → return null),
-    the function returns null signalling not-found.</div><div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+    the function returns null signalling not-found.</div><div class="wm-block"><div class="ascii-diagram">
    curr = node(6)
    target 6 == 6  → return node(6)  ✓</div></div>
   
@@ -1792,7 +1792,7 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
     (not dequeue time) prevents the same node from being added to the queue
     more than once.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    Seed: mark A visited, enqueue A
    queue = [A]   visited = {A}   dist = {A:0}</div></div>
   <div class="wm-note"><span class="wm-num">②</span> Dequeue A. Iterate over A's neighbors:
@@ -1800,7 +1800,7 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
     visited — mark it, set dist[C]=1, enqueue. Both level-1 nodes are now in
     the queue.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    Dequeue A (dist=0)
    Neighbors of A: B (unvisited) → mark, enqueue dist=1
                    C (unvisited) → mark, enqueue dist=1
@@ -1810,7 +1810,7 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
     mark each, record dist=2, and enqueue. This is the neighbor-skipping
     mechanism that keeps BFS O(V + E).</div>
 
-  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    Dequeue B (dist=1)
    Neighbors of B: A (visited, skip)
                    D (unvisited) → mark, enqueue dist=2
@@ -1822,7 +1822,7 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
     the target node; because we enqueue at the moment of discovery, dist[F]=2
     is already the shortest path.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    Dequeue C (dist=1)
    Neighbors of C: A (visited, skip)
                    F (unvisited) → mark, enqueue dist=2
@@ -1834,7 +1834,7 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
     level 2; they consume queue slots without expanding the frontier. F remains
     in the queue.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    Dequeue D (dist=2): neighbors = [B] all visited, skip
    Dequeue E (dist=2): neighbors = [B] all visited, skip
    queue = [F]   visited = {A, B, C, D, E, F}
@@ -1845,7 +1845,7 @@ Rule: mark visited at ENQUEUE time to prevent duplicate queue entries.</div>
     value is already correct and final. If no target had been found, the
     while-loop would exhaust the queue and exit; the caller returns -1 (or
     signals "unreachable") to indicate there is no path from the source to the
-    target.</div><div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
+    target.</div><div class="wm-block"><div class="ascii-diagram">
    Dequeue F (dist=2): F == target → return dist[F] = 2  ✓
    queue = []
    dist = {A:0, B:1, C:1, D:2, E:2, F:2}</div></div>
@@ -1984,7 +1984,7 @@ Neighbors are processed left-to-right.</div>
     marked visited (visited = { A }). We then iterate A's neighbors in order:
     [B, C]. B has not been visited, so we recurse into dfs(B) before touching C.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    dfs(A) called
    visited = { A }
    next neighbor to explore: B (first of A's neighbors)</div></div>
@@ -1992,7 +1992,7 @@ Neighbors are processed left-to-right.</div>
     (visited = { A, B }). B's neighbors are [D, E]. D is unvisited, so we recurse
     into dfs(D).</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    dfs(B) called
    visited = { A, B }
    next neighbor to explore: D (first of B's neighbors)</div></div>
@@ -2001,7 +2001,7 @@ Neighbors are processed left-to-right.</div>
     recurse into dfs(F). dfs(F) marks F visited (visited = { A, B, D, F }); F
     has no neighbors, so dfs(F) returns immediately.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    dfs(D) called
    visited = { A, B, D }
    D's only neighbor: F (unvisited) → recurse into dfs(F)
@@ -2011,7 +2011,7 @@ Neighbors are processed left-to-right.</div>
     no remaining neighbors, so dfs(D) returns. The call stack unwinds back to
     dfs(B). visited remains { A, B, D, F }.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    back in dfs(D): no more unvisited neighbors
    → dfs(D) returns  (backtrack to dfs(B))
    visited = { A, B, D, F }</div></div>
@@ -2020,7 +2020,7 @@ Neighbors are processed left-to-right.</div>
     no neighbors, and returns. dfs(B) now has no remaining neighbors and returns —
     another backtrack up to dfs(A).</div>
 
-  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    back in dfs(B): next neighbor E (unvisited)
    dfs(E) called
    visited = { A, B, D, F, E }
@@ -2032,7 +2032,7 @@ Neighbors are processed left-to-right.</div>
     If the graph had a second component (unreachable from A), a top-level loop
     would call dfs on that component's start node next.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    back in dfs(A): next neighbor C (unvisited)
    dfs(C) called
    visited = { A, B, D, F, E, C }
@@ -2042,7 +2042,7 @@ Neighbors are processed left-to-right.</div>
     neighbors reaches a node X that is already in visited, the guard
     (!visited.has(X)) is false and we simply skip X. This prevents infinite
     recursion in graphs with cycles and avoids double-counting nodes in
-    disconnected-component problems.</div><div class="wm-block"><div class="ascii-diagram">⑦ ────────────────────────────────────
+    disconnected-component problems.</div><div class="wm-block"><div class="ascii-diagram">
    skip-when-visited guard (cycle / shared neighbor scenario)
    suppose neighbor X is already in visited
    → the "if (!visited.has(X))" check is false
@@ -2209,7 +2209,7 @@ Rules:
     in the right half. We discard indices 0–3 by setting lo = 4. The loop
     condition lo &le; hi (4 &le; 7) is still true, so we iterate.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    lo=0, hi=7
    mid = 0 + floor((7-0)/2) = 3
    arr[3] = 7   &lt; 9   →  lo = mid + 1 = 4</div></div>
@@ -2218,14 +2218,14 @@ Rules:
     We discard indices 5–7 by setting hi = 4. The loop condition lo &le; hi
     (4 &le; 4) is still true, so we iterate.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    lo=4, hi=7
    mid = 4 + floor((7-4)/2) = 5
    arr[5] = 11  &gt; 9   →  hi = mid - 1 = 4</div></div>
   <div class="wm-note"><span class="wm-num">③</span> lo=4, hi=4. mid = 4. arr[4] = 9
     equals the target. Return index 4. If instead the target were absent (e.g.,
     target = 10), after the final pointer update (say lo = 5) the loop guard
-    lo &le; hi fails (5 &gt; 4) and the loop exits, returning -1.</div><div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+    lo &le; hi fails (5 &gt; 4) and the loop exits, returning -1.</div><div class="wm-block"><div class="ascii-diagram">
    lo=4, hi=4
    mid = 4 + floor((4-4)/2) = 4
    arr[4] = 9  == 9   →  return 4  ✓</div></div>
@@ -2375,7 +2375,7 @@ Complexity: O(n log n) time, O(n) auxiliary space (temporary merge buffer).</div
     so we split at mid = 2: left half [5,3] and right half [8,1]. We recurse
     into mergeSort([5,3]) before touching the right half.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    mergeSort([5, 3, 8, 1])
    mid = 2
    left  = arr[0..1] = [5, 3]
@@ -2385,7 +2385,7 @@ Complexity: O(n log n) time, O(n) auxiliary space (temporary merge buffer).</div
     Both have length 1, which is the base case (arr.length &le; 1 → return arr),
     so each returns immediately. We now merge [5] and [3].</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    mergeSort([5, 3])
    mid = 1
    left  = [5]   ← length 1, base case, returns [5]
@@ -2395,7 +2395,7 @@ Complexity: O(n log n) time, O(n) auxiliary space (temporary merge buffer).</div
     j is now exhausted; we append the remaining left element 5. Sorted sub-result:
     [3, 5]. This is returned to the caller of mergeSort([5,3]).</div>
 
-  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    merge([5], [3])
    i=0 j=0: left[0]=5  right[0]=3  → 3 &lt; 5, take right → result=[3], j=1
    j exhausted → append left remainder → result=[3, 5]</div></div>
@@ -2404,7 +2404,7 @@ Complexity: O(n log n) time, O(n) auxiliary space (temporary merge buffer).</div
     (base case: arr.length &le; 1 → return arr), so each returns immediately.
     We now merge [8] and [1].</div>
 
-  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    mergeSort([8, 1])
    mid = 1
    left  = [8]   ← length 1, base case, returns [8]
@@ -2414,7 +2414,7 @@ Complexity: O(n log n) time, O(n) auxiliary space (temporary merge buffer).</div
     here 8 &gt; 1, so we take 1 from the right and advance j. j is now exhausted;
     we append the remaining left element 8. Sorted sub-result: [1, 8].</div>
 
-  <div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    merge([8], [1])
    i=0 j=0: left[0]=8  right[0]=1  → 1 &lt; 8 (left[i] &le; right[j] is false)
      take right → result=[1], j=1
@@ -2423,7 +2423,7 @@ Complexity: O(n log n) time, O(n) auxiliary space (temporary merge buffer).</div
     sorted halves [3,5] and [1,8]. left[i] &le; right[j] decides which element to
     take: 3&le;1 is false → take 1; 3&le;8 → take 3; 5&le;8 → take 5; left is
     exhausted so we append the remaining right element 8. Final sorted array:
-    [1, 3, 5, 8].</div><div class="wm-block"><div class="ascii-diagram">⑥ ────────────────────────────────────
+    [1, 3, 5, 8].</div><div class="wm-block"><div class="ascii-diagram">
    merge([3, 5], [1, 8])   ← final merge
    i=0 j=0: 3 vs 1  → take 1,  j=1,  result=[1]
    i=0 j=1: 3 vs 8  → take 3,  i=1,  result=[1, 3]
@@ -2557,7 +2557,7 @@ Rule: walk left-to-right; stack holds INDICES of elements still waiting for thei
     — nothing to pop. Push index 0. Stack is now [0], meaning index 0 (value 2) is
     waiting for something larger to arrive.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    i=0   arr[0]=2
    stack before: []
    guard: stack empty → skip while loop
@@ -2567,7 +2567,7 @@ Rule: walk left-to-right; stack holds INDICES of elements still waiting for thei
     so the condition fails and we skip the pop loop. Push index 1. Stack [0, 1] means
     both value-2 and value-1 are still waiting — the stack remains decreasing (2, 1).</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    i=1   arr[1]=1
    stack before: [0]   arr[stack.top]=arr[0]=2
    guard: arr[1]=1 &gt; arr[0]=2? NO  (1 is not greater than 2)  → skip while loop
@@ -2579,7 +2579,7 @@ Rule: walk left-to-right; stack holds INDICES of elements still waiting for thei
     → pop 0 and set result[0]=5 (index 0 found its next greater). Iteration 3: stack is
     empty → loop exits. Push 2. Both pending indices resolved in one outer iteration.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    i=2   arr[2]=5
    stack before: [0, 1]
 
@@ -2599,7 +2599,7 @@ Rule: walk left-to-right; stack holds INDICES of elements still waiting for thei
     Push index 3. Stack [2, 3] maintains the decreasing-value invariant (5, 3).
     Index 2 (value 5) and index 3 (value 3) are both still waiting.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
    i=3   arr[3]=3
    stack before: [2]   arr[stack.top]=arr[2]=5
    guard: arr[3]=3 &gt; arr[2]=5? NO  (3 is not &gt; 5)  → skip while loop
@@ -2609,7 +2609,7 @@ Rule: walk left-to-right; stack holds INDICES of elements still waiting for thei
     → pop 3, result[3]=6. Iteration 2: stack.top is 2, arr[2]=5 &lt; 6 → pop 2,
     result[2]=6. Iteration 3: stack empty → exit. Push 4. The for-loop is now done.
     Index 4 remains in the stack — arr[4]=6 has no larger element to its right, so
-    result[4] stays -1 (its initialized value). Final answer: [5, 5, 6, 6, -1] ✓</div><div class="wm-block"><div class="ascii-diagram">⑤ ────────────────────────────────────
+    result[4] stays -1 (its initialized value). Final answer: [5, 5, 6, 6, -1] ✓</div><div class="wm-block"><div class="ascii-diagram">
    i=4   arr[4]=6
    stack before: [2, 3]
 
@@ -2774,7 +2774,7 @@ Base cases:  dp[0] = nums[0] = 2
 
   <div class="wm-note"><span class="wm-num">①</span> At every house i there are exactly two choices: skip it (inherit dp[i-1], the best result ignoring house i) or rob it (add nums[i] to dp[i-2], because the immediately preceding house i-1 must then be skipped). The recurrence takes the max of these two branches.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────  recurrence</div><div class="mermaid">
+  <div class="wm-block"><div class="ascii-diagram">  recurrence</div><div class="mermaid">
 graph TD
     R["rob(nums):\nmax money without adjacent"]:::root
     R --> F["Recurrence:\ndp[i] = max(dp[i-1], dp[i-2] + nums[i])"]:::formula
@@ -2785,7 +2785,7 @@ graph TD
     classDef choice1 fill:#475569,stroke:#64748b,color:#e2e8f0
     classDef choice2 fill:#22c55e,stroke:#16a34a,color:#000
   </div></div>
-  <div class="wm-note"><span class="wm-num">②</span> Base cases: dp[0] = 2 (only one house, take it); dp[1] = 7 (max of first two houses). i=2: rob house 2 (dp[0]+9=11) beats skipping (dp[1]=7) → 11. i=3: rob house 3 would give dp[1]+3=10, less than skipping (dp[2]=11) → stay at 11. i=4: rob house 4 gives dp[2]+1=12, beats skipping (dp[3]=11) → 12. Answer is dp[4] = 12. Space optimisation: since dp[i] only references dp[i-1] and dp[i-2], replace the array with two rolling variables (prev2, prev1).</div><div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────  fill the dp table</div><table class="dp-table">
+  <div class="wm-note"><span class="wm-num">②</span> Base cases: dp[0] = 2 (only one house, take it); dp[1] = 7 (max of first two houses). i=2: rob house 2 (dp[0]+9=11) beats skipping (dp[1]=7) → 11. i=3: rob house 3 would give dp[1]+3=10, less than skipping (dp[2]=11) → stay at 11. i=4: rob house 4 gives dp[2]+1=12, beats skipping (dp[3]=11) → 12. Answer is dp[4] = 12. Space optimisation: since dp[i] only references dp[i-1] and dp[i-2], replace the array with two rolling variables (prev2, prev1).</div><div class="wm-block"><div class="ascii-diagram">  fill the dp table</div><table class="dp-table">
     <tr><th>index i</th><th>nums[i]</th><th>dp[i]</th><th>decision</th></tr>
     <tr><td class="dp-base">0</td><td class="dp-base">2</td><td class="dp-base">2</td><td>base case</td></tr>
     <tr><td class="dp-base">1</td><td class="dp-base">7</td><td class="dp-base">7</td><td>max(2, 7) = 7</td></tr>
@@ -2940,7 +2940,7 @@ Base cases:  dp[0][j] = 0  (empty prefix of s1)
 
   <div class="wm-note"><span class="wm-num">①</span> The recurrence graph captures both the Unique Paths formula and its base cases. Every interior cell (i,j) is reachable from exactly two neighbors: the cell directly above (dp[i-1][j], representing arriving by moving down) and the cell to the left (dp[i][j-1], representing arriving by moving right). The two annotated nodes show how to seed the table: every cell in the top row and every cell in the leftmost column has exactly one path to it.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────  recurrence</div><div class="mermaid">
+  <div class="wm-block"><div class="ascii-diagram">  recurrence</div><div class="mermaid">
 graph LR
     R["Recurrence:\ndp[i][j] = dp[i-1][j] + dp[i][j-1]\n(paths from above + from left)"]:::formula
     B["Base cases:\ndp[0][j] = 1 (top row)\ndp[i][0] = 1 (left column)"]:::base
@@ -2949,13 +2949,13 @@ graph LR
   </div></div>
   <div class="wm-note"><span class="wm-num">②</span> Base cases: the entire top row (i=0) and the entire left column (j=0) are filled with 1 — there is only one way to reach any edge cell. Interior cells: dp[1][1] = dp[0][1] + dp[1][0] = 1+1 = 2; dp[1][2] = dp[0][2] + dp[1][1] = 1+2 = 3; dp[1][3] = 1+3 = 4. Row 2: dp[2][1] = dp[1][1] + dp[2][0] = 2+1 = 3; dp[2][2] = dp[1][2] + dp[2][1] = 3+3 = 6; dp[2][3] = dp[1][3] + dp[2][2] = 4+6 = 10. The answer is dp[2][3] = 10.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────  fill the dp table — Unique Paths 3×4</div><table class="dp-table">
+  <div class="wm-block"><div class="ascii-diagram">  fill the dp table — Unique Paths 3×4</div><table class="dp-table">
     <tr><th></th><th>j=0</th><th>j=1</th><th>j=2</th><th>j=3</th></tr>
     <tr><th>i=0</th><td class="dp-base">1</td><td class="dp-base">1</td><td class="dp-base">1</td><td class="dp-base">1</td></tr>
     <tr><th>i=1</th><td class="dp-base">1</td><td class="dp-computed">2</td><td class="dp-computed">3</td><td class="dp-computed">4</td></tr>
     <tr><th>i=2</th><td class="dp-base">1</td><td class="dp-computed">3</td><td class="dp-computed">6</td><td class="dp-answer">10</td></tr>
   </table></div>
-  <div class="wm-note"><span class="wm-num">③</span> Base cases: row 0 and column 0 are all 0 (LCS with an empty string is 0). Row A (i=1): A≠B→max(dp[0][1],dp[1][0])=max(0,0)=0; A≠C→max(dp[0][2],dp[1][1])=max(0,0)=0; A==A→dp[0][2]+1=1; A≠B→max(dp[0][4],dp[1][3])=max(0,1)=1. Row B (i=2): B==B→dp[1][0]+1=1; B≠C→max(dp[1][2],dp[2][1])=max(0,1)=1; B≠A→max(dp[1][3],dp[2][2])=max(1,1)=1; B==B→dp[1][3]+1=2. Row C (i=3): C≠B→max(dp[2][1],dp[3][0])=max(1,0)=1; C==C→dp[2][1]+1=2; C≠A→max(dp[2][3],dp[3][2])=max(1,2)=2; C≠B→max(dp[2][4],dp[3][3])=max(2,2)=2. Row B (i=4): B==B→dp[3][0]+1=1; B≠C→max(dp[3][2],dp[4][1])=max(2,1)=2; B≠A→max(dp[3][3],dp[4][2])=max(2,2)=2; B==B→dp[3][3]+1=3. Answer dp[4][4] = 3, i.e. LCS = "BCB".</div><div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────  fill the dp table — LCS s1="ABCB" s2="BCAB"</div><table class="dp-table">
+  <div class="wm-note"><span class="wm-num">③</span> Base cases: row 0 and column 0 are all 0 (LCS with an empty string is 0). Row A (i=1): A≠B→max(dp[0][1],dp[1][0])=max(0,0)=0; A≠C→max(dp[0][2],dp[1][1])=max(0,0)=0; A==A→dp[0][2]+1=1; A≠B→max(dp[0][4],dp[1][3])=max(0,1)=1. Row B (i=2): B==B→dp[1][0]+1=1; B≠C→max(dp[1][2],dp[2][1])=max(0,1)=1; B≠A→max(dp[1][3],dp[2][2])=max(1,1)=1; B==B→dp[1][3]+1=2. Row C (i=3): C≠B→max(dp[2][1],dp[3][0])=max(1,0)=1; C==C→dp[2][1]+1=2; C≠A→max(dp[2][3],dp[3][2])=max(1,2)=2; C≠B→max(dp[2][4],dp[3][3])=max(2,2)=2. Row B (i=4): B==B→dp[3][0]+1=1; B≠C→max(dp[3][2],dp[4][1])=max(2,1)=2; B≠A→max(dp[3][3],dp[4][2])=max(2,2)=2; B==B→dp[3][3]+1=3. Answer dp[4][4] = 3, i.e. LCS = "BCB".</div><div class="wm-block"><div class="ascii-diagram">  fill the dp table — LCS s1="ABCB" s2="BCAB"</div><table class="dp-table">
     <tr><th></th><th>""</th><th>B</th><th>C</th><th>A</th><th>B</th></tr>
     <tr><th>""</th><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td><td class="dp-base">0</td></tr>
     <tr><th>A</th><td class="dp-base">0</td><td class="dp-computed">0</td><td class="dp-computed">0</td><td class="dp-computed">1</td><td class="dp-computed">1</td></tr>
@@ -3133,7 +3133,7 @@ Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]  (8 = 2^3 subsets)</div>
     The first iteration CHOOSEs element 1 by pushing it onto the path, making
     path = [1]. We are now on the "add 1" branch of the decision tree.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
   root []              ← record [] immediately (empty subset)
     |
     +-- choose 1 → [1]   ← CHOOSE: path.push(1), now path = [1]</div></div>
@@ -3145,7 +3145,7 @@ Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]  (8 = 2^3 subsets)</div>
     the moment it is visited (before the inner loop), capturing all prefixes as
     valid subsets.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
   [1]                  ← record [1]
     |
     +-- choose 2 → [1,2]  ← record [1,2]
@@ -3160,7 +3160,7 @@ Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]  (8 = 2^3 subsets)</div>
     produce [1,3], then UNCHOOSes. State is always fully restored before the next
     sibling branch is explored — that is the core backtracking invariant.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
+  <div class="wm-block"><div class="ascii-diagram">
   [1,2,3]  ← leaf; return to parent [1,2]
     path.pop() → [1,2]   ← UNCHOOSE 3
   [1,2]    ← no more choices; return to parent [1]
@@ -3174,7 +3174,7 @@ Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]  (8 = 2^3 subsets)</div>
     essential when a constraint can be violated (sum &gt; target, row conflict in
     N-Queens, cell already visited in Word Search). The full result for [1,2,3]
     subsets with no pruning is: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3],
-    [3] — all 8 subsets of a 3-element set.</div><div class="wm-block"><div class="ascii-diagram">④ ────────────────────────────────────
+    [3] — all 8 subsets of a 3-element set.</div><div class="wm-block"><div class="ascii-diagram">
   Example: Combination Sum  (target = 5, candidates = [2, 3, 6])
 
   [3, 3]  remaining = 5 - 3 - 3 = -1

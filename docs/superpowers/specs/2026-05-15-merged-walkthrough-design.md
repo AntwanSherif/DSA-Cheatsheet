@@ -43,29 +43,25 @@ Two Pointers tab; replicate it on every tab):
 ```html
 <h3>How it works — Two Sum II</h3>
 <div class="walkthrough-merged">
-  <div class="wm-setup">arr     = [ 1,  3,  5,  7, 11 ]   target = 10
-indices =   0   1   2   3   4
+  <div class="wm-setup">
+    arr = [ 1, 3, 5, 7, 11 ] target = 10 indices = 0 1 2 3 4 Rule: sum &lt; target → L++ (left value too small — move L
+    right) sum &gt; target → R-- (right value too big — move R left) sum == target → return [L+1, R+1]
+  </div>
 
-Rule:  sum &lt; target  → L++   (left value too small — move L right)
-       sum &gt; target  → R--   (right value too big — move R left)
-       sum == target → return [L+1, R+1]</div>
+  <div class="wm-block"><div class="ascii-diagram">[L=0] [R=4] sum = 1 + 11 = 12 &gt; 10 → R--</div></div>
+  <div class="wm-note">
+    <span class="wm-num">①</span> Compute sum = arr[L] + arr[R] = 1 + 11 = 12. 12 is greater than the target … — move R
+    left by one.
+  </div>
 
-  <div class="wm-block"><div class="ascii-diagram">① ────────────────────────────────────
-   [L=0]                        [R=4]
-   sum = 1 + 11 = 12   &gt; 10  → R--</div></div>
-  <div class="wm-note"><span class="wm-num">①</span> Compute sum = arr[L] + arr[R]
-    = 1 + 11 = 12. 12 is greater than the target … — move R left by one.</div>
-
-  <div class="wm-block"><div class="ascii-diagram">② ────────────────────────────────────
-   [L=0]                  [R=3]
-   sum = 1 + 7 = 8     &lt; 10  → L++</div></div>
+  <div class="wm-block"><div class="ascii-diagram">[L=0] [R=3] sum = 1 + 7 = 8 &lt; 10 → L++</div></div>
   <div class="wm-note"><span class="wm-num">②</span> … below the target … move L right by one.</div>
 
-  <div class="wm-block"><div class="ascii-diagram">③ ────────────────────────────────────
-   [L=1]                  [R=3]
-   sum = 3 + 7 = 10    == 10  ✓</div></div>
-  <div class="wm-note"><span class="wm-num">③</span> … equals the target. 0-indexed
-    [1, 3]; problem returns 1-indexed → return [2, 4]. … loop ends once L &ge; R.</div>
+  <div class="wm-block"><div class="ascii-diagram">[L=1] [R=3] sum = 3 + 7 = 10 == 10 ✓</div></div>
+  <div class="wm-note">
+    <span class="wm-num">③</span> … equals the target. 0-indexed [1, 3]; problem returns 1-indexed → return [2, 4]. …
+    loop ends once L &ge; R.
+  </div>
 </div>
 ```
 
@@ -121,14 +117,19 @@ Each `<li>` in `.when-box` becomes a structured entry: a bold scenario title,
 a one-sentence description, a signal line, and one concrete example problem.
 
 ```html
-<div class="when-box"><ul>
-  <li><strong>Pair summing to a target (sorted)</strong>
-    <div class="w-desc">Find two elements in a sorted array that add up to a target value.</div>
-    <div class="w-sig"><span class="w-sig-label">Signal:</span> "sorted array" + "two numbers that sum to / add up to"</div>
-    <div class="w-ex">e.g. Two Sum II — Input Array Is Sorted</div>
-  </li>
-  ...
-</ul></div>
+<div class="when-box">
+  <ul>
+    <li>
+      <strong>Pair summing to a target (sorted)</strong>
+      <div class="w-desc">Find two elements in a sorted array that add up to a target value.</div>
+      <div class="w-sig">
+        <span class="w-sig-label">Signal:</span> "sorted array" + "two numbers that sum to / add up to"
+      </div>
+      <div class="w-ex">e.g. Two Sum II — Input Array Is Sorted</div>
+    </li>
+    ...
+  </ul>
+</div>
 ```
 
 - The signal uses a clean styled `Signal:` label (`.w-sig-label`), **not** the
@@ -158,8 +159,8 @@ completes, then are removed once no tab references them.
 ## 5. Rollout
 
 - **Phase 1 — pilot.** Rebuild the **Two Pointers** tab only: merged section
-  + enriched `When to use` + the new CSS. User reviews the rendered result in
-  a browser. Format is locked from the approved pilot.
+  - enriched `When to use` + the new CSS. User reviews the rendered result in
+    a browser. Format is locked from the approved pilot.
 - **Phase 2 — rollout.** Apply the locked format to the remaining ~24 tabs,
   grouped by archetype (trace → table → structural). After every tab is
   migrated, delete the now-unused `.diagram-box` / `.walkthrough` CSS and
@@ -176,3 +177,4 @@ approved.
   identifies it, and a concrete example.
 - No algorithm content, code template, or practice problem is altered.
 - No dead CSS remains after Phase 2.
+
